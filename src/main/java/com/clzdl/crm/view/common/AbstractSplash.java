@@ -14,48 +14,82 @@ import org.eclipse.swt.widgets.Shell;
 
 public abstract class AbstractSplash {
 	private String splashImageFile;
+	protected Display display;
+	private Shell splashShell;
+	private ProgressBar bar;
+	private Image image;
+	private Color color;
+	private Label label;
 
-	public AbstractSplash(String splashImageFile) {
+	public AbstractSplash(Display display, String splashImageFile) {
+		this.display = display;
 		this.splashImageFile = splashImageFile;
 	}
 
 	/**
 	 * Create contents of the window
 	 */
-	// 在进度条时加载后台数据。
-	public abstract void loadData(ProgressBar bar); // 滚动条滚动值需自行实现
+	// 加载后台数据，返回完成值，用户更新进度条
+	public abstract void loadData();
 
 	/// 执行显示主页面
 	public abstract void openMain();
 
 	/**
+	 * 更新启动界面
+	 */
+	protected void refreshView(final int progressBasPos) {
+		display.asyncExec(new Runnable() {
+			@Override
+			public void run() {
+				if (bar.isDisposed())
+					return;
+				bar.setSelection(progressBasPos);
+			}
+		});
+	}
+
+	private void closeView() {
+		color.dispose();
+		image.dispose();
+		display.asyncExec(new Runnable() {
+			@Override
+			public void run() {
+				splashShell.close();
+				splashShell.dispose();
+				openMain();
+			}
+		});
+	}
+
+	/**
 	 * @throws InterruptedException
 	 * @wbp.parser.entryPoint
 	 */
-	public void createContents(Display display) throws InterruptedException {
-
+	public void createContents() throws InterruptedException {
 		// 启动页面
-		final Image image = new Image(display, this.getClass().getClassLoader().getResourceAsStream(splashImageFile));
-		final Shell splashShell = new Shell(SWT.ON_TOP);
+		image = new Image(display, this.getClass().getClassLoader().getResourceAsStream(splashImageFile));
+		splashShell = new Shell(SWT.ON_TOP);
+		splashShell.setLayout(new FormLayout());
 
-		final ProgressBar bar = new ProgressBar(splashShell, SWT.NONE);
-		final Color color = Display.getCurrent().getSystemColor(SWT.COLOR_GREEN);
+		bar = new ProgressBar(splashShell, SWT.NONE);
+		color = Display.getCurrent().getSystemColor(SWT.COLOR_GREEN);
 		bar.setMinimum(0);
 		bar.setMaximum(100);
 		bar.setForeground(color);
 
-		final Label label = new Label(splashShell, SWT.NONE);
+		label = new Label(splashShell, SWT.NONE);
 		label.setImage(image);
-		FormLayout layout = new FormLayout();
-		splashShell.setLayout(layout);
+
 		FormData labelData = new FormData();
 		labelData.right = new FormAttachment(100, 0);
 		labelData.bottom = new FormAttachment(100, 0);
 		label.setLayoutData(labelData);
+
 		FormData progressData = new FormData();
-		progressData.left = new FormAttachment(0, 5);
-		progressData.right = new FormAttachment(100, -5);
-		progressData.bottom = new FormAttachment(114, -35);
+		progressData.left = new FormAttachment(0, 0);
+		progressData.right = new FormAttachment(100, 0);
+		progressData.bottom = new FormAttachment(100, 0);
 		bar.setLayoutData(progressData);
 		splashShell.pack();
 
@@ -66,23 +100,17 @@ public abstract class AbstractSplash {
 		int y = (displayRect.height - splashRect.height) / 2;
 		splashShell.setLocation(x, y);
 		splashShell.open();
-		display.asyncExec(new Runnable() { // 异步执行一个线程
+
+		//// 加载数据
+		new Thread() {
+			@Override
 			public void run() {
-				for (int i = 1; i < 2; i++) {
-					try {
-						Thread.sleep(1000);
-					} catch (Throwable e) {
-					}
-					loadData(bar);
-				}
-				splashShell.close();
-				color.dispose();
-				image.dispose();
-				splashShell.dispose();
-				// 主页面
-				openMain();
+				loadData();
+				closeView();
 			}
-		});
+
+		}.start();
+
 	}
 
 }
