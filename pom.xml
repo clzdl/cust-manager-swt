@@ -54,6 +54,11 @@
 		<version>${swt.version}</version>
 	</dependency>
 	-->
+	
+	<!-- 
+	安装到本地仓库
+	mvn install:install-file -Dfile=swt.jar -DgroupId=org.eclipse.swt -DartifactId=org.eclipse.swt.gtk.linux.x86_64 -Dversion=4.10.0 -Dpackaging=jar
+	 -->
 	<dependency>
 		<groupId>org.eclipse.swt</groupId>
 		<artifactId>org.eclipse.swt.gtk.linux.x86_64</artifactId>
