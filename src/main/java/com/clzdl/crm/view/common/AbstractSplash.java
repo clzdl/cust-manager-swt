@@ -32,9 +32,6 @@ public abstract class AbstractSplash {
 	// 加载后台数据，返回完成值，用户更新进度条
 	public abstract void loadData();
 
-	/// 执行显示主页面
-	public abstract void openMain();
-
 	/**
 	 * 更新启动界面
 	 */
@@ -57,7 +54,6 @@ public abstract class AbstractSplash {
 			public void run() {
 				splashShell.close();
 				splashShell.dispose();
-				openMain();
 			}
 		});
 	}
@@ -111,6 +107,11 @@ public abstract class AbstractSplash {
 
 		}.start();
 
+		while (!splashShell.isDisposed()) {
+			if (!display.readAndDispatch()) {
+				display.sleep();
+			}
+		}
 	}
 
 }

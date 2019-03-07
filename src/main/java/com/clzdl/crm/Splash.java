@@ -10,8 +10,9 @@ public class Splash extends AbstractSplash {
 	private final static Logger _logger = LoggerFactory.getLogger(Splash.class);
 	private MainWindow mainWindow;
 
-	public Splash(Display display) {
+	public Splash(Display display, MainWindow mainWindow) {
 		super(display, "images/launch.jpg");
+		this.mainWindow = mainWindow;
 	}
 
 	@Override
@@ -24,13 +25,6 @@ public class Splash extends AbstractSplash {
 			}
 			refreshView(i);
 		}
-		mainWindow = new MainWindow(display);
 		mainWindow.launch();
-
-	}
-
-	@Override
-	public void openMain() {
-		mainWindow.show();
 	}
 }
