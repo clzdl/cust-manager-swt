@@ -78,6 +78,7 @@ public abstract class AbstractSplash {
 				splashShell.close();
 				color.dispose();
 				image.dispose();
+				splashShell.dispose();
 				// 主页面
 				openMain();
 			}

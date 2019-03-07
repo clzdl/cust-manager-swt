@@ -19,7 +19,7 @@ public class App {
 		splash = new Splash(shell);
 		splash.createContents(display);
 		while (!shell.isDisposed()) {
-			if (display.readAndDispatch()) {
+			if (!display.readAndDispatch()) {
 				display.sleep();
 			}
 		}
