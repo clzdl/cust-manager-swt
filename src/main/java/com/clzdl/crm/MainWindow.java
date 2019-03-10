@@ -1,7 +1,9 @@
 package com.clzdl.crm;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Monitor;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
@@ -38,6 +40,15 @@ public class MainWindow {
 		shell.setSize(592, 486);
 		shell.setText("客户管理");
 		shell.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+
+		/// 主屏幕显示位置
+		Monitor primary = display.getPrimaryMonitor();
+		Rectangle bounds = primary.getBounds();
+		Rectangle rect = shell.getBounds();
+		int x = bounds.x + Math.max(0, (bounds.width - rect.width) / 2);
+		int y = bounds.y + Math.max(0, (bounds.height - rect.height) / 2);
+		shell.setBounds(x, y, rect.width, rect.height);
+
 		Table table = new Table(shell, SWT.BORDER | SWT.FULL_SELECTION);
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);

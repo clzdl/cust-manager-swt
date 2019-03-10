@@ -36,6 +36,7 @@ public abstract class AbstractSplash {
 	 * 更新启动界面
 	 */
 	protected void refreshView(final int progressBasPos) {
+		/// 等待ui线程执行完毕
 		display.asyncExec(new Runnable() {
 			@Override
 			public void run() {

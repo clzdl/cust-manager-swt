@@ -8,9 +8,14 @@ import org.eclipse.swt.widgets.Display;
  */
 public class App {
 	private static MainWindow mainWindow;
+	private static final String _version = "0.0.1";
+	public static Display display;
 
 	public static void main(String[] args) throws InterruptedException {
-		final Display display = new Display();
+		display = new Display();
+		Display.setAppName("客户管理程序");
+		Display.setAppVersion(_version);
+
 		mainWindow = new MainWindow(display);
 		new Splash(display, mainWindow).createContents();
 		mainWindow.show();
