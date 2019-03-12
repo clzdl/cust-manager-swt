@@ -127,6 +127,8 @@ public class MainWindow {
 			}
 		}
 
+		tree.setBackground(display.getSystemColor(SWT.COLOR_GRAY));
+
 		FormData toolBarData = new FormData();
 		toolBarData.left = new FormAttachment(0);
 		toolBarData.top = new FormAttachment(0);
