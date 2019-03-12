@@ -1,27 +1,37 @@
 package com.clzdl.crm;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Monitor;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.widgets.ToolItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-
-import swing2swt.layout.FlowLayout;
 
 public class MainWindow {
 	private final Logger _logger = LoggerFactory.getLogger(MainWindow.class);
 	private Display display;
 	private static ApplicationContext context;
 	private Shell shell;
+	private Boolean isLogin = false;
+	private Label bottomLabel;
 
 	public MainWindow(Display display) {
 		this.display = display;
@@ -42,7 +52,6 @@ public class MainWindow {
 		shell = new Shell(display);
 		shell.setSize(592, 486);
 		shell.setText("客户管理");
-		shell.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 
 		/// 主屏幕显示位置
 		Monitor primary = display.getPrimaryMonitor();
@@ -51,6 +60,75 @@ public class MainWindow {
 		int x = bounds.x + Math.max(0, (bounds.width - rect.width) / 2);
 		int y = bounds.y + Math.max(0, (bounds.height - rect.height) / 2);
 		shell.setBounds(x, y, rect.width, rect.height);
+
+		FormLayout layout = new FormLayout();
+		shell.setLayout(layout);
+		Menu menuBar = new Menu(shell, SWT.BAR);
+		shell.setMenuBar(menuBar);
+		MenuItem fileItem = new MenuItem(menuBar, SWT.CASCADE);
+		fileItem.setText("File");
+		MenuItem editItem = new MenuItem(menuBar, SWT.CASCADE);
+		editItem.setText("Edit");
+		Menu fileMenu = new Menu(shell, SWT.DROP_DOWN);
+		fileItem.setMenu(fileMenu);
+		String[] fileStrings = { "New", "Close", "Exit" };
+		for (int i = 0; i < fileStrings.length; i++) {
+			MenuItem item = new MenuItem(fileMenu, SWT.PUSH);
+			item.setText(fileStrings[i]);
+
+			item.addSelectionListener(new SelectionListener() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					// TODO Auto-generated method stub
+
+				}
+
+				@Override
+				public void widgetDefaultSelected(SelectionEvent e) {
+					// TODO Auto-generated method stub
+
+				}
+			});
+		}
+
+		Menu editMenu = new Menu(shell, SWT.DROP_DOWN);
+		String[] editStrings = { "Cut", "Copy", "Paste" };
+		editItem.setMenu(editMenu);
+		for (int i = 0; i < editStrings.length; i++) {
+			MenuItem item = new MenuItem(editMenu, SWT.PUSH);
+			item.setText(editStrings[i]);
+		}
+
+		////
+		ToolBar toolBar = new ToolBar(shell, SWT.HORIZONTAL | SWT.SHADOW_OUT);
+		ToolItem cutItem = new ToolItem(toolBar, SWT.PUSH);
+		cutItem.setText("cut");
+		cutItem.setToolTipText("剪切");
+		new ToolItem(toolBar, SWT.SEPARATOR);
+		ToolItem copyItem = new ToolItem(toolBar, SWT.PUSH);
+		copyItem.setText("copy");
+		copyItem.setToolTipText("复制");
+
+		FormData toolBarData = new FormData();
+		toolBarData.left = new FormAttachment(0);
+		toolBarData.top = new FormAttachment(0);
+		toolBarData.right = new FormAttachment(100);
+		toolBarData.bottom = new FormAttachment(10);
+		toolBar.setLayoutData(toolBarData);
+
+		bottomLabel = new Label(shell, SWT.BORDER);
+		FormData bottomLabelData = new FormData();
+		bottomLabelData.left = new FormAttachment(0);
+		bottomLabelData.right = new FormAttachment(100);
+		bottomLabelData.bottom = new FormAttachment(100);
+		bottomLabel.setLayoutData(bottomLabelData);
+//		if (!isLogin) {
+//			LoginDialog loginDlg = new LoginDialog(shell);
+//			if (!loginDlg.show()) {
+//				shell.dispose();
+//				return;
+//			}
+//		}
 
 		Table table = new Table(shell, SWT.BORDER | SWT.FULL_SELECTION);
 		table.setHeaderVisible(true);
