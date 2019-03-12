@@ -17,14 +17,17 @@ public class Splash extends AbstractSplash {
 
 	@Override
 	public void loadData() {
-		for (int i = 0; i <= 100; ++i) {
-			try {
-				Thread.sleep(100);
-			} catch (Exception e) {
-				// TODO: handle exception
-			}
-			refreshView(i);
+
+		try {
+			refreshView(10);
+			mainWindow.launch();
+			refreshView(50);
+			Thread.sleep(100);
+			refreshView(100);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		mainWindow.launch();
+
 	}
 }

@@ -2,7 +2,10 @@ package com.clzdl.crm;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Monitor;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
@@ -60,6 +63,23 @@ public class MainWindow {
 		TableColumn tblclmnNewColumn_1 = new TableColumn(table, SWT.NONE);
 		tblclmnNewColumn_1.setWidth(100);
 		tblclmnNewColumn_1.setText("col2");
+
+		Listener listener = new Listener() {
+			public void handleEvent(Event event) {
+				Button button = (Button) event.widget;
+				if (!button.getSelection())
+					return;
+				System.out.println("Arriving " + button.getText());
+			}
+		};
+		Button land = new Button(shell, SWT.RADIO);
+		land.setText("By Land");
+		land.addListener(SWT.Selection, listener);
+		Button sea = new Button(shell, SWT.RADIO);
+		sea.setText("By Sea");
+		sea.addListener(SWT.Selection, listener);
+		sea.setSelection(true);
+
 		shell.open();
 		while (!shell.isDisposed()) {
 			if (!display.readAndDispatch()) {

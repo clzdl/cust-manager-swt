@@ -3,7 +3,7 @@ package com.clzdl.crm;
 import org.eclipse.swt.widgets.Display;
 
 /**
- * Hello world!
+ * 客户管理程序入口类
  *
  */
 public class App {
