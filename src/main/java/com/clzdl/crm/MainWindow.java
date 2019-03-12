@@ -7,19 +7,16 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Monitor;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
+import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.TreeItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -30,8 +27,9 @@ public class MainWindow {
 	private Display display;
 	private static ApplicationContext context;
 	private Shell shell;
-	private Boolean isLogin = false;
+	private static Boolean isLogin = false;
 	private Label bottomLabel;
+	private Label underToolBarSeparator;
 
 	public MainWindow(Display display) {
 		this.display = display;
@@ -63,6 +61,7 @@ public class MainWindow {
 
 		FormLayout layout = new FormLayout();
 		shell.setLayout(layout);
+
 		Menu menuBar = new Menu(shell, SWT.BAR);
 		shell.setMenuBar(menuBar);
 		MenuItem fileItem = new MenuItem(menuBar, SWT.CASCADE);
@@ -109,19 +108,52 @@ public class MainWindow {
 		copyItem.setText("copy");
 		copyItem.setToolTipText("复制");
 
+		underToolBarSeparator = new Label(shell, SWT.SEPARATOR | SWT.BORDER);
+
+		bottomLabel = new Label(shell, SWT.BORDER);
+
+		/////
+		Tree tree = new Tree(shell, SWT.BORDER);
+		for (int i = 0; i < 4; i++) {
+			TreeItem itemI = new TreeItem(tree, SWT.NULL);
+			itemI.setText("Item " + i);
+			for (int j = 0; j < 4; j++) {
+				TreeItem itemJ = new TreeItem(itemI, SWT.NULL);
+				itemJ.setText("Item " + i + " " + j);
+				for (int k = 0; k < 4; k++) {
+					TreeItem itemK = new TreeItem(itemJ, SWT.NULL);
+					itemK.setText("Item " + i + " " + j + " " + k);
+				}
+			}
+		}
+
 		FormData toolBarData = new FormData();
 		toolBarData.left = new FormAttachment(0);
 		toolBarData.top = new FormAttachment(0);
 		toolBarData.right = new FormAttachment(100);
-		toolBarData.bottom = new FormAttachment(10);
+		toolBarData.bottom = new FormAttachment(6);
 		toolBar.setLayoutData(toolBarData);
 
-		bottomLabel = new Label(shell, SWT.BORDER);
+		FormData underToolBarSeparatorData = new FormData();
+		underToolBarSeparatorData.left = new FormAttachment(0);
+		underToolBarSeparatorData.top = new FormAttachment(6, 1);
+		underToolBarSeparatorData.right = new FormAttachment(100);
+		underToolBarSeparatorData.bottom = new FormAttachment(6, 2);
+		underToolBarSeparator.setLayoutData(underToolBarSeparatorData);
+
+		FormData treeData = new FormData();
+		treeData.left = new FormAttachment(0);
+		treeData.top = new FormAttachment(6, 3);
+		treeData.right = new FormAttachment(20);
+		treeData.bottom = new FormAttachment(100);
+		tree.setLayoutData(treeData);
+
 		FormData bottomLabelData = new FormData();
 		bottomLabelData.left = new FormAttachment(0);
 		bottomLabelData.right = new FormAttachment(100);
 		bottomLabelData.bottom = new FormAttachment(100);
 		bottomLabel.setLayoutData(bottomLabelData);
+
 //		if (!isLogin) {
 //			LoginDialog loginDlg = new LoginDialog(shell);
 //			if (!loginDlg.show()) {
@@ -130,33 +162,33 @@ public class MainWindow {
 //			}
 //		}
 
-		Table table = new Table(shell, SWT.BORDER | SWT.FULL_SELECTION);
-		table.setHeaderVisible(true);
-		table.setLinesVisible(true);
-
-		TableColumn tblclmnNewColumn = new TableColumn(table, SWT.NONE);
-		tblclmnNewColumn.setWidth(100);
-		tblclmnNewColumn.setText("col1");
-
-		TableColumn tblclmnNewColumn_1 = new TableColumn(table, SWT.NONE);
-		tblclmnNewColumn_1.setWidth(100);
-		tblclmnNewColumn_1.setText("col2");
-
-		Listener listener = new Listener() {
-			public void handleEvent(Event event) {
-				Button button = (Button) event.widget;
-				if (!button.getSelection())
-					return;
-				System.out.println("Arriving " + button.getText());
-			}
-		};
-		Button land = new Button(shell, SWT.RADIO);
-		land.setText("By Land");
-		land.addListener(SWT.Selection, listener);
-		Button sea = new Button(shell, SWT.RADIO);
-		sea.setText("By Sea");
-		sea.addListener(SWT.Selection, listener);
-		sea.setSelection(true);
+//		Table table = new Table(shell, SWT.BORDER | SWT.FULL_SELECTION);
+//		table.setHeaderVisible(true);
+//		table.setLinesVisible(true);
+//
+//		TableColumn tblclmnNewColumn = new TableColumn(table, SWT.NONE);
+//		tblclmnNewColumn.setWidth(100);
+//		tblclmnNewColumn.setText("col1");
+//
+//		TableColumn tblclmnNewColumn_1 = new TableColumn(table, SWT.NONE);
+//		tblclmnNewColumn_1.setWidth(100);
+//		tblclmnNewColumn_1.setText("col2");
+//
+//		Listener listener = new Listener() {
+//			public void handleEvent(Event event) {
+//				Button button = (Button) event.widget;
+//				if (!button.getSelection())
+//					return;
+//				System.out.println("Arriving " + button.getText());
+//			}
+//		};
+//		Button land = new Button(shell, SWT.RADIO);
+//		land.setText("By Land");
+//		land.addListener(SWT.Selection, listener);
+//		Button sea = new Button(shell, SWT.RADIO);
+//		sea.setText("By Sea");
+//		sea.addListener(SWT.Selection, listener);
+//		sea.setSelection(true);
 
 		shell.open();
 		while (!shell.isDisposed()) {
