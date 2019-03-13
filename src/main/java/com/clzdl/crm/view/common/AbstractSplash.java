@@ -4,9 +4,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.ProgressBar;
@@ -66,8 +64,19 @@ public abstract class AbstractSplash {
 	public void createContents() throws InterruptedException {
 		// 启动页面
 		image = new Image(display, this.getClass().getClassLoader().getResourceAsStream(splashImageFile));
-		splashShell = new Shell(SWT.ON_TOP);
-		splashShell.setLayout(new FormLayout());
+		splashShell = new Shell(display, SWT.NONE);
+		RowLayout layout = new RowLayout();
+		layout.type = SWT.VERTICAL;
+		layout.fill = true;
+		layout.marginLeft = 0;
+		layout.marginRight = 0;
+		layout.marginTop = 0;
+		layout.marginBottom = 0;
+		layout.spacing = 0;
+		splashShell.setLayout(layout);
+
+		label = new Label(splashShell, SWT.NONE);
+		label.setImage(image);
 
 		bar = new ProgressBar(splashShell, SWT.NONE);
 		color = Display.getCurrent().getSystemColor(SWT.COLOR_GREEN);
@@ -75,19 +84,6 @@ public abstract class AbstractSplash {
 		bar.setMaximum(100);
 		bar.setForeground(color);
 
-		label = new Label(splashShell, SWT.NONE);
-		label.setImage(image);
-
-		FormData labelData = new FormData();
-		labelData.right = new FormAttachment(100, 0);
-		labelData.bottom = new FormAttachment(100, 0);
-		label.setLayoutData(labelData);
-
-		FormData progressData = new FormData();
-		progressData.left = new FormAttachment(0, 0);
-		progressData.right = new FormAttachment(100, 0);
-		progressData.bottom = new FormAttachment(100, 0);
-		bar.setLayoutData(progressData);
 		splashShell.pack();
 
 		Rectangle splashRect = splashShell.getBounds();

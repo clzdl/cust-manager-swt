@@ -1,28 +1,31 @@
 package com.clzdl.crm;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Monitor;
+import org.eclipse.swt.widgets.Sash;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
-import org.eclipse.swt.widgets.Tree;
-import org.eclipse.swt.widgets.TreeItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-
-import com.clzdl.crm.view.biz.LoginDialog;
 
 public class MainWindow {
 	private final Logger _logger = LoggerFactory.getLogger(MainWindow.class);
@@ -32,6 +35,10 @@ public class MainWindow {
 	private static Boolean isLogin = false;
 	private Label bottomLabel;
 	private Label underToolBarSeparator;
+	private Sash sash;
+	private Table leftMenuTab;
+	private Composite content;
+	private Composite content02;
 
 	public MainWindow(Display display) {
 		this.display = display;
@@ -60,9 +67,7 @@ public class MainWindow {
 		int x = bounds.x + Math.max(0, (bounds.width - rect.width) / 2);
 		int y = bounds.y + Math.max(0, (bounds.height - rect.height) / 2);
 		shell.setBounds(x, y, rect.width, rect.height);
-
-		FormLayout layout = new FormLayout();
-		shell.setLayout(layout);
+		shell.setLayout(new FormLayout());
 
 		Menu menuBar = new Menu(shell, SWT.BAR);
 		shell.setMenuBar(menuBar);
@@ -114,43 +119,52 @@ public class MainWindow {
 
 		bottomLabel = new Label(shell, SWT.BORDER);
 
-		/////
-		Tree tree = new Tree(shell, SWT.BORDER);
-		for (int i = 0; i < 4; i++) {
-			TreeItem itemI = new TreeItem(tree, SWT.NULL);
-			itemI.setText("Item " + i);
-			for (int j = 0; j < 4; j++) {
-				TreeItem itemJ = new TreeItem(itemI, SWT.NULL);
-				itemJ.setText("Item " + i + " " + j);
-				for (int k = 0; k < 4; k++) {
-					TreeItem itemK = new TreeItem(itemJ, SWT.NULL);
-					itemK.setText("Item " + i + " " + j + " " + k);
-				}
-			}
+		leftMenuTab = new Table(shell, SWT.BORDER);
+		for (int i = 0; i < 10; i++) {
+			TableItem item = new TableItem(leftMenuTab, SWT.NULL);
+			item.setText("item " + i);
 		}
 
-		tree.setBackground(display.getSystemColor(SWT.COLOR_GRAY));
-
+		sash = new Sash(shell, SWT.VERTICAL);
+		content = new Composite(shell, SWT.BORDER);
+		content02 = new Composite(shell, SWT.BORDER);
+		content02.setLayout(new FillLayout());
+		new Button(content02, SWT.BORDER).setText("button");
 		FormData toolBarData = new FormData();
 		toolBarData.left = new FormAttachment(0);
 		toolBarData.top = new FormAttachment(0);
 		toolBarData.right = new FormAttachment(100);
-		toolBarData.bottom = new FormAttachment(6);
+		toolBarData.bottom = new FormAttachment(0, 40);
 		toolBar.setLayoutData(toolBarData);
 
 		FormData underToolBarSeparatorData = new FormData();
 		underToolBarSeparatorData.left = new FormAttachment(0);
-		underToolBarSeparatorData.top = new FormAttachment(6, 1);
+		underToolBarSeparatorData.top = new FormAttachment(0, 40);
+		underToolBarSeparatorData.bottom = new FormAttachment(0, 41);
 		underToolBarSeparatorData.right = new FormAttachment(100);
-		underToolBarSeparatorData.bottom = new FormAttachment(6, 2);
 		underToolBarSeparator.setLayoutData(underToolBarSeparatorData);
 
-		FormData treeData = new FormData();
-		treeData.left = new FormAttachment(0);
-		treeData.top = new FormAttachment(6, 3);
-		treeData.right = new FormAttachment(20);
-		treeData.bottom = new FormAttachment(100);
-		tree.setLayoutData(treeData);
+		FormData leftMenuFormData = new FormData();
+		leftMenuFormData.left = new FormAttachment(0);
+		leftMenuFormData.top = new FormAttachment(underToolBarSeparator);
+		leftMenuFormData.right = new FormAttachment(sash);
+		leftMenuFormData.bottom = new FormAttachment(bottomLabel);
+		leftMenuTab.setLayoutData(leftMenuFormData);
+
+		final FormData sashFormData = new FormData();
+		sashFormData.left = new FormAttachment(30);
+		sashFormData.top = new FormAttachment(underToolBarSeparator);
+		sashFormData.bottom = new FormAttachment(bottomLabel);
+		sash.setLayoutData(sashFormData);
+
+		FormData contentFormData = new FormData();
+		contentFormData.left = new FormAttachment(sash);
+		contentFormData.right = new FormAttachment(100, -10);
+		contentFormData.top = new FormAttachment(underToolBarSeparator);
+		contentFormData.bottom = new FormAttachment(bottomLabel);
+		content.setLayoutData(contentFormData);
+		content.setVisible(false);
+		content02.setLayoutData(contentFormData);
 
 		FormData bottomLabelData = new FormData();
 		bottomLabelData.left = new FormAttachment(0);
@@ -158,41 +172,26 @@ public class MainWindow {
 		bottomLabelData.bottom = new FormAttachment(100);
 		bottomLabel.setLayoutData(bottomLabelData);
 
-		LoginDialog loginDlg = new LoginDialog(shell);
-		loginDlg.show();
-		if (!loginDlg.isLogin()) {
-			shell.dispose();
-			return;
-		}
+		sash.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				if (e.detail != SWT.DRAG) {
+					sashFormData.left = new FormAttachment(0, e.x);
+					shell.layout();
+				}
+				super.widgetSelected(e);
 
-//		Table table = new Table(shell, SWT.BORDER | SWT.FULL_SELECTION);
-//		table.setHeaderVisible(true);
-//		table.setLinesVisible(true);
-//
-//		TableColumn tblclmnNewColumn = new TableColumn(table, SWT.NONE);
-//		tblclmnNewColumn.setWidth(100);
-//		tblclmnNewColumn.setText("col1");
-//
-//		TableColumn tblclmnNewColumn_1 = new TableColumn(table, SWT.NONE);
-//		tblclmnNewColumn_1.setWidth(100);
-//		tblclmnNewColumn_1.setText("col2");
-//
-//		Listener listener = new Listener() {
-//			public void handleEvent(Event event) {
-//				Button button = (Button) event.widget;
-//				if (!button.getSelection())
-//					return;
-//				System.out.println("Arriving " + button.getText());
-//			}
-//		};
-//		Button land = new Button(shell, SWT.RADIO);
-//		land.setText("By Land");
-//		land.addListener(SWT.Selection, listener);
-//		Button sea = new Button(shell, SWT.RADIO);
-//		sea.setText("By Sea");
-//		sea.addListener(SWT.Selection, listener);
-//		sea.setSelection(true);
+			}
+		});
 
+//		LoginDialog loginDlg = new LoginDialog(shell);
+//		loginDlg.show();
+//		if (!loginDlg.isLogin()) {
+//			shell.dispose();
+//			return;
+//		}
+
+		// shell.pack();
 		shell.open();
 		while (!shell.isDisposed()) {
 			if (!display.readAndDispatch()) {
