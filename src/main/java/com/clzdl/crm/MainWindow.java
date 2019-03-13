@@ -22,6 +22,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import com.clzdl.crm.view.biz.LoginDialog;
+
 public class MainWindow {
 	private final Logger _logger = LoggerFactory.getLogger(MainWindow.class);
 	private Display display;
@@ -156,13 +158,12 @@ public class MainWindow {
 		bottomLabelData.bottom = new FormAttachment(100);
 		bottomLabel.setLayoutData(bottomLabelData);
 
-//		if (!isLogin) {
-//			LoginDialog loginDlg = new LoginDialog(shell);
-//			if (!loginDlg.show()) {
-//				shell.dispose();
-//				return;
-//			}
-//		}
+		LoginDialog loginDlg = new LoginDialog(shell);
+		loginDlg.show();
+		if (!loginDlg.isLogin()) {
+			shell.dispose();
+			return;
+		}
 
 //		Table table = new Table(shell, SWT.BORDER | SWT.FULL_SELECTION);
 //		table.setHeaderVisible(true);

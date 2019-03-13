@@ -18,7 +18,7 @@ public class LoginDialog {
 		display = parent.getDisplay();
 	}
 
-	public Boolean show() {
+	public void show() {
 		dialog = new Shell(parent, SWT.DIALOG_TRIM | SWT.PRIMARY_MODAL);
 		dialog.setSize(400, 300);
 		dialog.setText("登录");
@@ -46,7 +46,9 @@ public class LoginDialog {
 				display.sleep();
 			}
 		}
+	}
 
+	public Boolean isLogin() {
 		return logStatus;
 	}
 }
