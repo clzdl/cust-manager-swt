@@ -27,6 +27,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import com.clzdl.crm.view.biz.CustInfoContent;
+
 public class MainWindow {
 	private final Logger _logger = LoggerFactory.getLogger(MainWindow.class);
 	private Display display;
@@ -37,7 +39,7 @@ public class MainWindow {
 	private Label underToolBarSeparator;
 	private Sash sash;
 	private Table leftMenuTab;
-	private Composite content;
+	private CustInfoContent custInfoContent;
 	private Composite content02;
 
 	public MainWindow(Display display) {
@@ -126,9 +128,10 @@ public class MainWindow {
 		}
 
 		sash = new Sash(shell, SWT.VERTICAL);
-		content = new Composite(shell, SWT.BORDER);
+		custInfoContent = new CustInfoContent(shell, SWT.BORDER);
 		content02 = new Composite(shell, SWT.BORDER);
 		content02.setLayout(new FillLayout());
+
 		new Button(content02, SWT.BORDER).setText("button");
 		FormData toolBarData = new FormData();
 		toolBarData.left = new FormAttachment(0);
@@ -162,9 +165,9 @@ public class MainWindow {
 		contentFormData.right = new FormAttachment(100, -10);
 		contentFormData.top = new FormAttachment(underToolBarSeparator);
 		contentFormData.bottom = new FormAttachment(bottomLabel);
-		content.setLayoutData(contentFormData);
-		content.setVisible(false);
-		content02.setLayoutData(contentFormData);
+		custInfoContent.setLayoutData(contentFormData);
+//		content.setVisible(false);
+		// content02.setLayoutData(contentFormData);
 
 		FormData bottomLabelData = new FormData();
 		bottomLabelData.left = new FormAttachment(0);
