@@ -5,11 +5,9 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
@@ -27,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import com.clzdl.crm.view.biz.CardInfoContent;
 import com.clzdl.crm.view.biz.CustInfoContent;
 
 public class MainWindow {
@@ -40,7 +39,8 @@ public class MainWindow {
 	private Sash sash;
 	private Table leftMenuTab;
 	private CustInfoContent custInfoContent;
-	private Composite content02;
+	private CardInfoContent cardInfoContent;
+	private Composite currentContent;
 
 	public MainWindow(Display display) {
 		this.display = display;
@@ -122,17 +122,31 @@ public class MainWindow {
 		bottomLabel = new Label(shell, SWT.BORDER);
 
 		leftMenuTab = new Table(shell, SWT.BORDER);
-		for (int i = 0; i < 10; i++) {
-			TableItem item = new TableItem(leftMenuTab, SWT.NULL);
-			item.setText("item " + i);
-		}
+		leftMenuTab.setLinesVisible(true);
 
 		sash = new Sash(shell, SWT.VERTICAL);
 		custInfoContent = new CustInfoContent(shell, SWT.BORDER);
-		content02 = new Composite(shell, SWT.BORDER);
-		content02.setLayout(new FillLayout());
+		cardInfoContent = new CardInfoContent(shell, SWT.BORDER);
 
-		new Button(content02, SWT.BORDER).setText("button");
+		TableItem itemCust = new TableItem(leftMenuTab, SWT.NULL);
+		itemCust.setData(custInfoContent);
+		itemCust.setText(custInfoContent.getTitle());
+
+		TableItem itemCard = new TableItem(leftMenuTab, SWT.NULL);
+		itemCard.setData(cardInfoContent);
+		itemCard.setText(cardInfoContent.getTitle());
+
+		leftMenuTab.addSelectionListener(new SelectionAdapter() {
+
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e) {
+				super.widgetDefaultSelected(e);
+				currentContent.setVisible(false);
+				currentContent = (Composite) e.item.getData();
+				currentContent.setVisible(true);
+			}
+		});
+
 		FormData toolBarData = new FormData();
 		toolBarData.left = new FormAttachment(0);
 		toolBarData.top = new FormAttachment(0);
@@ -166,8 +180,9 @@ public class MainWindow {
 		contentFormData.top = new FormAttachment(underToolBarSeparator);
 		contentFormData.bottom = new FormAttachment(bottomLabel);
 		custInfoContent.setLayoutData(contentFormData);
-//		content.setVisible(false);
-		// content02.setLayoutData(contentFormData);
+		currentContent = custInfoContent;
+		cardInfoContent.setLayoutData(contentFormData);
+		cardInfoContent.setVisible(false);
 
 		FormData bottomLabelData = new FormData();
 		bottomLabelData.left = new FormAttachment(0);
