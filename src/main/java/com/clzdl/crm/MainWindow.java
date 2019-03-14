@@ -59,7 +59,7 @@ public class MainWindow {
 	 */
 	public void show() {
 		shell = new Shell(display);
-		shell.setSize(592, 486);
+		shell.setSize(800, 600);
 		shell.setText("客户管理");
 
 		/// 主屏幕显示位置
