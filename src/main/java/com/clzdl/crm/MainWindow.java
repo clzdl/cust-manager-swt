@@ -27,6 +27,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.clzdl.crm.view.biz.CardInfoContent;
 import com.clzdl.crm.view.biz.CustInfoContent;
+import com.clzdl.crm.view.biz.LoginDialog;
 
 public class MainWindow {
 	private final Logger _logger = LoggerFactory.getLogger(MainWindow.class);
@@ -202,12 +203,12 @@ public class MainWindow {
 			}
 		});
 
-//		LoginDialog loginDlg = new LoginDialog(shell);
-//		loginDlg.show();
-//		if (!loginDlg.isLogin()) {
-//			shell.dispose();
-//			return;
-//		}
+		LoginDialog loginDlg = new LoginDialog(shell);
+		loginDlg.show();
+		if (!loginDlg.isLogin()) {
+			shell.dispose();
+			return;
+		}
 
 		// shell.pack();
 		shell.open();
