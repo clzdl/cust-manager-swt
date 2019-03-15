@@ -30,7 +30,6 @@ public class LoadingDialog extends Shell {
 	public LoadingDialog(Shell parent, Image[] images) {
 		super(parent, SWT.PRIMARY_MODAL);
 		this.images = images;
-
 		addPaintListener(new PaintListener() {
 			@Override
 			public void paintControl(PaintEvent e) {
