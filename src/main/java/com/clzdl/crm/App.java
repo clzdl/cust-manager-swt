@@ -22,10 +22,12 @@ import com.clzdl.crm.view.common.LoadingDialog.TaskLoading;
 public class App {
 	private final static String _version = "0.0.1";
 	public final static String _launchSplashFile = "images/launch.jpg";
+	public final static String _appImageFile = "images/app.png";
 	private final static Logger _logger = LoggerFactory.getLogger(App.class);
 	public static ApplicationContext context;
 	public static Display display;
 	public static Image[] loadingImages;
+	public static Image appImage;
 	private MainWindow mainWindow;
 
 	public App() {
@@ -40,6 +42,8 @@ public class App {
 	}
 
 	public void show() {
+		appImage = new Image(display,
+				new ImageLoader().load(this.getClass().getResource("/").getPath() + _appImageFile)[0]);
 		LoadingDialog loading = new LoadingDialog(display, loadingImages);
 		loading.start(new TaskLoading() {
 			@Override

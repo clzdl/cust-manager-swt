@@ -38,6 +38,7 @@ public class MainWindow extends Shell {
 		super(display);
 		setSize(800, 600);
 		setText("客户管理");
+		setImage(App.appImage);
 		createContent();
 	}
 
