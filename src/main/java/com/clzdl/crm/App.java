@@ -7,6 +7,13 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.ImageLoader;
 import org.eclipse.swt.widgets.Display;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import com.clzdl.crm.view.common.LoadingDialog;
+import com.clzdl.crm.view.common.LoadingDialog.TaskLoading;
 
 /**
  * 客户管理程序入口类
@@ -15,21 +22,43 @@ import org.eclipse.swt.widgets.Display;
 public class App {
 	private final static String _version = "0.0.1";
 	public final static String _launchSplashFile = "images/launch.jpg";
-
+	private final static Logger _logger = LoggerFactory.getLogger(App.class);
+	public static ApplicationContext context;
 	public static Display display;
 	public static Image[] loadingImages;
 	private MainWindow mainWindow;
 
 	public App() {
-		mainWindow = new MainWindow(display);
 	}
 
 	public void launchSpring() {
-		mainWindow.launch();
+		try {
+			context = new ClassPathXmlApplicationContext(new String[] { "classpath:/applicationContext.xml" });
+		} catch (Exception e) {
+			_logger.error("{}:{}", e.getMessage(), e);
+		}
 	}
 
 	public void show() {
-		mainWindow.show();
+		LoadingDialog loading = new LoadingDialog(display, loadingImages);
+		loading.start(new TaskLoading() {
+			@Override
+			public void doing() {
+				try {
+					Thread.sleep(5000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		});
+
+		mainWindow = new MainWindow(display);
+		while (!mainWindow.isDisposed()) {
+			if (!display.readAndDispatch()) {
+				display.sleep();
+			}
+		}
 	}
 
 	public void convertImageDataToImages(Color defaultBackground) {

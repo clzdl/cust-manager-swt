@@ -9,6 +9,7 @@ import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 public class LoadingDialog extends Shell {
@@ -25,6 +26,19 @@ public class LoadingDialog extends Shell {
 
 	static {
 		executorService = Executors.newSingleThreadExecutor();
+	}
+
+	public LoadingDialog(Display display, Image[] images) {
+		super(display, SWT.PRIMARY_MODAL);
+		this.images = images;
+		addPaintListener(new PaintListener() {
+			@Override
+			public void paintControl(PaintEvent e) {
+				Image img = getCurrentImage();
+				// Display the image, then erase the rest
+				e.gc.drawImage(img, 0, 0);
+			}
+		});
 	}
 
 	public LoadingDialog(Shell parent, Image[] images) {
@@ -47,7 +61,7 @@ public class LoadingDialog extends Shell {
 		setSize(imgWidth, imgHeight);
 
 		/// 主屏幕显示位置
-		Rectangle bounds = getParent().getBounds();
+		Rectangle bounds = getParent() == null ? getDisplay().getPrimaryMonitor().getBounds() : getParent().getBounds();
 		Rectangle rect = getBounds();
 		int x = bounds.x + Math.max(0, (bounds.width - rect.width) / 2);
 		int y = bounds.y + Math.max(0, (bounds.height - rect.height) / 2);

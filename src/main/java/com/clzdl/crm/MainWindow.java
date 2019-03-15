@@ -20,23 +20,12 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.clzdl.crm.view.biz.CardInfoContent;
 import com.clzdl.crm.view.biz.CustInfoContent;
 import com.clzdl.crm.view.biz.LoginDialog;
-import com.clzdl.crm.view.common.LoadingDialog;
-import com.clzdl.crm.view.common.LoadingDialog.TaskLoading;
 
-public class MainWindow {
-	private final Logger _logger = LoggerFactory.getLogger(MainWindow.class);
-	private Display display;
-	private static ApplicationContext context;
-	private Shell shell;
-	private static Boolean isLogin = false;
+public class MainWindow extends Shell {
 	private Label bottomLabel;
 	private Label underToolBarSeparator;
 	private Sash sash;
@@ -46,41 +35,32 @@ public class MainWindow {
 	private Composite currentContent;
 
 	public MainWindow(Display display) {
-		this.display = display;
-	}
-
-	public void launch() {
-		try {
-			context = new ClassPathXmlApplicationContext(new String[] { "classpath:/applicationContext.xml" });
-		} catch (Exception e) {
-			_logger.error("{}:{}", e.getMessage(), e);
-		}
+		super(display);
+		setSize(800, 600);
+		setText("客户管理");
+		createContent();
 	}
 
 	/**
 	 * @wbp.parser.entryPoint
 	 */
-	public void show() {
-		shell = new Shell(display);
-		shell.setSize(800, 600);
-		shell.setText("客户管理");
-
+	public void createContent() {
 		/// 主屏幕显示位置
-		Monitor primary = display.getPrimaryMonitor();
+		Monitor primary = getDisplay().getPrimaryMonitor();
 		Rectangle bounds = primary.getBounds();
-		Rectangle rect = shell.getBounds();
+		Rectangle rect = getBounds();
 		int x = bounds.x + Math.max(0, (bounds.width - rect.width) / 2);
 		int y = bounds.y + Math.max(0, (bounds.height - rect.height) / 2);
-		shell.setBounds(x, y, rect.width, rect.height);
-		shell.setLayout(new FormLayout());
+		setBounds(x, y, rect.width, rect.height);
+		setLayout(new FormLayout());
 
-		Menu menuBar = new Menu(shell, SWT.BAR);
-		shell.setMenuBar(menuBar);
+		Menu menuBar = new Menu(this, SWT.BAR);
+		setMenuBar(menuBar);
 		MenuItem fileItem = new MenuItem(menuBar, SWT.CASCADE);
 		fileItem.setText("File");
 		MenuItem editItem = new MenuItem(menuBar, SWT.CASCADE);
 		editItem.setText("Edit");
-		Menu fileMenu = new Menu(shell, SWT.DROP_DOWN);
+		Menu fileMenu = new Menu(this, SWT.DROP_DOWN);
 		fileItem.setMenu(fileMenu);
 		String[] fileStrings = { "New", "Close", "Exit" };
 		for (int i = 0; i < fileStrings.length; i++) {
@@ -102,7 +82,7 @@ public class MainWindow {
 			});
 		}
 
-		Menu editMenu = new Menu(shell, SWT.DROP_DOWN);
+		Menu editMenu = new Menu(this, SWT.DROP_DOWN);
 		String[] editStrings = { "Cut", "Copy", "Paste" };
 		editItem.setMenu(editMenu);
 		for (int i = 0; i < editStrings.length; i++) {
@@ -111,7 +91,7 @@ public class MainWindow {
 		}
 
 		////
-		ToolBar toolBar = new ToolBar(shell, SWT.HORIZONTAL | SWT.SHADOW_OUT);
+		ToolBar toolBar = new ToolBar(this, SWT.HORIZONTAL | SWT.SHADOW_OUT);
 		ToolItem cutItem = new ToolItem(toolBar, SWT.PUSH);
 		cutItem.setText("cut");
 		cutItem.setToolTipText("剪切");
@@ -120,16 +100,16 @@ public class MainWindow {
 		copyItem.setText("copy");
 		copyItem.setToolTipText("复制");
 
-		underToolBarSeparator = new Label(shell, SWT.SEPARATOR | SWT.BORDER);
+		underToolBarSeparator = new Label(this, SWT.SEPARATOR | SWT.BORDER);
 
-		bottomLabel = new Label(shell, SWT.BORDER);
+		bottomLabel = new Label(this, SWT.BORDER);
 
-		leftMenuTab = new Table(shell, SWT.BORDER);
+		leftMenuTab = new Table(this, SWT.BORDER);
 		leftMenuTab.setLinesVisible(true);
 
-		sash = new Sash(shell, SWT.VERTICAL);
-		custInfoContent = new CustInfoContent(shell, SWT.BORDER);
-		cardInfoContent = new CardInfoContent(shell, SWT.BORDER);
+		sash = new Sash(this, SWT.VERTICAL);
+		custInfoContent = new CustInfoContent(this, SWT.BORDER);
+		cardInfoContent = new CardInfoContent(this, SWT.BORDER);
 
 		TableItem itemCust = new TableItem(leftMenuTab, SWT.NULL);
 		itemCust.setData(custInfoContent);
@@ -198,39 +178,23 @@ public class MainWindow {
 			public void widgetSelected(SelectionEvent e) {
 				if (e.detail != SWT.DRAG) {
 					sashFormData.left = new FormAttachment(0, e.x);
-					shell.layout();
+					layout();
 				}
 				super.widgetSelected(e);
 
 			}
 		});
 
-		LoadingDialog loading = new LoadingDialog(shell, App.loadingImages);
-		loading.start(new TaskLoading() {
-			@Override
-			public void doing() {
-				try {
-					Thread.sleep(5000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		});
-
-		LoginDialog loginDlg = new LoginDialog(shell);
+		LoginDialog loginDlg = new LoginDialog(this);
 		if (!loginDlg.isLogin()) {
-			shell.dispose();
+			dispose();
 			return;
 		}
+		open();
+	}
 
-		// shell.pack();
-		shell.open();
-		while (!shell.isDisposed()) {
-			if (!display.readAndDispatch()) {
-				display.sleep();
-			}
-		}
+	@Override
+	protected void checkSubclass() {
 	}
 
 }
