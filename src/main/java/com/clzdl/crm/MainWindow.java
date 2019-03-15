@@ -205,7 +205,7 @@ public class MainWindow {
 			}
 		});
 
-		LoadingDialog loading = new LoadingDialog(shell);
+		LoadingDialog loading = new LoadingDialog(shell, App.loadingImages);
 		loading.start(new TaskLoading() {
 			@Override
 			public void doing() {

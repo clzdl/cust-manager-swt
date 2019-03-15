@@ -1,18 +1,15 @@
 package com.clzdl.crm;
 
 import org.eclipse.swt.widgets.Display;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.clzdl.crm.view.common.AbstractSplash;
 
 public class Splash extends AbstractSplash {
-	private final static Logger _logger = LoggerFactory.getLogger(Splash.class);
-	private MainWindow mainWindow;
+	private App app;
 
-	public Splash(Display display, MainWindow mainWindow) {
-		super(display, "images/launch.jpg");
-		this.mainWindow = mainWindow;
+	public Splash(Display display, App app) {
+		super(display, app._launchSplashFile);
+		this.app = app;
 	}
 
 	@Override
@@ -20,9 +17,11 @@ public class Splash extends AbstractSplash {
 
 		try {
 			refreshView(10);
-			mainWindow.launch();
-			refreshView(50);
-			Thread.sleep(100);
+			app.launchSpring();
+			refreshView(30);
+			Thread.sleep(10);
+			refreshView(70);
+			Thread.sleep(10);
 			refreshView(100);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
