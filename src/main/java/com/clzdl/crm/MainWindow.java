@@ -28,6 +28,8 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import com.clzdl.crm.view.biz.CardInfoContent;
 import com.clzdl.crm.view.biz.CustInfoContent;
 import com.clzdl.crm.view.biz.LoginDialog;
+import com.clzdl.crm.view.common.LoadingDialog;
+import com.clzdl.crm.view.common.LoadingDialog.TaskLoading;
 
 public class MainWindow {
 	private final Logger _logger = LoggerFactory.getLogger(MainWindow.class);
@@ -203,8 +205,20 @@ public class MainWindow {
 			}
 		});
 
+		LoadingDialog loading = new LoadingDialog(shell);
+		loading.start(new TaskLoading() {
+			@Override
+			public void doing() {
+				try {
+					Thread.sleep(5000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		});
+
 		LoginDialog loginDlg = new LoginDialog(shell);
-		loginDlg.show();
 		if (!loginDlg.isLogin()) {
 			shell.dispose();
 			return;

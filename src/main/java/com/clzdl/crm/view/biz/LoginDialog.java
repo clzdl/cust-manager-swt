@@ -8,51 +8,43 @@ import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class LoginDialog {
+public class LoginDialog extends Shell {
 	private final static Logger _logger = LoggerFactory.getLogger(LoginDialog.class);
-	private Display display;
-	private Shell parent;
-	private Shell dialog;
 	private Boolean logStatus = false;
 	private Text edtName;
 	private Text edtPwd;
 
 	public LoginDialog(Shell parent) {
-		this.parent = parent;
-		display = parent.getDisplay();
-	}
+		super(parent, SWT.DIALOG_TRIM | SWT.PRIMARY_MODAL);
 
-	public void show() {
-		dialog = new Shell(parent, SWT.DIALOG_TRIM | SWT.PRIMARY_MODAL);
-		dialog.setSize(300, 150);
-		dialog.setText("登录");
+		setSize(300, 150);
+		setText("登录");
 
 		/// 主屏幕显示位置
 		Rectangle bounds = parent.getBounds();
-		Rectangle rect = dialog.getBounds();
+		Rectangle rect = getBounds();
 		int x = bounds.x + Math.max(0, (bounds.width - rect.width) / 2);
 		int y = bounds.y + Math.max(0, (bounds.height - rect.height) / 2);
-		dialog.setBounds(x, y, rect.width, rect.height);
+		setBounds(x, y, rect.width, rect.height);
 
-		dialog.setLayout(new FormLayout());
-		Label txtName = new Label(dialog, SWT.NONE);
+		setLayout(new FormLayout());
+		Label txtName = new Label(this, SWT.NONE);
 		txtName.setText("姓名");
 
-		edtName = new Text(dialog, SWT.BORDER);
+		edtName = new Text(this, SWT.BORDER);
 
-		Label txtPwd = new Label(dialog, SWT.NONE);
+		Label txtPwd = new Label(this, SWT.NONE);
 		txtPwd.setText("密码");
 
-		edtPwd = new Text(dialog, SWT.BORDER);
+		edtPwd = new Text(this, SWT.BORDER);
 
-		Button login = new Button(dialog, SWT.PUSH);
+		Button login = new Button(this, SWT.PUSH);
 		login.setText("登录");
 
 		login.addSelectionListener(new SelectionAdapter() {
@@ -62,8 +54,7 @@ public class LoginDialog {
 				_logger.info("userName:{},pwd:{}", edtName.getText(), edtPwd.getText());
 
 				logStatus = true;
-
-				dialog.close();
+				close();
 			}
 		});
 
@@ -92,12 +83,16 @@ public class LoginDialog {
 		loginBtnFormData.top = new FormAttachment(edtPwd, 2);
 		login.setLayoutData(loginBtnFormData);
 
-		dialog.open();
-		while (!dialog.isDisposed()) {
-			if (!display.readAndDispatch()) {
-				display.sleep();
+		open();
+		while (!isDisposed()) {
+			if (!getDisplay().readAndDispatch()) {
+				getDisplay().sleep();
 			}
 		}
+	}
+
+	// 继承shell 需要此函数
+	protected void checkSubclass() {
 	}
 
 	public Boolean isLogin() {
