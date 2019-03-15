@@ -12,7 +12,10 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 
+import com.clzdl.crm.App;
 import com.clzdl.crm.common.persistence.entity.CmCustInfo;
+import com.clzdl.crm.view.common.LoadingDialog;
+import com.clzdl.crm.view.common.LoadingDialog.TaskLoading;
 import com.clzdl.crm.view.common.TablePager;
 import com.clzdl.crm.view.common.TablePager.PagerOperation;
 
@@ -53,21 +56,35 @@ public class CustInfoContent extends Composite {
 		remark.setWidth(200);
 		remark.setAlignment(SWT.CENTER);
 
+		final Composite pagerParent = this;
 		pager = new TablePager(this, SWT.NONE, new PagerOperation() {
 			@Override
-			public Integer refresh(Integer pageNo, Integer pageSize) {
-				CmCustInfo cust = null;
+			public Integer refresh(final Integer pageNo, final Integer pageSize) {
 				final List<CmCustInfo> list = new ArrayList<CmCustInfo>();
-				Integer serialNo = (pageNo - 1) * pageSize;
-				for (int i = 0; i < pageSize; i++) {
-					cust = new CmCustInfo();
-					cust.setId(serialNo);
-					cust.setName("name " + serialNo);
-					cust.setSex(0);
-					cust.setPhone("phone " + serialNo);
-					++serialNo;
-					list.add(cust);
-				}
+				LoadingDialog loading = new LoadingDialog(pagerParent, App.loadingImages);
+				loading.start(new TaskLoading() {
+					@Override
+					public void doing() {
+						CmCustInfo cust = null;
+						Integer serialNo = (pageNo - 1) * pageSize;
+						for (int i = 0; i < pageSize; i++) {
+							cust = new CmCustInfo();
+							cust.setId(serialNo);
+							cust.setName("name " + serialNo);
+							cust.setSex(0);
+							cust.setPhone("phone " + serialNo);
+							++serialNo;
+							list.add(cust);
+						}
+
+						try {
+							Thread.sleep(3000);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+				});
 
 				table.removeAll();
 				TableItem tableItem = null;

@@ -9,6 +9,7 @@ import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
@@ -19,6 +20,7 @@ public class LoadingDialog extends Shell {
 	private Integer currentImage = 0;
 	private Boolean slowAnimation = false;
 	private Integer animationLoopCount = 0;
+	private Composite parent;
 
 	public interface TaskLoading {
 		void doing();
@@ -26,6 +28,20 @@ public class LoadingDialog extends Shell {
 
 	static {
 		executorService = Executors.newSingleThreadExecutor();
+	}
+
+	public LoadingDialog(Composite parent, Image[] images) {
+		super(SWT.PRIMARY_MODAL);
+		this.images = images;
+		this.parent = parent;
+		addPaintListener(new PaintListener() {
+			@Override
+			public void paintControl(PaintEvent e) {
+				Image img = getCurrentImage();
+				// Display the image, then erase the rest
+				e.gc.drawImage(img, 0, 0);
+			}
+		});
 	}
 
 	public LoadingDialog(Display display, Image[] images) {
@@ -43,6 +59,7 @@ public class LoadingDialog extends Shell {
 
 	public LoadingDialog(Shell parent, Image[] images) {
 		super(parent, SWT.PRIMARY_MODAL);
+		this.parent = parent;
 		this.images = images;
 		addPaintListener(new PaintListener() {
 			@Override
@@ -61,8 +78,11 @@ public class LoadingDialog extends Shell {
 		setSize(imgWidth, imgHeight);
 
 		/// 主屏幕显示位置
-		Rectangle bounds = getParent() == null ? getDisplay().getPrimaryMonitor().getBounds() : getParent().getBounds();
-		Rectangle rect = getBounds();
+		Rectangle bounds = getDisplay().getPrimaryMonitor().getBounds();
+		if (parent != null) {
+			bounds = getDisplay().map(parent, null, parent.getBounds());
+		}
+		Rectangle rect = getDisplay().map(this, parent, getBounds());
 		int x = bounds.x + Math.max(0, (bounds.width - rect.width) / 2);
 		int y = bounds.y + Math.max(0, (bounds.height - rect.height) / 2);
 		setBounds(x, y, imgWidth, imgHeight);

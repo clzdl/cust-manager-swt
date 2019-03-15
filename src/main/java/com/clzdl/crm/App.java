@@ -12,9 +12,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import com.clzdl.crm.view.common.LoadingDialog;
-import com.clzdl.crm.view.common.LoadingDialog.TaskLoading;
-
 /**
  * 客户管理程序入口类
  *
@@ -44,19 +41,6 @@ public class App {
 	public void show() {
 		appImage = new Image(display,
 				new ImageLoader().load(this.getClass().getResource("/").getPath() + _appImageFile)[0]);
-		LoadingDialog loading = new LoadingDialog(display, loadingImages);
-		loading.start(new TaskLoading() {
-			@Override
-			public void doing() {
-				try {
-					Thread.sleep(5000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		});
-
 		mainWindow = new MainWindow(display);
 		while (!mainWindow.isDisposed()) {
 			if (!display.readAndDispatch()) {

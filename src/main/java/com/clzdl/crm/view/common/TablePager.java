@@ -28,7 +28,7 @@ public class TablePager extends Composite {
 
 	public static interface PagerOperation {
 		/// 刷新,返回记录总数
-		Integer refresh(Integer pageNo, Integer pageSize);
+		Integer refresh(final Integer pageNo, final Integer pageSize);
 	}
 
 	public TablePager(Composite parent, int style, PagerOperation pagerOperation) {
