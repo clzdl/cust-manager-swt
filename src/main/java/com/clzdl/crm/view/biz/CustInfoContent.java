@@ -56,12 +56,11 @@ public class CustInfoContent extends Composite {
 		remark.setWidth(200);
 		remark.setAlignment(SWT.CENTER);
 
-		final Composite pagerParent = this;
 		pager = new TablePager(this, SWT.NONE, new PagerOperation() {
 			@Override
 			public Integer refresh(final Integer pageNo, final Integer pageSize) {
 				final List<CmCustInfo> list = new ArrayList<CmCustInfo>();
-				LoadingDialog loading = new LoadingDialog(pagerParent, App.loadingImages);
+				LoadingDialog loading = new LoadingDialog(App.mainWindow, App.loadingImages);
 				loading.start(new TaskLoading() {
 					@Override
 					public void doing() {

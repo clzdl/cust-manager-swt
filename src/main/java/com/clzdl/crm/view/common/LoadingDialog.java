@@ -80,9 +80,9 @@ public class LoadingDialog extends Shell {
 		/// 主屏幕显示位置
 		Rectangle bounds = getDisplay().getPrimaryMonitor().getBounds();
 		if (parent != null) {
-			bounds = getDisplay().map(parent, null, parent.getBounds());
+			bounds = parent.getBounds();
 		}
-		Rectangle rect = getDisplay().map(this, parent, getBounds());
+		Rectangle rect = getBounds();
 		int x = bounds.x + Math.max(0, (bounds.width - rect.width) / 2);
 		int y = bounds.y + Math.max(0, (bounds.height - rect.height) / 2);
 		setBounds(x, y, imgWidth, imgHeight);

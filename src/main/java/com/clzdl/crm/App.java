@@ -25,7 +25,7 @@ public class App {
 	public static Display display;
 	public static Image[] loadingImages;
 	public static Image appImage;
-	private MainWindow mainWindow;
+	public static MainWindow mainWindow;
 
 	public App() {
 	}
