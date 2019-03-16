@@ -12,27 +12,23 @@ CREATE TABLE `sys_menu` (
 	`create_time` INT(11) NOT NULL DEFAULT '0' COMMENT '创建日期',
 	`modify_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	PRIMARY KEY (`id`)
-)
-COLLATE='utf8mb4_general_ci'
-ENGINE=InnoDB;
+);
 
 /*系统管理-系统用户*/
 CREATE TABLE `sys_user` (
 	`id` BIGINT(20) NOT NULL AUTO_INCREMENT COMMENT '系统用户表',
-	`user_name` VARCHAR(50) NOT NULL DEFAULT '' COMMENT '姓名',
-	`user_tel` VARCHAR(50) NOT NULL DEFAULT '' COMMENT '手机',
-	`user_email` VARCHAR(100) NOT NULL DEFAULT '' COMMENT '邮箱',
-	`user_sex` CHAR(1) NOT NULL DEFAULT '1' COMMENT '性别，1男 0女',
-	`user_login` VARCHAR(100) NOT NULL DEFAULT '' COMMENT '登陆名',
-	`user_pwd` VARCHAR(50) NOT NULL DEFAULT '' COMMENT '密码',
+	`name` VARCHAR(50) NOT NULL DEFAULT '' COMMENT '姓名',
+	`phone` VARCHAR(50) NOT NULL DEFAULT '' COMMENT '手机',
+	`email` VARCHAR(100) NOT NULL DEFAULT '' COMMENT '邮箱',
+	`sex` CHAR(1) NOT NULL DEFAULT '1' COMMENT '性别，1男 0女',
+	`login_name` VARCHAR(100) NOT NULL DEFAULT '' COMMENT '登陆名',
+	`login_pwd` VARCHAR(50) NOT NULL DEFAULT '' COMMENT '密码',
 	`user_type` TINYINT NOT NULL DEFAULT '0' COMMENT '用户类型;0-系统，1-商户',
 	
 	`create_time` INT(11) NOT NULL DEFAULT '0' COMMENT '创建日期',
 	`modify_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	PRIMARY KEY (`id`)
-)
-COLLATE='utf8mb4_general_ci'
-ENGINE=InnoDB;
+);
 
 /*系统管理-角色*/
 CREATE TABLE `sys_role` (
@@ -43,9 +39,7 @@ CREATE TABLE `sys_role` (
 	`create_time` INT(11) NOT NULL DEFAULT '0' COMMENT '创建日期',
 	`modify_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	PRIMARY KEY (`id`)
-)
-COLLATE='utf8mb4_general_ci'
-ENGINE=InnoDB;
+);
 
 /*系统管理-角色菜单中间表*/
 CREATE TABLE `sys_role_menu` (
@@ -56,9 +50,7 @@ CREATE TABLE `sys_role_menu` (
 	`create_time` INT(11) NOT NULL DEFAULT '0' COMMENT '创建日期',
 	`modify_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	PRIMARY KEY (`id`)
-)
-COLLATE='utf8mb4_general_ci'
-ENGINE=InnoDB;
+);
 
 /*系统管理-角色用户中间表*/
 CREATE TABLE `sys_role_user` (
@@ -69,9 +61,7 @@ CREATE TABLE `sys_role_user` (
 	`create_time` INT(11) NOT NULL DEFAULT '0' COMMENT '创建日期',
 	`modify_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	PRIMARY KEY (`id`)
-)
-COLLATE='utf8mb4_general_ci'
-ENGINE=InnoDB;
+);
 
 /*系统管理-系统操作日志*/
 CREATE TABLE `sys_operation_log` (
@@ -82,18 +72,14 @@ CREATE TABLE `sys_operation_log` (
 	`create_time` INT(11) NOT NULL DEFAULT '0' COMMENT '创建日期',
 	`modify_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	PRIMARY KEY (`id`)
-)
-COLLATE='utf8mb4_general_ci'
-ENGINE=InnoDB;
+);
 
 
 /*初始化角色*/
 INSERT INTO `sys_role` (`id`, `role_name`, `description`) VALUES (1, 'admin', '系统管理员');
-
-
 /*初始化角色用户*/
 INSERT INTO `sys_role_user` (`id`, `sys_role_id`, `sys_user_id`) VALUES (1, 1, 1);
 /*password  123456*/
-INSERT INTO `sys_user` (`id`, `user_name`, `user_email`, `user_tel`, `user_sex`, `user_login`, `user_pwd`) 
+INSERT INTO `sys_user` (`id`, `name`, `email`, `phone`, `sex`, `login_name`, `login_pwd`) 
 	VALUES (1, '管理员', 'admin@clzdl.com', '18645005420', '1', 'admin@clzdl.com', 'e10adc3949ba59abbe56e057f20f883e');
 

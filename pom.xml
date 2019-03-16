@@ -23,6 +23,7 @@
     <mybatis.version>3.4.5</mybatis.version>
     <mapper.version>4.0.0</mapper.version>
     <pagehelper.version>5.0.0</pagehelper.version>
+    <h2.version>1.4.198</h2.version>
     
     <!--  Java接口和实体类  -->
     <targetJavaProject>${basedir}/src/main/java</targetJavaProject>
@@ -43,7 +44,7 @@
 	<dependency>
 	    <groupId>com.h2database</groupId>
 	    <artifactId>h2</artifactId>
-	    <version>1.4.198</version>
+	    <version>${h2.version}</version>
 	    <scope>compile</scope>
 	</dependency>
 				
@@ -132,6 +133,28 @@
               <source>${jdk.version}</source>
               <target>${jdk.version}</target>
           </configuration>
+        </plugin>
+         <plugin>
+          <groupId>org.mybatis.generator</groupId>
+          <artifactId>mybatis-generator-maven-plugin</artifactId>
+          <version>1.3.2</version>
+          <configuration>
+              <configurationFile>${basedir}/src/main/resources/generator/generatorConfig.xml</configurationFile>
+              <overwrite>true</overwrite>
+              <verbose>true</verbose>
+          </configuration>
+          <dependencies>
+              <dependency>
+              	<groupId>com.h2database</groupId>
+			    <artifactId>h2</artifactId>
+			    <version>${h2.version}</version>
+			  </dependency>
+              <dependency>
+                  <groupId>tk.mybatis</groupId>
+                  <artifactId>mapper</artifactId>
+                  <version>${mapper.version}</version>
+              </dependency>
+          </dependencies>
         </plugin>
         <plugin>
         	<groupId>org.apache.maven.plugins</groupId>

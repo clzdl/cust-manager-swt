@@ -9,16 +9,21 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.clzdl.crm.controller.sys.SysUserController;
+import com.clzdl.crm.dto.ResultDTO;
 
 public class LoginDialog extends Shell {
 	private final static Logger _logger = LoggerFactory.getLogger(LoginDialog.class);
 	private Boolean logStatus = false;
 	private Text edtName;
 	private Text edtPwd;
+	private Integer tryTime = 0;
 
 	public LoginDialog(Shell parent) {
 		super(parent, SWT.DIALOG_TRIM | SWT.PRIMARY_MODAL);
@@ -42,19 +47,16 @@ public class LoginDialog extends Shell {
 		Label txtPwd = new Label(this, SWT.NONE);
 		txtPwd.setText("密码");
 
-		edtPwd = new Text(this, SWT.BORDER);
+		edtPwd = new Text(this, SWT.BORDER | SWT.PASSWORD);
 
-		Button login = new Button(this, SWT.PUSH);
+		final Button login = new Button(this, SWT.PUSH);
 		login.setText("登录");
 
 		login.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				super.widgetSelected(e);
-				_logger.info("userName:{},pwd:{}", edtName.getText(), edtPwd.getText());
-
-				logStatus = true;
-				close();
+				login();
 			}
 		});
 
@@ -91,11 +93,38 @@ public class LoginDialog extends Shell {
 		}
 	}
 
+	public Boolean isLogin() {
+		return logStatus;
+	}
+
 	// 继承shell 需要此函数
 	protected void checkSubclass() {
 	}
 
-	public Boolean isLogin() {
-		return logStatus;
+	private void reset() {
+		edtName.setText("");
+		edtPwd.setText("");
 	}
+
+	private void login() {
+		_logger.info("userName:{},pwd:{}", edtName.getText(), edtPwd.getText());
+		try {
+			ResultDTO result = SysUserController.getBean().login(edtName.getText(), edtPwd.getText());
+			if (result.getCode() != ResultDTO.SUCCESS_CODE) {
+				MessageBox box = new MessageBox(this);
+				box.setMessage(result.getErrMsg() + "\n" + "请重试");
+				box.open();
+				reset();
+			} else {
+				logStatus = true;
+			}
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		if (logStatus || ++tryTime >= 3) {
+			close();
+		}
+	}
+
 }

@@ -30,7 +30,7 @@
 	</bean>
 
 	<!-- 启动自动扫描该包下所有的Bean 注意这块，也非常重要 -->
-	<context:component-scan base-package="com.anxun.pencraft.tool.modular"
+	<context:component-scan base-package="com.clzdl.crm"
 		use-default-filters="false">
 		<context:include-filter type="annotation"
 			expression="org.springframework.stereotype.Service" />
@@ -113,7 +113,7 @@
                 <bean class="com.github.pagehelper.PageInterceptor">
                     <property name="properties">
                         <value>
-                            helperDialect=h2
+                            helperDialect=mysql
                         </value>
                     </property>
                 </bean>
