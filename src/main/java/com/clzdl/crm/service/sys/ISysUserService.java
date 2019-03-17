@@ -13,4 +13,5 @@ public interface ISysUserService extends IEntityService<SysUser> {
 	 * @throws Exception
 	 */
 	void login(String loginName, String loginPwd) throws Exception;
+
 }

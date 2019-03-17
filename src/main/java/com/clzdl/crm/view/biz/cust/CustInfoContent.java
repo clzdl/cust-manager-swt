@@ -1,32 +1,40 @@
-package com.clzdl.crm.view.biz;
-
-import java.util.ArrayList;
-import java.util.List;
+package com.clzdl.crm.view.biz.cust;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 
+import com.base.mvc.page.PageModel;
 import com.clzdl.crm.App;
-import com.clzdl.crm.common.persistence.entity.CmCustInfo;
+import com.clzdl.crm.common.persistence.entity.CmUserInfo;
+import com.clzdl.crm.controller.biz.UserInfoController;
+import com.clzdl.crm.dto.ResultDTO;
 import com.clzdl.crm.view.common.LoadingDialog;
 import com.clzdl.crm.view.common.LoadingDialog.TaskLoading;
+import com.clzdl.crm.view.common.MsgBox;
 import com.clzdl.crm.view.common.TablePager;
 import com.clzdl.crm.view.common.TablePager.PagerOperation;
 
 public class CustInfoContent extends Composite {
+	private final Integer idIndex = 0;
 	private final String title = "客户信息";
 	private Table table;
 	private TablePager pager;
+	private CmUserInfo searchCondition = new CmUserInfo();
 
 	public CustInfoContent(Composite parent, int style) {
 		super(parent, style);
 		setLayout(new FormLayout());
+
 		table = new Table(this, SWT.BORDER | SWT.SINGLE | SWT.FULL_SELECTION);
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
@@ -56,31 +64,28 @@ public class CustInfoContent extends Composite {
 		remark.setWidth(200);
 		remark.setAlignment(SWT.CENTER);
 
+		TableColumn createTime = new TableColumn(table, SWT.NONE);
+		createTime.setText("创建时间");
+		createTime.setWidth(200);
+		createTime.setAlignment(SWT.CENTER);
+
 		pager = new TablePager(this, SWT.NONE, new PagerOperation() {
 			@Override
 			public Integer refresh(final Integer pageNo, final Integer pageSize) {
-				final List<CmCustInfo> list = new ArrayList<CmCustInfo>();
+				final PageModel<CmUserInfo> pm = new PageModel<CmUserInfo>();
 				LoadingDialog loading = new LoadingDialog(App.mainWindow, App.loadingImages);
 				loading.start(new TaskLoading() {
 					@Override
 					public void doing() {
-						CmCustInfo cust = null;
-						Integer serialNo = (pageNo - 1) * pageSize;
-						for (int i = 0; i < pageSize; i++) {
-							cust = new CmCustInfo();
-							cust.setId(serialNo);
-							cust.setName("name " + serialNo);
-							cust.setSex(0);
-							cust.setPhone("phone " + serialNo);
-							++serialNo;
-							list.add(cust);
-						}
+						ResultDTO<PageModel<CmUserInfo>> result = UserInfoController.getBean().list(searchCondition,
+								pageNo, pageSize);
+						if (result.getCode() != ResultDTO.SUCCESS_CODE) {
+							new MsgBox(App.mainWindow, result.getErrMsg()).open();
+							return;
 
-						try {
-							Thread.sleep(3000);
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
+						} else {
+							pm.setTotalRecords(result.getData().getTotalRecords());
+							pm.setList(result.getData().getList());
 						}
 					}
 				});
@@ -88,18 +93,55 @@ public class CustInfoContent extends Composite {
 				table.removeAll();
 				TableItem tableItem = null;
 				Integer pos = 0;
-				for (CmCustInfo cust1 : list) {
+				for (CmUserInfo user : pm.getList()) {
 					tableItem = new TableItem(table, SWT.NONE);
 					if (pos++ % 2 == 1) {
 						tableItem.setBackground(getDisplay().getSystemColor(SWT.COLOR_GRAY));
 					}
-					tableItem.setText(new String[] { cust1.getId().toString(), cust1.getName(),
-							cust1.getSex().toString(), cust1.getPhone() });
+					tableItem.setText(new String[] { user.getId().toString(), user.getName(), user.getSexOutput(),
+							user.getPhone(), user.getRemark(), user.getCreateTimeOutput() });
 				}
 
-				return 101;
+				return (int) pm.getTotalRecords();
 			}
 		});
+
+		///
+		Menu popMenu = new Menu(parent);
+		MenuItem addItem = new MenuItem(popMenu, SWT.PUSH);
+		addItem.setText("增加");
+		addItem.addSelectionListener(new SelectionAdapter() {
+			/// 新增
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				// TODO Auto-generated method stub
+				super.widgetSelected(e);
+				new EditDialog(App.mainWindow, null);
+				pager.refreshCurrentPage();
+			}
+
+		});
+
+		MenuItem modifyItem = new MenuItem(popMenu, SWT.PUSH);
+		modifyItem.setText("修改");
+		modifyItem.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				// TODO Auto-generated method stub
+				super.widgetSelected(e);
+				TableItem item = (TableItem) e.item;
+				new EditDialog(App.mainWindow, Long.valueOf(item.getText(idIndex)));
+				pager.refreshCurrentPage();
+			}
+		});
+
+		MenuItem deletItem = new MenuItem(popMenu, SWT.PUSH);
+		deletItem.setText("删除");
+		deletItem.addSelectionListener(new SelectionAdapter() {
+			/// 删除
+		});
+
+		table.setMenu(popMenu);
 
 		FormData tabFormData = new FormData();
 		tabFormData.left = new FormAttachment(0);

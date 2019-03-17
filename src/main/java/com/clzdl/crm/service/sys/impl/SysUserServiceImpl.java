@@ -47,6 +47,16 @@ public class SysUserServiceImpl extends AbastractEntityService<SysUser> implemen
 	}
 
 	@Override
+	public void login(String loginName, String loginPwd) throws Exception {
+		SysUser sysUser = super.getByExample(
+				Example.builder(SysUser.class).where(Sqls.custom().andEqualTo("loginName", loginName)).build());
+		if (null == sysUser || !sysUser.getLoginPwd().equalsIgnoreCase(MD5Util.MD5Encode(loginPwd))) {
+			throw new BizException(ExceptionMessage.USER_LOGIN_ERROR);
+		}
+		_logger.info("用户:{} 登录成功", loginName);
+	}
+
+	@Override
 	public boolean fakeDeleteById(Long id) throws Exception {
 		// TODO Auto-generated method stub
 		return false;
@@ -62,16 +72,6 @@ public class SysUserServiceImpl extends AbastractEntityService<SysUser> implemen
 	protected Map<Long, SysUser> list2Map(List<SysUser> list) {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	@Override
-	public void login(String loginName, String loginPwd) throws Exception {
-		SysUser sysUser = super.getByExample(
-				Example.builder(SysUser.class).where(Sqls.custom().andEqualTo("loginName", loginName)).build());
-		if (null == sysUser || !sysUser.getLoginPwd().equalsIgnoreCase(MD5Util.MD5Encode(loginPwd))) {
-			throw new BizException(ExceptionMessage.USER_LOGIN_ERROR);
-		}
-		_logger.info("用户:{} 登录成功", loginName);
 	}
 
 }

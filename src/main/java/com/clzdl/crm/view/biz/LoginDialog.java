@@ -112,7 +112,7 @@ public class LoginDialog extends Shell {
 			ResultDTO result = SysUserController.getBean().login(edtName.getText(), edtPwd.getText());
 			if (result.getCode() != ResultDTO.SUCCESS_CODE) {
 				MessageBox box = new MessageBox(this);
-				box.setMessage(result.getErrMsg() + "\n" + "请重试");
+				box.setMessage(result.getErrMsg());
 				box.open();
 				reset();
 			} else {

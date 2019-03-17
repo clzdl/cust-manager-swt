@@ -22,8 +22,8 @@ import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 
 import com.clzdl.crm.view.biz.CardInfoContent;
-import com.clzdl.crm.view.biz.CustInfoContent;
 import com.clzdl.crm.view.biz.LoginDialog;
+import com.clzdl.crm.view.biz.cust.CustInfoContent;
 
 public class MainWindow extends Shell {
 	private Label bottomLabel;
@@ -119,6 +119,8 @@ public class MainWindow extends Shell {
 		TableItem itemCard = new TableItem(leftMenuTab, SWT.NULL);
 		itemCard.setData(cardInfoContent);
 		itemCard.setText(cardInfoContent.getTitle());
+
+		leftMenuTab.setSelection(itemCust);
 
 		leftMenuTab.addSelectionListener(new SelectionAdapter() {
 

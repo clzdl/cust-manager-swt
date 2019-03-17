@@ -46,6 +46,11 @@ public class TablePager extends Composite {
 		createContent(parent, style);
 	}
 
+	public void refreshCurrentPage() {
+		count = pagerOperation.refresh(pageNo, pageSize);
+		refreshButton();
+	}
+
 	private void createContent(Composite parent, int style) {
 		setLayout(new FormLayout());
 		txtCount = new Label(this, SWT.NONE);

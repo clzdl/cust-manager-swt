@@ -1,8 +1,5 @@
 package com.clzdl.crm.view.biz;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
@@ -10,9 +7,7 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.TableItem;
 
-import com.clzdl.crm.common.persistence.entity.CmCustInfo;
 import com.clzdl.crm.view.common.TablePager;
 import com.clzdl.crm.view.common.TablePager.PagerOperation;
 
@@ -66,30 +61,30 @@ public class CardInfoContent extends Composite {
 		pager = new TablePager(this, SWT.NONE, new PagerOperation() {
 			@Override
 			public Integer refresh(Integer pageNo, Integer pageSize) {
-				CmCustInfo cust = null;
-				final List<CmCustInfo> list = new ArrayList<CmCustInfo>();
-				Integer serialNo = (pageNo - 1) * pageSize;
-				for (int i = 0; i < pageSize; i++) {
-					cust = new CmCustInfo();
-					cust.setId(serialNo);
-					cust.setName("name " + serialNo);
-					cust.setSex(0);
-					cust.setPhone("phone " + serialNo);
-					++serialNo;
-					list.add(cust);
-				}
-
-				table.removeAll();
-				TableItem tableItem = null;
-				Integer pos = 0;
-				for (CmCustInfo cust1 : list) {
-					tableItem = new TableItem(table, SWT.NONE);
-					if (pos++ % 2 == 1) {
-						tableItem.setBackground(getDisplay().getSystemColor(SWT.COLOR_GRAY));
-					}
-					tableItem.setText(new String[] { cust1.getId().toString(), cust1.getName(),
-							cust1.getSex().toString(), cust1.getPhone() });
-				}
+//				CmCustInfo cust = null;
+//				final List<CmCustInfo> list = new ArrayList<CmCustInfo>();
+//				Integer serialNo = (pageNo - 1) * pageSize;
+//				for (int i = 0; i < pageSize; i++) {
+//					cust = new CmCustInfo();
+//					cust.setId(serialNo);
+//					cust.setName("name " + serialNo);
+//					cust.setSex(0);
+//					cust.setPhone("phone " + serialNo);
+//					++serialNo;
+//					list.add(cust);
+//				}
+//
+//				table.removeAll();
+//				TableItem tableItem = null;
+//				Integer pos = 0;
+//				for (CmCustInfo cust1 : list) {
+//					tableItem = new TableItem(table, SWT.NONE);
+//					if (pos++ % 2 == 1) {
+//						tableItem.setBackground(getDisplay().getSystemColor(SWT.COLOR_GRAY));
+//					}
+//					tableItem.setText(new String[] { cust1.getId().toString(), cust1.getName(),
+//							cust1.getSex().toString(), cust1.getPhone() });
+//				}
 
 				return 101;
 			}

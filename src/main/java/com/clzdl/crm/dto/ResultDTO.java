@@ -1,16 +1,16 @@
 package com.clzdl.crm.dto;
 
-public class ResultDTO {
+public class ResultDTO<T> {
 	public final static Integer SUCCESS_CODE = 0;
 	private Integer code = 0;
 	private String errMsg = "SUCCESS";
-	private Object data;
+	private T data;
 
 	public ResultDTO() {
 
 	}
 
-	public ResultDTO(Integer code, String errMsg, Object data) {
+	public ResultDTO(Integer code, String errMsg, T data) {
 		super();
 		this.code = code;
 		this.errMsg = errMsg;
@@ -33,11 +33,11 @@ public class ResultDTO {
 		this.errMsg = errMsg;
 	}
 
-	public Object getData() {
+	public T getData() {
 		return data;
 	}
 
-	public void setData(Object data) {
+	public void setData(T data) {
 		this.data = data;
 	}
 
