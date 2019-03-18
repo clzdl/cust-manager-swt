@@ -3,11 +3,15 @@ package com.clzdl.crm.service.sys.impl;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.shiro.authc.IncorrectCredentialsException;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.base.auth.shiro.ShiroKit;
 import com.base.exception.BizException;
 import com.base.mvc.page.PageModel;
 import com.base.mvc.service.mybatis.AbastractEntityService;
@@ -26,7 +30,7 @@ import tk.mybatis.mapper.util.Sqls;
  * @author java
  *
  */
-@Service
+@Service("sysUserServiceImpl")
 public class SysUserServiceImpl extends AbastractEntityService<SysUser> implements ISysUserService {
 	private final static Logger _logger = LoggerFactory.getLogger(SysUserServiceImpl.class);
 
@@ -48,12 +52,27 @@ public class SysUserServiceImpl extends AbastractEntityService<SysUser> implemen
 
 	@Override
 	public void login(String loginName, String loginPwd) throws Exception {
-		SysUser sysUser = super.getByExample(
-				Example.builder(SysUser.class).where(Sqls.custom().andEqualTo("loginName", loginName)).build());
-		if (null == sysUser || !sysUser.getLoginPwd().equalsIgnoreCase(MD5Util.MD5Encode(loginPwd))) {
+//		SysUser sysUser = super.getByExample(
+//				Example.builder(SysUser.class).where(Sqls.custom().andEqualTo("loginName", loginName)).build());
+//		if (null == sysUser || !sysUser.getLoginPwd().equalsIgnoreCase(MD5Util.MD5Encode(loginPwd))) {
+//			throw new BizException(ExceptionMessage.USER_LOGIN_ERROR);
+//		}
+		try {
+			Subject currentUser = ShiroKit.getSubject();
+			UsernamePasswordToken token = new UsernamePasswordToken(loginName, MD5Util.MD5Encode(loginPwd));
+			currentUser.login(token);
+//			LogManager.me().executeLog(LogTaskFactory.bussinessLog("用户登录成功", null, null));
+		} catch (IncorrectCredentialsException e) {
+			ShiroKit.getSubject().logout();
 			throw new BizException(ExceptionMessage.USER_LOGIN_ERROR);
 		}
 		_logger.info("用户:{} 登录成功", loginName);
+	}
+
+	@Override
+	public SysUser findSysUserByLoginName(String loginName) throws Exception {
+		return super.getByExample(
+				Example.builder(SysUser.class).where(Sqls.custom().andEqualTo("loginName", loginName)).build());
 	}
 
 	@Override

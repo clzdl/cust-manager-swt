@@ -35,7 +35,8 @@ public class App {
 
 	public void launchSpring() {
 		try {
-			context = new ClassPathXmlApplicationContext(new String[] { "classpath:/applicationContext.xml" });
+			context = new ClassPathXmlApplicationContext(
+					new String[] { "classpath:/applicationContext.xml", "classpath:/applicationContext-shiro.xml" });
 		} catch (Exception e) {
 			_logger.error("{}:{}", e.getMessage(), e);
 		}

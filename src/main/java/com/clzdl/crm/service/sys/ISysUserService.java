@@ -14,4 +14,13 @@ public interface ISysUserService extends IEntityService<SysUser> {
 	 */
 	void login(String loginName, String loginPwd) throws Exception;
 
+	/**
+	 * 根据登录名获取系统用户
+	 * 
+	 * @param loginName
+	 * @return
+	 * @throws Exception
+	 */
+	SysUser findSysUserByLoginName(String loginName) throws Exception;
+
 }

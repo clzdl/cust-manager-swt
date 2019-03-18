@@ -12,6 +12,7 @@ import com.clzdl.crm.service.sys.ISysUserService;
 
 @Service
 public class SysUserController extends BaseController {
+	private final static String _PERMISSION_DELETE_BY_ID = "/sysuser/deletebyid";
 	@Resource
 	private ISysUserService sysUserService;
 
@@ -66,9 +67,12 @@ public class SysUserController extends BaseController {
 	}
 
 	public ResultDTO<?> deleteById(Long id) {
+
 		ResultDTO<?> result = new ResultDTO<Object>();
 		try {
+			validatePermissions(_PERMISSION_DELETE_BY_ID);
 			sysUserService.deleteById(id);
+
 		} catch (Exception e) {
 			decorateResult4Exception(result, e);
 		}
