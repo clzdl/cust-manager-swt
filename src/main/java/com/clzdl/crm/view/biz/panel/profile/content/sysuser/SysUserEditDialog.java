@@ -1,4 +1,4 @@
-package com.clzdl.crm.view.biz.panel.biz.content.customer;
+package com.clzdl.crm.view.biz.panel.profile.content.sysuser;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -19,13 +19,13 @@ import org.slf4j.LoggerFactory;
 
 import com.base.mvc.enums.EnumUserSex;
 import com.base.util.string.StringUtil;
-import com.clzdl.crm.common.persistence.entity.CmUserInfo;
-import com.clzdl.crm.controller.biz.UserInfoController;
+import com.clzdl.crm.common.persistence.entity.SysUser;
+import com.clzdl.crm.controller.sys.SysUserController;
 import com.clzdl.crm.dto.ResultDTO;
 import com.clzdl.crm.view.common.MsgBox;
 
-public class EditDialog extends Shell {
-	private final static Logger _logger = LoggerFactory.getLogger(EditDialog.class);
+public class SysUserEditDialog extends Shell {
+	private final static Logger _logger = LoggerFactory.getLogger(SysUserEditDialog.class);
 	private Long id;
 	private Label txtName;
 	private Text edtName;
@@ -37,36 +37,37 @@ public class EditDialog extends Shell {
 	private Button radioMen;
 	private Label txtEmail;
 	private Text edtEmail;
-	private Label txtRemark;
-	private Text edtRemark;
+	private Label txtLoginName;
+	private Text edtLoginName;
+	private Label txtLoginPwd;
+	private Text edtLoginPwd;
 	private Button btnSubmit;
 	private Button btnReset;
-	private CmUserInfo cmUserInfo = null;
+
+	private SysUser sysUser = null;
 
 	private EnumUserSex userSex = EnumUserSex.WOMAN;
 
-	public EditDialog(Shell parent, Long id) {
+	public SysUserEditDialog(Shell parent, Long id) {
 		super(parent, SWT.DIALOG_TRIM | SWT.PRIMARY_MODAL);
 		this.id = id;
-
 		setSize(400, 300);
 		setText("修改");
 		center(parent);
-
 		setLayout(new FormLayout());
+		/// 姓名
 		txtName = new Label(this, SWT.NONE);
 		txtName.setText("姓名");
-
 		edtName = new Text(this, SWT.BORDER);
 
+		/// 电话
 		txtPhone = new Label(this, SWT.NONE);
 		txtPhone.setText("电话");
-
 		edtPhone = new Text(this, SWT.BORDER);
 
+		// 性别
 		txtSex = new Label(this, SWT.NONE);
 		txtSex.setText("性别");
-
 		sexGroup = new Group(this, SWT.SHADOW_ETCHED_OUT);
 		sexGroup.setLayout(new FillLayout(SWT.HORIZONTAL));
 		radioWomen = new Button(sexGroup, SWT.RADIO);
@@ -89,15 +90,20 @@ public class EditDialog extends Shell {
 			}
 		});
 
+		// 邮箱
 		txtEmail = new Label(this, SWT.NONE);
 		txtEmail.setText("邮箱");
-
 		edtEmail = new Text(this, SWT.BORDER);
 
-		txtRemark = new Label(this, SWT.NONE);
-		txtRemark.setText("备注");
+		/// 登录名
+		txtLoginName = new Label(this, SWT.NONE);
+		txtLoginName.setText("登录名");
+		edtLoginName = new Text(this, SWT.BORDER);
 
-		edtRemark = new Text(this, SWT.BORDER | SWT.MULTI);
+		/// 登录密码
+		txtLoginPwd = new Label(this, SWT.NONE);
+		txtLoginPwd.setText("密码");
+		edtLoginPwd = new Text(this, SWT.BORDER | SWT.PASSWORD);
 
 		btnSubmit = new Button(this, SWT.PUSH);
 		btnSubmit.setText("提交");
@@ -163,26 +169,36 @@ public class EditDialog extends Shell {
 		edtEmailFormData.right = new FormAttachment(100, -10);
 		edtEmail.setLayoutData(edtEmailFormData);
 
-		FormData txtRemarkFormData = new FormData();
-		txtRemarkFormData.top = new FormAttachment(txtEmail, 4);
-		txtRemarkFormData.right = new FormAttachment(15);
-		txtRemark.setLayoutData(txtRemarkFormData);
+		FormData txtLoginNameFormData = new FormData();
+		txtLoginNameFormData.top = new FormAttachment(txtEmail, 4);
+		txtLoginNameFormData.right = new FormAttachment(15);
+		txtLoginName.setLayoutData(txtLoginNameFormData);
 
-		FormData edtRemarkFormData = new FormData();
-		edtRemarkFormData.left = new FormAttachment(txtRemark, 2);
-		edtRemarkFormData.top = new FormAttachment(edtEmail, 4);
-		edtRemarkFormData.right = new FormAttachment(100, -10);
-		edtRemarkFormData.bottom = new FormAttachment(btnSubmit, -4);
-		edtRemark.setLayoutData(edtRemarkFormData);
+		FormData edtLoginNameFormData = new FormData();
+		edtLoginNameFormData.left = new FormAttachment(txtLoginName, 2);
+		edtLoginNameFormData.top = new FormAttachment(edtEmail, 4);
+		edtLoginNameFormData.right = new FormAttachment(100, -10);
+		edtLoginName.setLayoutData(edtLoginNameFormData);
+
+		FormData txtLoginPwdFormData = new FormData();
+		txtLoginPwdFormData.top = new FormAttachment(txtLoginName, 4);
+		txtLoginPwdFormData.right = new FormAttachment(15);
+		txtLoginPwd.setLayoutData(txtLoginPwdFormData);
+
+		FormData edtLoginPwdFormData = new FormData();
+		edtLoginPwdFormData.left = new FormAttachment(txtLoginPwd, 2);
+		edtLoginPwdFormData.top = new FormAttachment(edtLoginName, 4);
+		edtLoginPwdFormData.right = new FormAttachment(100, -10);
+		edtLoginPwd.setLayoutData(edtLoginPwdFormData);
 
 		FormData btnSubmitFormData = new FormData();
 		btnSubmitFormData.left = new FormAttachment(45);
-		btnSubmitFormData.top = new FormAttachment(100, -50);
+		btnSubmitFormData.top = new FormAttachment(edtLoginPwd, 4);
 		btnSubmit.setLayoutData(btnSubmitFormData);
 
 		FormData btnResetFormData = new FormData();
 		btnResetFormData.left = new FormAttachment(btnSubmit, 10);
-		btnResetFormData.top = new FormAttachment(100, -50);
+		btnResetFormData.top = new FormAttachment(edtLoginPwd, 4);
 		btnReset.setLayoutData(btnResetFormData);
 		fillValue();
 		open();
@@ -207,23 +223,34 @@ public class EditDialog extends Shell {
 	}
 
 	private void submit() {
-		cmUserInfo.setName(edtName.getText().trim());
-		cmUserInfo.setPhone(edtPhone.getText().trim());
-		cmUserInfo.setEmail(edtEmail.getText().trim());
-		cmUserInfo.setSex(userSex.getCode().byteValue());
-		cmUserInfo.setRemark(edtRemark.getText().trim());
+		sysUser.setName(edtName.getText().trim());
+		sysUser.setPhone(edtPhone.getText().trim());
+		sysUser.setEmail(edtEmail.getText().trim());
+		sysUser.setSex(userSex.getCode().toString());
+		sysUser.setLoginName(edtLoginName.getText().trim());
+		sysUser.setLoginPwd(edtLoginPwd.getText().trim());
 
-		if (StringUtil.isBlank(cmUserInfo.getName())) {
+		if (StringUtil.isBlank(sysUser.getName())) {
 			new MsgBox(this, "姓名不能为空").open();
 			return;
 		}
 
-		if (StringUtil.isBlank(cmUserInfo.getPhone())) {
+		if (StringUtil.isBlank(sysUser.getPhone())) {
 			new MsgBox(this, "手机号码不能为空").open();
 			return;
 		}
 
-		ResultDTO result = UserInfoController.getBean().save(cmUserInfo);
+		if (StringUtil.isBlank(sysUser.getLoginName())) {
+			new MsgBox(this, "登录名不能为空").open();
+			return;
+		}
+
+		if (StringUtil.isBlank(sysUser.getLoginPwd())) {
+			new MsgBox(this, "登录密码不能为空").open();
+			return;
+		}
+
+		ResultDTO<?> result = SysUserController.getBean().save(sysUser);
 		if (result.getCode() != ResultDTO.SUCCESS_CODE) {
 			MessageBox box = new MessageBox(this);
 			box.setMessage(result.getErrMsg());
@@ -239,21 +266,22 @@ public class EditDialog extends Shell {
 		edtPhone.setText("");
 		radioWomen.setSelection(true);
 		edtEmail.setText("");
-		edtRemark.setText("");
+		edtLoginName.setText("");
+		edtLoginPwd.setText("");
 	}
 
 	private void fillValue() {
 		if (id == null) {
-			cmUserInfo = new CmUserInfo();
+			sysUser = new SysUser();
 		} else {
-			ResultDTO<CmUserInfo> result = UserInfoController.getBean().getById(id);
+			ResultDTO<SysUser> result = SysUserController.getBean().getById(id);
 			if (result.getCode() != ResultDTO.SUCCESS_CODE) {
 				new MsgBox(this, result.getErrMsg()).open();
 			} else {
-				cmUserInfo = result.getData();
-				edtName.setText(cmUserInfo.getName());
-				edtPhone.setText(cmUserInfo.getPhone());
-				EnumUserSex enumSex = EnumUserSex.getEnum(cmUserInfo.getSex().intValue());
+				sysUser = result.getData();
+				edtName.setText(sysUser.getName());
+				edtPhone.setText(sysUser.getPhone());
+				EnumUserSex enumSex = EnumUserSex.getEnum(Integer.valueOf(sysUser.getSex()));
 				switch (enumSex) {
 				case MAN:
 					radioMen.setSelection(true);
@@ -262,8 +290,9 @@ public class EditDialog extends Shell {
 					radioWomen.setSelection(true);
 					break;
 				}
-				edtEmail.setText(cmUserInfo.getEmail());
-				edtRemark.setText(cmUserInfo.getRemark());
+				edtEmail.setText(sysUser.getEmail());
+				edtLoginName.setText(sysUser.getLoginName());
+				edtLoginPwd.setText(sysUser.getLoginPwd());
 			}
 		}
 	}

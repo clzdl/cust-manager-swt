@@ -58,7 +58,7 @@ public class CmUserInfo {
 	/**
 	 * 创建日期
 	 */
-	@Column(name = "CREATE_TIME")
+	@Column(name = "CREATE_TIME", updatable = false)
 	private Date createTime;
 
 	@Transient

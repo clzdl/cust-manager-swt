@@ -1,4 +1,4 @@
-package com.clzdl.crm.view.biz.panel.biz.content.customer;
+package com.clzdl.crm.view.biz.panel.profile.content.sysuser;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -16,8 +16,8 @@ import org.eclipse.swt.widgets.TableItem;
 import com.base.mvc.page.PageModel;
 import com.clzdl.crm.App;
 import com.clzdl.crm.Constants;
-import com.clzdl.crm.common.persistence.entity.CmUserInfo;
-import com.clzdl.crm.controller.biz.UserInfoController;
+import com.clzdl.crm.common.persistence.entity.SysUser;
+import com.clzdl.crm.controller.sys.SysUserController;
 import com.clzdl.crm.dto.ResultDTO;
 import com.clzdl.crm.view.common.LoadingDialog;
 import com.clzdl.crm.view.common.LoadingDialog.TaskLoading;
@@ -25,13 +25,13 @@ import com.clzdl.crm.view.common.MsgBox;
 import com.clzdl.crm.view.common.TablePager;
 import com.clzdl.crm.view.common.TablePager.PagerOperation;
 
-public class CustInfoContent extends Composite {
-	private final static String title = "客户信息";
+public class SysUserContent extends Composite {
+	private final static String title = "系统用户信息";
 	private Table table;
 	private TablePager pager;
-	private CmUserInfo searchCondition = new CmUserInfo();
+	private SysUser searchCondition = new SysUser();
 
-	public CustInfoContent(Composite parent, int style) {
+	public SysUserContent(Composite parent, int style) {
 		super(parent, style);
 		setLayout(new FormLayout());
 
@@ -49,20 +49,30 @@ public class CustInfoContent extends Composite {
 		colName.setWidth(150);
 		colName.setAlignment(SWT.CENTER);
 
-		TableColumn colSex = new TableColumn(table, SWT.NONE);
-		colSex.setText("性别");
-		colSex.setWidth(50);
-		colSex.setAlignment(SWT.CENTER);
-
 		TableColumn colPhone = new TableColumn(table, SWT.NONE);
 		colPhone.setText("电话");
 		colPhone.setWidth(150);
 		colPhone.setAlignment(SWT.CENTER);
 
-		TableColumn remark = new TableColumn(table, SWT.NONE);
-		remark.setText("备注");
-		remark.setWidth(200);
-		remark.setAlignment(SWT.CENTER);
+		TableColumn email = new TableColumn(table, SWT.NONE);
+		email.setText("邮箱");
+		email.setWidth(100);
+		email.setAlignment(SWT.CENTER);
+
+		TableColumn sex = new TableColumn(table, SWT.NONE);
+		sex.setText("性别");
+		sex.setWidth(100);
+		sex.setAlignment(SWT.CENTER);
+
+		TableColumn loginName = new TableColumn(table, SWT.NONE);
+		loginName.setText("登录名");
+		loginName.setWidth(100);
+		loginName.setAlignment(SWT.CENTER);
+
+		TableColumn loginPwd = new TableColumn(table, SWT.NONE);
+		loginPwd.setText("登录密码");
+		loginPwd.setWidth(100);
+		loginPwd.setAlignment(SWT.CENTER);
 
 		TableColumn createTime = new TableColumn(table, SWT.NONE);
 		createTime.setText("创建时间");
@@ -72,13 +82,13 @@ public class CustInfoContent extends Composite {
 		pager = new TablePager(this, SWT.NONE, new PagerOperation() {
 			@Override
 			public Integer refresh(final Integer pageNo, final Integer pageSize) {
-				final PageModel<CmUserInfo> pm = new PageModel<CmUserInfo>();
+				final PageModel<SysUser> pm = new PageModel<SysUser>();
 				LoadingDialog loading = new LoadingDialog(App.mainWindow, App.loadingImages);
 				loading.start(new TaskLoading() {
 					@Override
 					public void doing() {
-						ResultDTO<PageModel<CmUserInfo>> result = UserInfoController.getBean().list(searchCondition,
-								pageNo, pageSize);
+						ResultDTO<PageModel<SysUser>> result = SysUserController.getBean().list(searchCondition, pageNo,
+								pageSize);
 						if (result.getCode() != ResultDTO.SUCCESS_CODE) {
 							new MsgBox(App.mainWindow, result.getErrMsg()).open();
 							return;
@@ -93,13 +103,13 @@ public class CustInfoContent extends Composite {
 				table.removeAll();
 				TableItem tableItem = null;
 				Integer pos = 0;
-				for (CmUserInfo user : pm.getList()) {
+				for (SysUser user : pm.getList()) {
 					tableItem = new TableItem(table, SWT.NONE);
 					if (pos++ % 2 == 1) {
 						tableItem.setBackground(getDisplay().getSystemColor(SWT.COLOR_GRAY));
 					}
-					tableItem.setText(new String[] { user.getId().toString(), user.getName(), user.getSexOutput(),
-							user.getPhone(), user.getRemark(), user.getCreateTimeOutput() });
+					tableItem.setText(new String[] { user.getId().toString(), user.getName(), user.getPhone(),
+							user.getSexOutput(), user.getLoginName(), user.getLoginPwd(), user.getCreateTimeOutput() });
 				}
 
 				return (int) pm.getTotalRecords();
@@ -115,7 +125,7 @@ public class CustInfoContent extends Composite {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				super.widgetSelected(e);
-				new CustInfoEditDialog(App.mainWindow, null);
+				new SysUserEditDialog(App.mainWindow, null);
 				pager.refreshPage(false);
 			}
 
@@ -129,7 +139,7 @@ public class CustInfoContent extends Composite {
 				// TODO Auto-generated method stub
 				super.widgetSelected(e);
 				TableItem item[] = table.getSelection();
-				new CustInfoEditDialog(App.mainWindow, Long.valueOf(item[0].getText(Constants.ID_INDEX).trim()));
+				new SysUserEditDialog(App.mainWindow, Long.valueOf(item[0].getText(Constants.ID_INDEX).trim()));
 				pager.refreshPage(false);
 			}
 		});
@@ -144,7 +154,7 @@ public class CustInfoContent extends Composite {
 					return;
 				}
 				TableItem item[] = table.getSelection();
-				ResultDTO<?> result = UserInfoController.getBean()
+				ResultDTO<?> result = SysUserController.getBean()
 						.deleteById(Long.valueOf(item[0].getText(Constants.ID_INDEX).trim()));
 				if (result.getCode() != ResultDTO.SUCCESS_CODE) {
 					new MsgBox(App.mainWindow, result.getErrMsg()).open();
