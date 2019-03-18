@@ -1,4 +1,4 @@
-package com.clzdl.crm.view.biz;
+package com.clzdl.crm.view.biz.panel.biz.content.card;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FormAttachment;

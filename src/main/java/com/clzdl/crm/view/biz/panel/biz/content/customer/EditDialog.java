@@ -1,4 +1,4 @@
-package com.clzdl.crm.view.biz.cust;
+package com.clzdl.crm.view.biz.panel.biz.content.customer;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -41,6 +41,7 @@ public class EditDialog extends Shell {
 	private Text edtRemark;
 	private Button btnSubmit;
 	private Button btnReset;
+	private CmUserInfo cmUserInfo = null;
 
 	private EnumUserSex userSex = EnumUserSex.WOMAN;
 
@@ -183,7 +184,7 @@ public class EditDialog extends Shell {
 		btnResetFormData.left = new FormAttachment(btnSubmit, 10);
 		btnResetFormData.top = new FormAttachment(100, -50);
 		btnReset.setLayoutData(btnResetFormData);
-
+		fillValue();
 		open();
 		while (!isDisposed()) {
 			if (!getDisplay().readAndDispatch()) {
@@ -206,17 +207,11 @@ public class EditDialog extends Shell {
 	}
 
 	private void submit() {
-		CmUserInfo cmUserInfo = null;
-		if (id != null) {
-
-		} else {
-			cmUserInfo = new CmUserInfo();
-		}
-
 		cmUserInfo.setName(edtName.getText().trim());
 		cmUserInfo.setPhone(edtPhone.getText().trim());
 		cmUserInfo.setEmail(edtEmail.getText().trim());
 		cmUserInfo.setSex(userSex.getCode().byteValue());
+		cmUserInfo.setRemark(edtRemark.getText().trim());
 
 		if (StringUtil.isBlank(cmUserInfo.getName())) {
 			new MsgBox(this, "姓名不能为空").open();
@@ -244,6 +239,33 @@ public class EditDialog extends Shell {
 		edtPhone.setText("");
 		radioWomen.setSelection(true);
 		edtEmail.setText("");
+		edtRemark.setText("");
+	}
+
+	private void fillValue() {
+		if (id == null) {
+			cmUserInfo = new CmUserInfo();
+		} else {
+			ResultDTO<CmUserInfo> result = UserInfoController.getBean().getById(id);
+			if (result.getCode() != ResultDTO.SUCCESS_CODE) {
+				new MsgBox(this, result.getErrMsg()).open();
+			} else {
+				cmUserInfo = result.getData();
+				edtName.setText(cmUserInfo.getName());
+				edtPhone.setText(cmUserInfo.getPhone());
+				EnumUserSex enumSex = EnumUserSex.getEnum(cmUserInfo.getSex().intValue());
+				switch (enumSex) {
+				case MAN:
+					radioMen.setSelection(true);
+					break;
+				default:
+					radioWomen.setSelection(true);
+					break;
+				}
+				edtEmail.setText(cmUserInfo.getEmail());
+				edtRemark.setText(cmUserInfo.getRemark());
+			}
+		}
 	}
 
 }

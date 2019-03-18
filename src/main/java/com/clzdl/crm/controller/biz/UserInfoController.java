@@ -18,8 +18,8 @@ public class UserInfoController extends BaseController {
 	public UserInfoController() {
 	}
 
-	public ResultDTO save(CmUserInfo cmUserInfo) {
-		ResultDTO result = new ResultDTO();
+	public ResultDTO<?> save(CmUserInfo cmUserInfo) {
+		ResultDTO<?> result = new ResultDTO<Object>();
 		try {
 			userInfoService.save(cmUserInfo);
 
@@ -35,6 +35,29 @@ public class UserInfoController extends BaseController {
 		try {
 			PageModel<CmUserInfo> pm = userInfoService.listPageModel(entity, pageNo, pageSize);
 			result.setData(pm);
+		} catch (Exception e) {
+			decorateResult4Exception(result, e);
+		}
+
+		return result;
+	}
+
+	public ResultDTO<CmUserInfo> getById(Long id) {
+		ResultDTO<CmUserInfo> result = new ResultDTO<CmUserInfo>();
+		try {
+			CmUserInfo entity = userInfoService.getById(id);
+			result.setData(entity);
+		} catch (Exception e) {
+			decorateResult4Exception(result, e);
+		}
+
+		return result;
+	}
+
+	public ResultDTO<?> deleteById(Long id) {
+		ResultDTO<?> result = new ResultDTO<Object>();
+		try {
+			userInfoService.deleteById(id);
 		} catch (Exception e) {
 			decorateResult4Exception(result, e);
 		}

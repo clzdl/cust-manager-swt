@@ -1,4 +1,4 @@
-package com.clzdl.crm.view.biz.cust;
+package com.clzdl.crm.view.biz.panel.biz.content.customer;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -15,6 +15,7 @@ import org.eclipse.swt.widgets.TableItem;
 
 import com.base.mvc.page.PageModel;
 import com.clzdl.crm.App;
+import com.clzdl.crm.Constants;
 import com.clzdl.crm.common.persistence.entity.CmUserInfo;
 import com.clzdl.crm.controller.biz.UserInfoController;
 import com.clzdl.crm.dto.ResultDTO;
@@ -25,8 +26,7 @@ import com.clzdl.crm.view.common.TablePager;
 import com.clzdl.crm.view.common.TablePager.PagerOperation;
 
 public class CustInfoContent extends Composite {
-	private final Integer idIndex = 0;
-	private final String title = "客户信息";
+	private final static String title = "客户信息";
 	private Table table;
 	private TablePager pager;
 	private CmUserInfo searchCondition = new CmUserInfo();
@@ -105,7 +105,7 @@ public class CustInfoContent extends Composite {
 				return (int) pm.getTotalRecords();
 			}
 		});
-
+		pager.refreshPage(true);
 		///
 		Menu popMenu = new Menu(parent);
 		MenuItem addItem = new MenuItem(popMenu, SWT.PUSH);
@@ -114,10 +114,9 @@ public class CustInfoContent extends Composite {
 			/// 新增
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				// TODO Auto-generated method stub
 				super.widgetSelected(e);
 				new EditDialog(App.mainWindow, null);
-				pager.refreshCurrentPage();
+				pager.refreshPage(false);
 			}
 
 		});
@@ -129,16 +128,30 @@ public class CustInfoContent extends Composite {
 			public void widgetSelected(SelectionEvent e) {
 				// TODO Auto-generated method stub
 				super.widgetSelected(e);
-				TableItem item = (TableItem) e.item;
-				new EditDialog(App.mainWindow, Long.valueOf(item.getText(idIndex)));
-				pager.refreshCurrentPage();
+				TableItem item[] = table.getSelection();
+				new EditDialog(App.mainWindow, Long.valueOf(item[0].getText(Constants.ID_INDEX).trim()));
+				pager.refreshPage(false);
 			}
 		});
 
 		MenuItem deletItem = new MenuItem(popMenu, SWT.PUSH);
 		deletItem.setText("删除");
 		deletItem.addSelectionListener(new SelectionAdapter() {
-			/// 删除
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				super.widgetSelected(e);
+				if (SWT.CANCEL == new MsgBox(App.mainWindow, SWT.OK | SWT.CANCEL, "确认删除?").open()) {
+					return;
+				}
+				TableItem item[] = table.getSelection();
+				ResultDTO<?> result = UserInfoController.getBean()
+						.deleteById(Long.valueOf(item[0].getText(Constants.ID_INDEX).trim()));
+				if (result.getCode() != ResultDTO.SUCCESS_CODE) {
+					new MsgBox(App.mainWindow, result.getErrMsg()).open();
+				} else {
+					pager.refreshPage(false);
+				}
+			}
 		});
 
 		table.setMenu(popMenu);

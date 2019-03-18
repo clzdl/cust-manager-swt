@@ -8,6 +8,7 @@ import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
@@ -25,13 +26,10 @@ public class LoginDialog extends Shell {
 	private Text edtPwd;
 	private Integer tryTime = 0;
 
-	public LoginDialog(Shell parent) {
+	public LoginDialog(Display parent) {
 		super(parent, SWT.DIALOG_TRIM | SWT.PRIMARY_MODAL);
-
 		setSize(300, 150);
 		setText("登录");
-
-		/// 主屏幕显示位置
 		Rectangle bounds = parent.getBounds();
 		Rectangle rect = getBounds();
 		int x = bounds.x + Math.max(0, (bounds.width - rect.width) / 2);
@@ -43,11 +41,13 @@ public class LoginDialog extends Shell {
 		txtName.setText("姓名");
 
 		edtName = new Text(this, SWT.BORDER);
+		edtName.setText("admin@clzdl.com");
 
 		Label txtPwd = new Label(this, SWT.NONE);
 		txtPwd.setText("密码");
 
 		edtPwd = new Text(this, SWT.BORDER | SWT.PASSWORD);
+		edtPwd.setText("123456");
 
 		final Button login = new Button(this, SWT.PUSH);
 		login.setText("登录");
@@ -59,6 +59,7 @@ public class LoginDialog extends Shell {
 				login();
 			}
 		});
+		setDefaultButton(login);
 
 		FormData txtNameFormData = new FormData();
 		txtNameFormData.right = new FormAttachment(15);
@@ -123,8 +124,13 @@ public class LoginDialog extends Shell {
 			e1.printStackTrace();
 		}
 		if (logStatus || ++tryTime >= 3) {
-			close();
+			dispose();
 		}
+	}
+
+	private void center(Display parent) {
+		/// 主屏幕显示位置
+
 	}
 
 }

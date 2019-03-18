@@ -46,8 +46,13 @@ public class TablePager extends Composite {
 		createContent(parent, style);
 	}
 
-	public void refreshCurrentPage() {
-		count = pagerOperation.refresh(pageNo, pageSize);
+	public void refreshPage(Boolean first) {
+		if (!first) {
+			count = pagerOperation.refresh(pageNo, pageSize);
+		} else {
+			pageNo = 1;
+			count = pagerOperation.refresh(pageNo, pageSize);
+		}
 		refreshButton();
 	}
 
@@ -140,8 +145,6 @@ public class TablePager extends Composite {
 		btnLast.addSelectionListener(lastSelectionAdapter);
 		btnPrev.addSelectionListener(prevSelectionAdapter);
 		btnNext.addSelectionListener(nextSelectionAdapter);
-		count = pagerOperation.refresh(pageNo, pageSize);
-		refreshButton();
 	}
 
 	private Integer getLastPageNo() {

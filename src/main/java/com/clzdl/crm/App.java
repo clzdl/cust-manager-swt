@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import com.clzdl.crm.view.biz.LoginDialog;
+
 /**
  * 客户管理程序入口类
  *
@@ -25,6 +27,7 @@ public class App {
 	public static Display display;
 	public static Image[] loadingImages;
 	public static Image appImage;
+	public static LoginDialog loginDlg;
 	public static MainWindow mainWindow;
 
 	public App() {
@@ -41,6 +44,10 @@ public class App {
 	public void show() {
 		appImage = new Image(display,
 				new ImageLoader().load(this.getClass().getResource("/").getPath() + _appImageFile)[0]);
+		loginDlg = new LoginDialog(display);
+		if (!loginDlg.isLogin()) {
+			return;
+		}
 		mainWindow = new MainWindow(display);
 		while (!mainWindow.isDisposed()) {
 			if (!display.readAndDispatch()) {

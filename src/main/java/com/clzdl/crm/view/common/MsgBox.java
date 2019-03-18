@@ -9,6 +9,11 @@ public class MsgBox extends MessageBox {
 		setMessage(msg);
 	}
 
+	public MsgBox(Shell parent, int style, String msg) {
+		super(parent, style);
+		setMessage(msg);
+	}
+
 	public int open() {
 		return super.open();
 	}
