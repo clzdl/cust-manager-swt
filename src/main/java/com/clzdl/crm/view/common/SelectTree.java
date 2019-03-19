@@ -20,18 +20,20 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 
 public class SelectTree extends Composite {
-	private Text edit;
+	private Text text;
 	private Shell popup;
 	private Tree tree;
 	private List<SelectTreeData> dataList;
 	private Object parentCode;
 	private Boolean isMulti = false;
+	private SelectTreeData result;
+	private Object defaultCode;
 
 	public static class SelectTreeData {
 		private Object code;
 		private Object parentCode;
 		private String title;
-		private Boolean selected;
+		private Boolean selected = false;
 
 		public SelectTreeData(Object code, Object parentCode, String title, Boolean selected) {
 			this.code = code;
@@ -72,64 +74,55 @@ public class SelectTree extends Composite {
 			this.selected = selected;
 		}
 
-		public Boolean compare(Object parentCode) {
+		public Boolean compareParentCode(Object parentCode) {
 			if (parentCode instanceof Integer || parentCode instanceof Long || parentCode instanceof Double) {
 				return this.parentCode == parentCode;
 			} else {
 				return this.parentCode.equals(parentCode);
 			}
 		}
+
+		public Boolean compareCode(Object parentCode) {
+			if (parentCode instanceof Integer || parentCode instanceof Long || parentCode instanceof Double) {
+				return this.code == parentCode;
+			} else {
+				return this.code.equals(parentCode);
+			}
+		}
+	}
+
+	public SelectTree(Composite parent, int style, Object parentCode) {
+		super(parent, style);
+		this.parentCode = parentCode;
+		createContent();
 	}
 
 	public SelectTree(Composite parent, int style, List<SelectTreeData> dataList, Object parentCode) {
 		super(parent, style);
 		this.dataList = dataList;
 		this.parentCode = parentCode;
-		setLayout(new FillLayout());
-		edit = new Text(this, SWT.BORDER | SWT.READ_ONLY);
-		Listener textListener = new Listener() {
-			@Override
-			public void handleEvent(Event event) {
-				switch (event.type) {
-				case SWT.MouseDown: {
-					Point pt = getDisplay().map(edit, SelectTree.this, event.x, event.y);
-					Event mouseEvent = new Event();
-					mouseEvent.button = event.button;
-					mouseEvent.count = event.count;
-					mouseEvent.stateMask = event.stateMask;
-					mouseEvent.time = event.time;
-					mouseEvent.x = pt.x;
-					mouseEvent.y = pt.y;
-					notifyListeners(SWT.MouseDown, mouseEvent);
-					if (isDisposed())
-						break;
-					event.doit = mouseEvent.doit;
-					if (!event.doit)
-						break;
-					if (event.button != 1)
-						return;
-					if (edit.getEditable())
-						return;
-					boolean dropped = isDropped();
-					if (edit.getEditable() && edit.isFocusControl())
-						edit.selectAll();
-					if (!dropped) {
-						setFocus();
-					}
-					dropDown(!dropped);
-					break;
-				}
-				}
-			}
-		};
-		int[] textEvents = { SWT.MouseDown };
-		for (int i = 0; i < textEvents.length; ++i) {
-			edit.addListener(textEvents[i], textListener);
-		}
+		createContent();
 		createPopup();
 	}
 
-	boolean isDropped() {
+	public Object getCodeValue() {
+		return result.getCode();
+	}
+
+	public String getTitleValue() {
+		return result.getTitle();
+	}
+
+	public void setDataList(List<SelectTreeData> dataList) {
+		this.dataList = dataList;
+		createPopup();
+	}
+
+	public void setDefault(Object defaultCode) {
+		this.defaultCode = defaultCode;
+	}
+
+	private boolean isDropped() {
 		return !isDisposed() && popup.getVisible();
 	}
 
@@ -152,8 +145,8 @@ public class SelectTree extends Composite {
 					checkItems(item, checked);
 					checkPath(item.getParentItem(), checked, false);
 				} else {
-					edit.setText(item.getText());
-					edit.setData(item.getData());
+					text.setText(item.getText());
+					result = (SelectTreeData) item.getData();
 					if (!isMulti) {
 						dropDown(false);
 					}
@@ -205,7 +198,7 @@ public class SelectTree extends Composite {
 		if (!dropped) {
 			popup.setVisible(false);
 			if (!isDisposed() && isFocusControl()) {
-				edit.setFocus();
+				text.setFocus();
 			}
 			return;
 		}
@@ -215,12 +208,56 @@ public class SelectTree extends Composite {
 			tree = null;
 			createPopup();
 		}
-		Rectangle rect = getDisplay().map(getShell(), null, edit.getBounds());
+		Rectangle rect = getDisplay().map(this, null, text.getBounds());
 		if (popup.isDisposed()) {
 			createPopup();
 		}
 		popup.setBounds(rect.x, rect.y + rect.height, rect.width, 100);
 		popup.setVisible(true);
+	}
+
+	private void createContent() {
+		setLayout(new FillLayout());
+		text = new Text(this, SWT.BORDER | SWT.READ_ONLY);
+		Listener textListener = new Listener() {
+			@Override
+			public void handleEvent(Event event) {
+				switch (event.type) {
+				case SWT.MouseDown: {
+					Point pt = getDisplay().map(text, SelectTree.this, event.x, event.y);
+					Event mouseEvent = new Event();
+					mouseEvent.button = event.button;
+					mouseEvent.count = event.count;
+					mouseEvent.stateMask = event.stateMask;
+					mouseEvent.time = event.time;
+					mouseEvent.x = pt.x;
+					mouseEvent.y = pt.y;
+					notifyListeners(SWT.MouseDown, mouseEvent);
+					if (isDisposed())
+						break;
+					event.doit = mouseEvent.doit;
+					if (!event.doit)
+						break;
+					if (event.button != 1)
+						return;
+					if (text.getEditable())
+						return;
+					boolean dropped = isDropped();
+					if (text.getEditable() && text.isFocusControl())
+						text.selectAll();
+					if (!dropped) {
+						setFocus();
+					}
+					dropDown(!dropped);
+					break;
+				}
+				}
+			}
+		};
+		int[] textEvents = { SWT.MouseDown };
+		for (int i = 0; i < textEvents.length; ++i) {
+			text.addListener(textEvents[i], textListener);
+		}
 	}
 
 	private void buildTree() {
@@ -229,13 +266,16 @@ public class SelectTree extends Composite {
 		}
 		TreeItem item = null;
 		for (SelectTreeData data : dataList) {
-			if (!data.compare(parentCode)) {
+			if (!data.compareParentCode(parentCode)) {
 				continue;
 			}
 
 			item = new TreeItem(tree, SWT.NULL);
-			item.setData(data.getCode());
+			item.setData(data);
 			item.setText(data.getTitle());
+			if (data.getSelected() || data.compareCode(defaultCode)) {
+				tree.setSelection(item);
+			}
 			buildTreeItem(item, data.getCode());
 		}
 	}
@@ -243,12 +283,15 @@ public class SelectTree extends Composite {
 	private void buildTreeItem(TreeItem treeItem, Object parentCode) {
 		TreeItem item = null;
 		for (SelectTreeData data : dataList) {
-			if (!data.compare(parentCode)) {
+			if (!data.compareParentCode(parentCode)) {
 				continue;
 			}
 			item = new TreeItem(treeItem, SWT.NULL);
-			item.setData(data.getCode());
+			item.setData(data);
 			item.setText(data.getTitle());
+			if (data.getSelected() || data.compareCode(defaultCode)) {
+				tree.setSelection(item);
+			}
 			buildTreeItem(item, data.getCode());
 		}
 	}
@@ -266,34 +309,22 @@ public class SelectTree extends Composite {
 		shell.setLayout(new FillLayout());
 		List<SelectTreeData> list = new ArrayList<SelectTree.SelectTreeData>();
 		list.add(new SelectTreeData(1, 0, "title1", false));
-		list.add(new SelectTreeData(2, 0, "title2", false));
-		list.add(new SelectTreeData(3, 0, "title3", false));
-		list.add(new SelectTreeData(11, 1, "title11", false));
-		list.add(new SelectTreeData(12, 1, "title12", false));
-		list.add(new SelectTreeData(13, 1, "title13", false));
-		list.add(new SelectTreeData(21, 2, "title21", false));
-		list.add(new SelectTreeData(22, 2, "title22", false));
-		list.add(new SelectTreeData(23, 2, "title23", false));
-		list.add(new SelectTreeData(31, 3, "title31", false));
-		list.add(new SelectTreeData(32, 3, "title32", false));
-		list.add(new SelectTreeData(33, 3, "title33", false));
-		new SelectTree(shell, SWT.NONE, list, 0);
+//		list.add(new SelectTreeData(2, 0, "title2", false));
+//		list.add(new SelectTreeData(3, 0, "title3", false));
+//		list.add(new SelectTreeData(11, 1, "title11", false));
+//		list.add(new SelectTreeData(12, 1, "title12", false));
+//		list.add(new SelectTreeData(13, 1, "title13", false));
+//		list.add(new SelectTreeData(21, 2, "title21", false));
+//		list.add(new SelectTreeData(22, 2, "title22", false));
+//		list.add(new SelectTreeData(23, 2, "title23", false));
+//		list.add(new SelectTreeData(31, 3, "title31", false));
+//		list.add(new SelectTreeData(32, 3, "title32", false));
+//		list.add(new SelectTreeData(33, 3, "title33", false));
+		SelectTree stTree = new SelectTree(shell, SWT.NONE, 0);
+		stTree.setDefault(3);
+		stTree.setDataList(list);
 		new Text(shell, SWT.BORDER);
-		Tree tree = new Tree(shell, SWT.CHECK);
-		for (int i = 0; i < 4; i++) {
-			TreeItem itemI = new TreeItem(tree, SWT.NULL);
-			itemI.setText("Item " + i);
-			for (int j = 0; j < 4; j++) {
-				TreeItem itemJ = new TreeItem(itemI, SWT.NULL);
-				itemJ.setText("Item " + i + " " + j);
-				for (int k = 0; k < 4; k++) {
-					TreeItem itemK = new TreeItem(itemJ, SWT.NULL);
-					itemK.setText("Item " + i + " " + j + " " + k);
-				}
-			}
-		}
-		tree.setSize(200, 200);
-
+		stTree.setDefault(2);
 		shell.open();
 		while (!shell.isDisposed()) {
 			if (!display.readAndDispatch()) {

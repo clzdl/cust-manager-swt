@@ -1,5 +1,7 @@
 package com.clzdl.crm.controller.sys;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
@@ -48,6 +50,18 @@ public class SysMenuController extends BaseController {
 		try {
 			SysMenu sysMenu = sysMenuService.getById(id);
 			result.setData(sysMenu);
+		} catch (Exception e) {
+			decorateResult4Exception(result, e);
+		}
+
+		return result;
+	}
+
+	public ResultDTO<List<SysMenu>> listAll() {
+		ResultDTO<List<SysMenu>> result = new ResultDTO<List<SysMenu>>();
+		try {
+			List<SysMenu> list = sysMenuService.listAll();
+			result.setData(list);
 		} catch (Exception e) {
 			decorateResult4Exception(result, e);
 		}

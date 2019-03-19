@@ -1,5 +1,9 @@
 package com.clzdl.crm.view.biz.panel.profile.content.sysmenu;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.collections.CollectionUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -23,16 +27,19 @@ import com.clzdl.crm.controller.sys.SysMenuController;
 import com.clzdl.crm.dto.ResultDTO;
 import com.clzdl.crm.enums.EnumSysMenuType;
 import com.clzdl.crm.view.common.MsgBox;
+import com.clzdl.crm.view.common.SelectTree;
+import com.clzdl.crm.view.common.SelectTree.SelectTreeData;
 
 public class SysMenuEditDialog extends Shell {
 	private final static Logger _logger = LoggerFactory.getLogger(SysMenuEditDialog.class);
+	private final static Long _PARENT_ID = 0L;
 	private Long id;
 	private Label txtName;
 	private Text edtName;
 	private Label txtPermission;
 	private Text edtPermission;
 	private Label txtParent;
-	private Text edtParent;
+	private SelectTree stParent;
 	private Label txtMenuType;
 	private CCombo cboMenuType;
 	private Button btnSubmit;
@@ -61,7 +68,7 @@ public class SysMenuEditDialog extends Shell {
 		/// 父节点
 		txtParent = new Label(this, SWT.NONE);
 		txtParent.setText("父节点");
-		edtParent = new Text(this, SWT.BORDER);
+		stParent = new SelectTree(this, SWT.BORDER, _PARENT_ID);
 
 		/// 菜单类型
 		txtMenuType = new Label(this, SWT.NONE);
@@ -132,7 +139,7 @@ public class SysMenuEditDialog extends Shell {
 		edtParentFormData.left = new FormAttachment(txtParent, 2);
 		edtParentFormData.top = new FormAttachment(edtPermission, 4);
 		edtParentFormData.right = new FormAttachment(100, -10);
-		edtParent.setLayoutData(edtParentFormData);
+		stParent.setLayoutData(edtParentFormData);
 
 		FormData txtMenuTypeFormData = new FormData();
 		txtMenuTypeFormData.top = new FormAttachment(txtParent, 4);
@@ -141,7 +148,7 @@ public class SysMenuEditDialog extends Shell {
 
 		FormData btnMenuTypeFormData = new FormData();
 		btnMenuTypeFormData.left = new FormAttachment(txtMenuType, 2);
-		btnMenuTypeFormData.top = new FormAttachment(edtParent, 4);
+		btnMenuTypeFormData.top = new FormAttachment(stParent, 4);
 		btnMenuTypeFormData.right = new FormAttachment(100, -10);
 		cboMenuType.setLayoutData(btnMenuTypeFormData);
 
@@ -179,7 +186,7 @@ public class SysMenuEditDialog extends Shell {
 	private void submit() {
 		sysMenu.setName(edtName.getText().trim());
 		sysMenu.setHref(edtPermission.getText().trim());
-		sysMenu.setParentId(Long.valueOf(edtParent.getText().trim()));
+		sysMenu.setParentId(Long.valueOf(stParent.getCodeValue().toString()));
 		sysMenu.setMenuType(sysMenuType.getCode().byteValue());
 		if (StringUtil.isBlank(sysMenu.getName())) {
 			new MsgBox(this, "名称不能为空").open();
@@ -205,10 +212,10 @@ public class SysMenuEditDialog extends Shell {
 	private void reset() {
 		edtName.setText("");
 		edtPermission.setText("");
-		edtParent.setText("");
 	}
 
 	private void fillValue() {
+		ResultDTO<List<SysMenu>> allMenus = SysMenuController.getBean().listAll();
 		if (id == null) {
 			sysMenu = new SysMenu();
 		} else {
@@ -219,10 +226,24 @@ public class SysMenuEditDialog extends Shell {
 				sysMenu = result.getData();
 				edtName.setText(sysMenu.getName());
 				edtPermission.setText(sysMenu.getHref());
-				edtParent.setText(sysMenu.getParentId().toString());
+
+				stParent.setDefault(sysMenu.getParentId());
 				cboMenuType.select(sysMenu.getMenuType());
 			}
 		}
+		stParent.setDataList(buildSelTreeList(allMenus.getData(), sysMenu.getParentId()));
+	}
+
+	private List<SelectTreeData> buildSelTreeList(List<SysMenu> list, Long defaultCode) {
+		List<SelectTreeData> result = new ArrayList<SelectTree.SelectTreeData>();
+		if (CollectionUtils.isNotEmpty(list)) {
+			for (SysMenu menu : list) {
+				result.add(new SelectTreeData(menu.getId(), menu.getParentId(), menu.getName(),
+						defaultCode == menu.getId() ? true : false));
+			}
+		}
+
+		return result;
 	}
 
 }
