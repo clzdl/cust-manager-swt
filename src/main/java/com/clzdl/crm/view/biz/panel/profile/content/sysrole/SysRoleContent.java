@@ -1,4 +1,4 @@
-package com.clzdl.crm.view.biz.panel.profile.content.sysuser;
+package com.clzdl.crm.view.biz.panel.profile.content.sysrole;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -15,8 +15,8 @@ import org.eclipse.swt.widgets.TableItem;
 import com.base.mvc.page.PageModel;
 import com.clzdl.crm.App;
 import com.clzdl.crm.Constants;
-import com.clzdl.crm.common.persistence.entity.SysUser;
-import com.clzdl.crm.controller.sys.SysUserController;
+import com.clzdl.crm.common.persistence.entity.SysRole;
+import com.clzdl.crm.controller.sys.SysRoleController;
 import com.clzdl.crm.dto.ResultDTO;
 import com.clzdl.crm.view.common.AbstractPanelRightContent;
 import com.clzdl.crm.view.common.LoadingDialog;
@@ -25,13 +25,13 @@ import com.clzdl.crm.view.common.MsgBox;
 import com.clzdl.crm.view.common.TablePager;
 import com.clzdl.crm.view.common.TablePager.PagerOperation;
 
-public class SysUserContent extends AbstractPanelRightContent {
-	private final static String title = "系统用户信息";
+public class SysRoleContent extends AbstractPanelRightContent {
+	private final static String title = "系统角色信息";
 	private Table table;
 	private TablePager pager;
-	private SysUser searchCondition = new SysUser();
+	private SysRole searchCondition = new SysRole();
 
-	public SysUserContent(Composite parent, int style) {
+	public SysRoleContent(Composite parent, int style) {
 		super(parent, style, title);
 		table = new Table(this, SWT.BORDER | SWT.SINGLE | SWT.FULL_SELECTION);
 		table.setHeaderVisible(true);
@@ -43,34 +43,14 @@ public class SysUserContent extends AbstractPanelRightContent {
 		colId.setAlignment(SWT.CENTER);
 
 		TableColumn colName = new TableColumn(table, SWT.NONE);
-		colName.setText("姓名");
+		colName.setText("名称");
 		colName.setWidth(150);
 		colName.setAlignment(SWT.CENTER);
 
-		TableColumn colPhone = new TableColumn(table, SWT.NONE);
-		colPhone.setText("电话");
-		colPhone.setWidth(150);
-		colPhone.setAlignment(SWT.CENTER);
-
-		TableColumn email = new TableColumn(table, SWT.NONE);
-		email.setText("邮箱");
-		email.setWidth(100);
-		email.setAlignment(SWT.CENTER);
-
-		TableColumn sex = new TableColumn(table, SWT.NONE);
-		sex.setText("性别");
-		sex.setWidth(100);
-		sex.setAlignment(SWT.CENTER);
-
-		TableColumn loginName = new TableColumn(table, SWT.NONE);
-		loginName.setText("登录名");
-		loginName.setWidth(100);
-		loginName.setAlignment(SWT.CENTER);
-
-		TableColumn loginPwd = new TableColumn(table, SWT.NONE);
-		loginPwd.setText("登录密码");
-		loginPwd.setWidth(100);
-		loginPwd.setAlignment(SWT.CENTER);
+		TableColumn colDesc = new TableColumn(table, SWT.NONE);
+		colDesc.setText("描述");
+		colDesc.setWidth(150);
+		colDesc.setAlignment(SWT.CENTER);
 
 		TableColumn createTime = new TableColumn(table, SWT.NONE);
 		createTime.setText("创建时间");
@@ -80,12 +60,12 @@ public class SysUserContent extends AbstractPanelRightContent {
 		pager = new TablePager(this, SWT.NONE, new PagerOperation() {
 			@Override
 			public Integer refresh(final Integer pageNo, final Integer pageSize) {
-				final PageModel<SysUser> pm = new PageModel<SysUser>();
+				final PageModel<SysRole> pm = new PageModel<SysRole>();
 				LoadingDialog loading = new LoadingDialog(App.mainWindow, App.loadingImages);
 				loading.start(new TaskLoading() {
 					@Override
 					public void doing() {
-						ResultDTO<PageModel<SysUser>> result = SysUserController.getBean().list(searchCondition, pageNo,
+						ResultDTO<PageModel<SysRole>> result = SysRoleController.getBean().list(searchCondition, pageNo,
 								pageSize);
 						if (result.getCode() != ResultDTO.SUCCESS_CODE) {
 							new MsgBox(App.mainWindow, result.getErrMsg()).open();
@@ -101,13 +81,13 @@ public class SysUserContent extends AbstractPanelRightContent {
 				table.removeAll();
 				TableItem tableItem = null;
 				Integer pos = 0;
-				for (SysUser user : pm.getList()) {
+				for (SysRole role : pm.getList()) {
 					tableItem = new TableItem(table, SWT.NONE);
 					if (pos++ % 2 == 1) {
 						tableItem.setBackground(getDisplay().getSystemColor(SWT.COLOR_GRAY));
 					}
-					tableItem.setText(new String[] { user.getId().toString(), user.getName(), user.getPhone(),
-							user.getSexOutput(), user.getLoginName(), user.getLoginPwd(), user.getCreateTimeOutput() });
+					tableItem.setText(new String[] { role.getId().toString(), role.getRoleName(), role.getDescription(),
+							role.getCreateTimeOutput() });
 				}
 
 				return (int) pm.getTotalRecords();
@@ -123,7 +103,7 @@ public class SysUserContent extends AbstractPanelRightContent {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				super.widgetSelected(e);
-				new SysUserEditDialog(App.mainWindow, null);
+				new SysRoleEditDialog(App.mainWindow, null);
 				pager.refreshPage(false);
 			}
 
@@ -137,7 +117,7 @@ public class SysUserContent extends AbstractPanelRightContent {
 				// TODO Auto-generated method stub
 				super.widgetSelected(e);
 				TableItem item[] = table.getSelection();
-				new SysUserEditDialog(App.mainWindow, Long.valueOf(item[0].getText(Constants.ID_INDEX).trim()));
+				new SysRoleEditDialog(App.mainWindow, Long.valueOf(item[0].getText(Constants.ID_INDEX).trim()));
 				pager.refreshPage(false);
 			}
 		});
@@ -152,7 +132,7 @@ public class SysUserContent extends AbstractPanelRightContent {
 					return;
 				}
 				TableItem item[] = table.getSelection();
-				ResultDTO<?> result = SysUserController.getBean()
+				ResultDTO<?> result = SysRoleController.getBean()
 						.deleteById(Long.valueOf(item[0].getText(Constants.ID_INDEX).trim()));
 				if (result.getCode() != ResultDTO.SUCCESS_CODE) {
 					new MsgBox(App.mainWindow, result.getErrMsg()).open();

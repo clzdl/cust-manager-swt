@@ -1,5 +1,8 @@
 package com.clzdl.crm.view.biz.panel.profile;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -11,14 +14,16 @@ import org.eclipse.swt.widgets.Sash;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 
+import com.clzdl.crm.view.biz.panel.profile.content.sysrole.SysRoleContent;
 import com.clzdl.crm.view.biz.panel.profile.content.sysuser.SysUserContent;
+import com.clzdl.crm.view.common.AbstractPanelRightContent;
 
 public class ProfilePanel extends Composite {
 
 	private Sash sash;
 	private Table leftMenuTab;
-	private SysUserContent sysUserContent;
-	private Composite currentContent;
+	private List<AbstractPanelRightContent> rightContent = new ArrayList<AbstractPanelRightContent>();
+	private AbstractPanelRightContent currentContent;
 
 	public ProfilePanel(Composite parent, int style) {
 		super(parent, style);
@@ -27,20 +32,16 @@ public class ProfilePanel extends Composite {
 		leftMenuTab.setLinesVisible(true);
 
 		sash = new Sash(this, SWT.VERTICAL);
-		sysUserContent = new SysUserContent(this, SWT.BORDER);
+		rightContent.add(new SysUserContent(this, SWT.BORDER));
+		rightContent.add(new SysRoleContent(this, SWT.BORDER));
 
-		TableItem itemSysUser = new TableItem(leftMenuTab, SWT.NULL);
-		itemSysUser.setData(sysUserContent);
-		itemSysUser.setText(sysUserContent.getTitle());
-
-		leftMenuTab.setSelection(itemSysUser);
 		leftMenuTab.addSelectionListener(new SelectionAdapter() {
 
 			@Override
 			public void widgetDefaultSelected(SelectionEvent e) {
 				super.widgetDefaultSelected(e);
 				currentContent.setVisible(false);
-				currentContent = (Composite) e.item.getData();
+				currentContent = (AbstractPanelRightContent) e.item.getData();
 				currentContent.setVisible(true);
 			}
 		});
@@ -58,14 +59,29 @@ public class ProfilePanel extends Composite {
 		sashFormData.bottom = new FormAttachment(100);
 		sash.setLayoutData(sashFormData);
 
+		///
 		FormData contentFormData = new FormData();
 		contentFormData.left = new FormAttachment(sash);
 		contentFormData.top = new FormAttachment(0);
 		contentFormData.right = new FormAttachment(100, -10);
 		contentFormData.bottom = new FormAttachment(100);
-		sysUserContent.setLayoutData(contentFormData);
-		currentContent = sysUserContent;
 
+		TableItem item = null;
+		Integer index = 0;
+		for (AbstractPanelRightContent content : rightContent) {
+			item = new TableItem(leftMenuTab, SWT.NULL);
+			item.setData(content);
+			item.setText(content.getTitle());
+			content.setLayoutData(contentFormData);
+			if (0 == index++) {
+				leftMenuTab.setSelection(item);
+				currentContent = content;
+			} else {
+				content.setVisible(false);
+			}
+		}
+
+		///
 		sash.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
