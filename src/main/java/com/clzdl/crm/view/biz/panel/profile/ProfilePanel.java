@@ -14,6 +14,7 @@ import org.eclipse.swt.widgets.Sash;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 
+import com.clzdl.crm.view.biz.panel.profile.content.sysmenu.SysMenuContent;
 import com.clzdl.crm.view.biz.panel.profile.content.sysrole.SysRoleContent;
 import com.clzdl.crm.view.biz.panel.profile.content.sysuser.SysUserContent;
 import com.clzdl.crm.view.common.AbstractPanelRightContent;
@@ -22,7 +23,7 @@ public class ProfilePanel extends Composite {
 
 	private Sash sash;
 	private Table leftMenuTab;
-	private List<AbstractPanelRightContent> rightContent = new ArrayList<AbstractPanelRightContent>();
+	private List<AbstractPanelRightContent> rightContents = new ArrayList<AbstractPanelRightContent>();
 	private AbstractPanelRightContent currentContent;
 
 	public ProfilePanel(Composite parent, int style) {
@@ -32,8 +33,9 @@ public class ProfilePanel extends Composite {
 		leftMenuTab.setLinesVisible(true);
 
 		sash = new Sash(this, SWT.VERTICAL);
-		rightContent.add(new SysUserContent(this, SWT.BORDER));
-		rightContent.add(new SysRoleContent(this, SWT.BORDER));
+		rightContents.add(new SysUserContent(this, SWT.BORDER));
+		rightContents.add(new SysRoleContent(this, SWT.BORDER));
+		rightContents.add(new SysMenuContent(this, SWT.BORDER));
 
 		leftMenuTab.addSelectionListener(new SelectionAdapter() {
 
@@ -68,7 +70,7 @@ public class ProfilePanel extends Composite {
 
 		TableItem item = null;
 		Integer index = 0;
-		for (AbstractPanelRightContent content : rightContent) {
+		for (AbstractPanelRightContent content : rightContents) {
 			item = new TableItem(leftMenuTab, SWT.NULL);
 			item.setData(content);
 			item.setText(content.getTitle());
