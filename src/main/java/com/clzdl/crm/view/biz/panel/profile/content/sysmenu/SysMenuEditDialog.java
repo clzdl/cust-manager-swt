@@ -1,6 +1,7 @@
 package com.clzdl.crm.view.biz.panel.profile.content.sysmenu;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
@@ -9,7 +10,6 @@ import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
@@ -34,7 +34,7 @@ public class SysMenuEditDialog extends Shell {
 	private Label txtParent;
 	private Text edtParent;
 	private Label txtMenuType;
-	private Combo cboMenuType;
+	private CCombo cboMenuType;
 	private Button btnSubmit;
 	private Button btnReset;
 	private EnumSysMenuType sysMenuType = EnumSysMenuType.MENU;
@@ -67,7 +67,7 @@ public class SysMenuEditDialog extends Shell {
 		txtMenuType = new Label(this, SWT.NONE);
 		txtMenuType.setText("类型");
 
-		cboMenuType = new Combo(this, SWT.DROP_DOWN | SWT.READ_ONLY);
+		cboMenuType = new CCombo(this, SWT.FLAT | SWT.BORDER | SWT.READ_ONLY);
 		Point point = cboMenuType.getSize();
 		cboMenuType.setSize(200, point.y);
 		cboMenuType.add(EnumSysMenuType.MENU.getName(), EnumSysMenuType.MENU.getCode());
