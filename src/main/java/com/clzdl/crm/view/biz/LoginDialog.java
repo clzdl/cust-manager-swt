@@ -128,9 +128,4 @@ public class LoginDialog extends Shell {
 		}
 	}
 
-	private void center(Display parent) {
-		/// 主屏幕显示位置
-
-	}
-
 }

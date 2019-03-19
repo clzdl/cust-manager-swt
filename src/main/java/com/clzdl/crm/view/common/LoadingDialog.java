@@ -113,6 +113,10 @@ public class LoadingDialog extends Shell {
 		}
 	}
 
+	public static void closeExecutor() {
+		executorService.shutdownNow();
+	}
+
 	private void startAnimationTimer() {
 		// If there is only one image, don't start a timer.
 		if (images.length < 2)

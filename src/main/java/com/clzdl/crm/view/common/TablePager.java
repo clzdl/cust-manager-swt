@@ -35,7 +35,6 @@ public class TablePager extends Composite {
 		super(parent, style);
 		this.pagerOperation = pagerOperation;
 		createContent(parent, style);
-
 	}
 
 	public TablePager(Composite parent, int style, PagerOperation pagerOperation, Integer pageNo, Integer pageSize) {

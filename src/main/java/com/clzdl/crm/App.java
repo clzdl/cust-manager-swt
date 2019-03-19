@@ -13,6 +13,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.clzdl.crm.view.biz.LoginDialog;
+import com.clzdl.crm.view.common.LoadingDialog;
 
 /**
  * 客户管理程序入口类
@@ -29,8 +30,12 @@ public class App {
 	public static Image appImage;
 	public static LoginDialog loginDlg;
 	public static MainWindow mainWindow;
+	public static Color tableHeaderForeground;
+	public static Color tableItemBackground;
 
 	public App() {
+		tableHeaderForeground = display.getSystemColor(SWT.COLOR_GRAY);
+		tableItemBackground = display.getSystemColor(SWT.COLOR_GRAY);
 	}
 
 	public void launchSpring() {
@@ -55,6 +60,12 @@ public class App {
 				display.sleep();
 			}
 		}
+		for (int i = 0; i < loadingImages.length; ++i) {
+			loadingImages[i].dispose();
+		}
+		appImage.dispose();
+		LoadingDialog.closeExecutor();
+		display.dispose();
 	}
 
 	public void convertImageDataToImages(Color defaultBackground) {
@@ -115,7 +126,6 @@ public class App {
 		Display.setAppVersion(_version);
 		new Splash(display, app).createContents();
 		app.show();
-		display.dispose();
 	}
 
 }

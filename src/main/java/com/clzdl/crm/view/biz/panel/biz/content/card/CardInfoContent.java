@@ -7,6 +7,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
+import com.clzdl.crm.App;
 import com.clzdl.crm.view.common.AbstractPanelRightContent;
 import com.clzdl.crm.view.common.TablePager;
 import com.clzdl.crm.view.common.TablePager.PagerOperation;
@@ -21,7 +22,7 @@ public class CardInfoContent extends AbstractPanelRightContent {
 		table = new Table(this, SWT.BORDER | SWT.SINGLE | SWT.FULL_SELECTION);
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
-		table.setHeaderForeground(getDisplay().getSystemColor(SWT.COLOR_GRAY));
+		table.setHeaderForeground(App.tableHeaderForeground);
 		TableColumn colId = new TableColumn(table, SWT.NONE);
 		colId.setText("id");
 		colId.setWidth(50);

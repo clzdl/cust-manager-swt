@@ -103,7 +103,6 @@ public class MainWindow extends Shell {
 		bottomLabelData.right = new FormAttachment(100);
 		bottomLabelData.bottom = new FormAttachment(100);
 		bottomLabel.setLayoutData(bottomLabelData);
-
 		open();
 	}
 

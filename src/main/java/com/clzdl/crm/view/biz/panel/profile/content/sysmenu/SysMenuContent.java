@@ -36,7 +36,7 @@ public class SysMenuContent extends AbstractPanelRightContent {
 		table = new Table(this, SWT.BORDER | SWT.SINGLE | SWT.FULL_SELECTION);
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
-		table.setHeaderForeground(getDisplay().getSystemColor(SWT.COLOR_GRAY));
+		table.setHeaderForeground(App.tableHeaderForeground);
 		TableColumn colId = new TableColumn(table, SWT.NONE);
 		colId.setText("id");
 		colId.setWidth(50);
@@ -94,7 +94,7 @@ public class SysMenuContent extends AbstractPanelRightContent {
 				for (SysMenu menu : pm.getList()) {
 					tableItem = new TableItem(table, SWT.NONE);
 					if (pos++ % 2 == 1) {
-						tableItem.setBackground(getDisplay().getSystemColor(SWT.COLOR_GRAY));
+						tableItem.setBackground(App.tableItemBackground);
 					}
 					tableItem.setText(new String[] { menu.getId().toString(), menu.getName(), menu.getHref(),
 							menu.getParentId().toString(), menu.getMenuTypeOutput(), menu.getCreateTimeOutput() });
