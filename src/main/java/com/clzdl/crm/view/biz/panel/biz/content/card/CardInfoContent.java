@@ -3,22 +3,21 @@ package com.clzdl.crm.view.biz.panel.biz.content.card;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
+import com.clzdl.crm.view.common.AbstractPanelRightContent;
 import com.clzdl.crm.view.common.TablePager;
 import com.clzdl.crm.view.common.TablePager.PagerOperation;
 
-public class CardInfoContent extends Composite {
-	private final String title = "会员卡信息";
+public class CardInfoContent extends AbstractPanelRightContent {
+	private final static String title = "会员卡信息";
 	private Table table;
 	private TablePager pager;
 
 	public CardInfoContent(Composite parent, int style) {
-		super(parent, style);
-		setLayout(new FormLayout());
+		super(parent, style, title);
 		table = new Table(this, SWT.BORDER | SWT.SINGLE | SWT.FULL_SELECTION);
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
@@ -61,30 +60,6 @@ public class CardInfoContent extends Composite {
 		pager = new TablePager(this, SWT.NONE, new PagerOperation() {
 			@Override
 			public Integer refresh(Integer pageNo, Integer pageSize) {
-//				CmCustInfo cust = null;
-//				final List<CmCustInfo> list = new ArrayList<CmCustInfo>();
-//				Integer serialNo = (pageNo - 1) * pageSize;
-//				for (int i = 0; i < pageSize; i++) {
-//					cust = new CmCustInfo();
-//					cust.setId(serialNo);
-//					cust.setName("name " + serialNo);
-//					cust.setSex(0);
-//					cust.setPhone("phone " + serialNo);
-//					++serialNo;
-//					list.add(cust);
-//				}
-//
-//				table.removeAll();
-//				TableItem tableItem = null;
-//				Integer pos = 0;
-//				for (CmCustInfo cust1 : list) {
-//					tableItem = new TableItem(table, SWT.NONE);
-//					if (pos++ % 2 == 1) {
-//						tableItem.setBackground(getDisplay().getSystemColor(SWT.COLOR_GRAY));
-//					}
-//					tableItem.setText(new String[] { cust1.getId().toString(), cust1.getName(),
-//							cust1.getSex().toString(), cust1.getPhone() });
-//				}
 
 				return 101;
 			}
@@ -104,9 +79,4 @@ public class CardInfoContent extends Composite {
 		pagerFormData.bottom = new FormAttachment(100);
 		pager.setLayoutData(pagerFormData);
 	}
-
-	public String getTitle() {
-		return title;
-	}
-
 }

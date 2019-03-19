@@ -1,5 +1,8 @@
 package com.clzdl.crm.view.biz.panel.biz;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -13,13 +16,13 @@ import org.eclipse.swt.widgets.TableItem;
 
 import com.clzdl.crm.view.biz.panel.biz.content.card.CardInfoContent;
 import com.clzdl.crm.view.biz.panel.biz.content.customer.CustInfoContent;
+import com.clzdl.crm.view.common.AbstractPanelRightContent;
 
 public class BizPanel extends Composite {
 	private Sash sash;
 	private Table leftMenuTab;
-	private CustInfoContent custInfoContent;
-	private CardInfoContent cardInfoContent;
-	private Composite currentContent;
+	private List<AbstractPanelRightContent> rightContents = new ArrayList<AbstractPanelRightContent>();
+	private AbstractPanelRightContent currentContent;
 
 	public BizPanel(Composite parent, int style) {
 		super(parent, style);
@@ -29,18 +32,8 @@ public class BizPanel extends Composite {
 		leftMenuTab.setLinesVisible(true);
 
 		sash = new Sash(this, SWT.VERTICAL);
-		custInfoContent = new CustInfoContent(this, SWT.BORDER);
-		cardInfoContent = new CardInfoContent(this, SWT.BORDER);
-
-		TableItem itemCust = new TableItem(leftMenuTab, SWT.NULL);
-		itemCust.setData(custInfoContent);
-		itemCust.setText(custInfoContent.getTitle());
-
-		TableItem itemCard = new TableItem(leftMenuTab, SWT.NULL);
-		itemCard.setData(cardInfoContent);
-		itemCard.setText(cardInfoContent.getTitle());
-
-		leftMenuTab.setSelection(itemCust);
+		rightContents.add(new CustInfoContent(this, SWT.BORDER));
+		rightContents.add(new CardInfoContent(this, SWT.BORDER));
 
 		leftMenuTab.addSelectionListener(new SelectionAdapter() {
 
@@ -48,7 +41,7 @@ public class BizPanel extends Composite {
 			public void widgetDefaultSelected(SelectionEvent e) {
 				super.widgetDefaultSelected(e);
 				currentContent.setVisible(false);
-				currentContent = (Composite) e.item.getData();
+				currentContent = (AbstractPanelRightContent) e.item.getData();
 				currentContent.setVisible(true);
 			}
 		});
@@ -71,10 +64,20 @@ public class BizPanel extends Composite {
 		contentFormData.top = new FormAttachment(0);
 		contentFormData.right = new FormAttachment(100, -10);
 		contentFormData.bottom = new FormAttachment(100);
-		custInfoContent.setLayoutData(contentFormData);
-		currentContent = custInfoContent;
-		cardInfoContent.setLayoutData(contentFormData);
-		cardInfoContent.setVisible(false);
+		Integer index = 0;
+		TableItem item = null;
+		for (AbstractPanelRightContent content : rightContents) {
+			item = new TableItem(leftMenuTab, SWT.NULL);
+			item.setData(content);
+			item.setText(content.getTitle());
+			content.setLayoutData(contentFormData);
+			if (0 == index++) {
+				currentContent = content;
+				leftMenuTab.setSelection(item);
+			} else {
+				content.setVisible(false);
+			}
+		}
 
 		sash.addSelectionListener(new SelectionAdapter() {
 			@Override
