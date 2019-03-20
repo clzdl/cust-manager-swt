@@ -1,6 +1,7 @@
 package com.clzdl.crm.common.persistence.entity;
 
 import java.util.Date;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
@@ -73,6 +74,9 @@ public class SysUser {
 
 	@Column(name = "modify_time")
 	private Date modifyTime;
+
+	@Transient
+	private Set<Long> userRoleIds;
 
 	/**
 	 * 获取系统用户表
@@ -268,6 +272,14 @@ public class SysUser {
 
 	public void setSexOutput(String sexOutput) {
 		this.sexOutput = sexOutput;
+	}
+
+	public Set<Long> getUserRoleIds() {
+		return userRoleIds;
+	}
+
+	public void setUserRoleIds(Set<Long> userRoleIds) {
+		this.userRoleIds = userRoleIds;
 	}
 
 }

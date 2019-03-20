@@ -1,6 +1,7 @@
 package com.clzdl.crm.common.persistence.entity;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
@@ -40,6 +41,12 @@ public class SysRole {
 
 	@Column(name = "modify_time")
 	private Date modifyTime;
+
+	@Transient
+	private Boolean selected = false;
+
+	@Transient
+	private List<Long> menuIds;
 
 	/**
 	 * 获取系统角色表
@@ -133,6 +140,22 @@ public class SysRole {
 
 	public void setCreateTimeOutput(String createTimeOutput) {
 		this.createTimeOutput = createTimeOutput;
+	}
+
+	public Boolean getSelected() {
+		return selected;
+	}
+
+	public void setSelected(Boolean selected) {
+		this.selected = selected;
+	}
+
+	public List<Long> getMenuIds() {
+		return menuIds;
+	}
+
+	public void setMenuIds(List<Long> menuIds) {
+		this.menuIds = menuIds;
 	}
 
 }

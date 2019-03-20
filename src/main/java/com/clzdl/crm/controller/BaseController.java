@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.base.auth.shiro.ShiroKit;
+import com.base.auth.usercontext.SysCurrentUserContext;
 import com.base.exception.BizException;
 import com.clzdl.crm.App;
 import com.clzdl.crm.ExceptionMessage;
@@ -36,6 +37,14 @@ public abstract class BaseController {
 			result.setCode(ExceptionMessage.SYS_ERROR.getCode());
 			result.setErrMsg(ExceptionMessage.SYS_ERROR.getMessage());
 		}
+	}
+
+	protected SysCurrentUserContext getCurrentUserContext() {
+		return (SysCurrentUserContext) ShiroKit.getSubject().getPrincipals().getPrimaryPrincipal();
+	}
+
+	protected Long getCurrentUserId() {
+		return getCurrentUserContext().getUserId();
 	}
 
 }

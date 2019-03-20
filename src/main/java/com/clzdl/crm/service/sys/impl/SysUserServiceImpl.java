@@ -3,6 +3,9 @@ package com.clzdl.crm.service.sys.impl;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Resource;
+
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
@@ -18,6 +21,7 @@ import com.base.mvc.service.mybatis.AbastractEntityService;
 import com.base.util.cipher.MD5Util;
 import com.clzdl.crm.ExceptionMessage;
 import com.clzdl.crm.common.persistence.entity.SysUser;
+import com.clzdl.crm.service.sys.ISysUserRoleService;
 import com.clzdl.crm.service.sys.ISysUserService;
 
 import tk.mybatis.mapper.entity.Example;
@@ -33,6 +37,9 @@ import tk.mybatis.mapper.util.Sqls;
 @Service("sysUserServiceImpl")
 public class SysUserServiceImpl extends AbastractEntityService<SysUser> implements ISysUserService {
 	private final static Logger _logger = LoggerFactory.getLogger(SysUserServiceImpl.class);
+
+	@Resource
+	private ISysUserRoleService sysUserRoleService;
 
 	protected SysUserServiceImpl() {
 		super(SysUser.class);
@@ -52,11 +59,6 @@ public class SysUserServiceImpl extends AbastractEntityService<SysUser> implemen
 
 	@Override
 	public void login(String loginName, String loginPwd) throws Exception {
-//		SysUser sysUser = super.getByExample(
-//				Example.builder(SysUser.class).where(Sqls.custom().andEqualTo("loginName", loginName)).build());
-//		if (null == sysUser || !sysUser.getLoginPwd().equalsIgnoreCase(MD5Util.MD5Encode(loginPwd))) {
-//			throw new BizException(ExceptionMessage.USER_LOGIN_ERROR);
-//		}
 		try {
 			Subject currentUser = ShiroKit.getSubject();
 			UsernamePasswordToken token = new UsernamePasswordToken(loginName, MD5Util.MD5Encode(loginPwd));
@@ -73,6 +75,23 @@ public class SysUserServiceImpl extends AbastractEntityService<SysUser> implemen
 	public SysUser findSysUserByLoginName(String loginName) throws Exception {
 		return super.getByExample(
 				Example.builder(SysUser.class).where(Sqls.custom().andEqualTo("loginName", loginName)).build());
+	}
+
+	@Override
+	public void save(SysUser entity) throws Exception {
+
+		if (entity.getId() != null) {
+			sysUserRoleService.deleteByUserId(entity.getId());
+			super.update(entity);
+		} else {
+			super.insert(entity);
+		}
+
+		if (CollectionUtils.isNotEmpty(entity.getUserRoleIds())) {
+			for (Long roleId : entity.getUserRoleIds()) {
+				sysUserRoleService.insert(entity.getId(), roleId);
+			}
+		}
 	}
 
 	@Override

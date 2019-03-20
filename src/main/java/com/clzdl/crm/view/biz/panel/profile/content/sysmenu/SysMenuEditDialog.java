@@ -27,8 +27,8 @@ import com.clzdl.crm.controller.sys.SysMenuController;
 import com.clzdl.crm.dto.ResultDTO;
 import com.clzdl.crm.enums.EnumSysMenuType;
 import com.clzdl.crm.view.common.MsgBox;
-import com.clzdl.crm.view.common.SelectTree;
-import com.clzdl.crm.view.common.SelectTree.SelectTreeData;
+import com.clzdl.crm.view.common.tree.SelectTree;
+import com.clzdl.crm.view.common.tree.TreeNodeData;
 
 public class SysMenuEditDialog extends Shell {
 	private final static Logger _logger = LoggerFactory.getLogger(SysMenuEditDialog.class);
@@ -186,7 +186,8 @@ public class SysMenuEditDialog extends Shell {
 	private void submit() {
 		sysMenu.setName(edtName.getText().trim());
 		sysMenu.setHref(edtPermission.getText().trim());
-		sysMenu.setParentId(Long.valueOf(stParent.getCodeValue().toString()));
+		Object parentId = stParent.getCodeValue();
+		sysMenu.setParentId(parentId != null ? Long.valueOf(parentId.toString()) : 0L);
 		sysMenu.setMenuType(sysMenuType.getCode().byteValue());
 		if (StringUtil.isBlank(sysMenu.getName())) {
 			new MsgBox(this, "名称不能为空").open();
@@ -234,11 +235,11 @@ public class SysMenuEditDialog extends Shell {
 		stParent.setDataList(buildSelTreeList(allMenus.getData(), sysMenu.getParentId()));
 	}
 
-	private List<SelectTreeData> buildSelTreeList(List<SysMenu> list, Long defaultCode) {
-		List<SelectTreeData> result = new ArrayList<SelectTree.SelectTreeData>();
+	private List<TreeNodeData> buildSelTreeList(List<SysMenu> list, Long defaultCode) {
+		List<TreeNodeData> result = new ArrayList<TreeNodeData>();
 		if (CollectionUtils.isNotEmpty(list)) {
 			for (SysMenu menu : list) {
-				result.add(new SelectTreeData(menu.getId(), menu.getParentId(), menu.getName(),
+				result.add(new TreeNodeData(menu.getId(), menu.getParentId(), menu.getName(),
 						defaultCode == menu.getId() ? true : false));
 			}
 		}

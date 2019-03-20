@@ -1,5 +1,7 @@
 package com.clzdl.crm.controller.sys;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
@@ -9,6 +11,7 @@ import com.clzdl.crm.common.persistence.entity.SysRole;
 import com.clzdl.crm.controller.BaseController;
 import com.clzdl.crm.dto.ResultDTO;
 import com.clzdl.crm.service.sys.ISysRoleService;
+import com.clzdl.crm.view.common.tree.TreeNodeData;
 
 @Service
 public class SysRoleController extends BaseController {
@@ -61,6 +64,29 @@ public class SysRoleController extends BaseController {
 		try {
 //			validatePermissions(_PERMISSION_DELETE_BY_ID);
 			sysRoleService.deleteById(id);
+
+		} catch (Exception e) {
+			decorateResult4Exception(result, e);
+		}
+
+		return result;
+	}
+
+	public ResultDTO<List<TreeNodeData>> listRoleAuth(Long roleId) {
+		ResultDTO<List<TreeNodeData>> result = new ResultDTO<List<TreeNodeData>>();
+		try {
+			result.setData(sysRoleService.listRoleAuth(roleId));
+		} catch (Exception e) {
+			decorateResult4Exception(result, e);
+		}
+
+		return result;
+	}
+
+	public ResultDTO<List<SysRole>> listUserRole(Long userId) {
+		ResultDTO<List<SysRole>> result = new ResultDTO<List<SysRole>>();
+		try {
+			result.setData(sysRoleService.listUserRole(userId));
 
 		} catch (Exception e) {
 			decorateResult4Exception(result, e);

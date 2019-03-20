@@ -1,5 +1,9 @@
 package com.clzdl.crm.view.biz.panel.profile.content.sysrole;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.collections.CollectionUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -20,6 +24,8 @@ import com.clzdl.crm.common.persistence.entity.SysRole;
 import com.clzdl.crm.controller.sys.SysRoleController;
 import com.clzdl.crm.dto.ResultDTO;
 import com.clzdl.crm.view.common.MsgBox;
+import com.clzdl.crm.view.common.tree.AuthTree;
+import com.clzdl.crm.view.common.tree.TreeNodeData;
 
 public class SysRoleEditDialog extends Shell {
 	private final static Logger _logger = LoggerFactory.getLogger(SysRoleEditDialog.class);
@@ -28,6 +34,8 @@ public class SysRoleEditDialog extends Shell {
 	private Text edtName;
 	private Label txtDesc;
 	private Text edtDesc;
+	private Label txtAuth;
+	private AuthTree authTree;
 	private Button btnSubmit;
 	private Button btnReset;
 
@@ -36,7 +44,7 @@ public class SysRoleEditDialog extends Shell {
 	public SysRoleEditDialog(Shell parent, Long id) {
 		super(parent, SWT.DIALOG_TRIM | SWT.PRIMARY_MODAL);
 		this.id = id;
-		setSize(300, 150);
+		setSize(400, 300);
 		setText("修改");
 		center(parent);
 		setLayout(new FormLayout());
@@ -49,6 +57,10 @@ public class SysRoleEditDialog extends Shell {
 		txtDesc = new Label(this, SWT.NONE);
 		txtDesc.setText("描述");
 		edtDesc = new Text(this, SWT.BORDER);
+
+		txtAuth = new Label(this, SWT.NONE);
+		txtAuth.setText("权限");
+		authTree = new AuthTree(this, SWT.NONE, 0L);
 
 		btnSubmit = new Button(this, SWT.PUSH);
 		btnSubmit.setText("提交");
@@ -92,14 +104,26 @@ public class SysRoleEditDialog extends Shell {
 		edtDescFormData.right = new FormAttachment(100, -10);
 		edtDesc.setLayoutData(edtDescFormData);
 
+		FormData txtAuthFormData = new FormData();
+		txtAuthFormData.top = new FormAttachment(txtDesc, 4);
+		txtAuthFormData.right = new FormAttachment(15);
+		txtAuth.setLayoutData(txtAuthFormData);
+
+		FormData authTreeFormData = new FormData();
+		authTreeFormData.left = new FormAttachment(txtAuth, 2);
+		authTreeFormData.top = new FormAttachment(edtDesc, 4);
+		authTreeFormData.right = new FormAttachment(100, -10);
+		authTreeFormData.bottom = new FormAttachment(btnSubmit, 4);
+		authTree.setLayoutData(authTreeFormData);
+
 		FormData btnSubmitFormData = new FormData();
 		btnSubmitFormData.left = new FormAttachment(45);
-		btnSubmitFormData.top = new FormAttachment(edtDesc, 4);
+		btnSubmitFormData.top = new FormAttachment(100, -40);
 		btnSubmit.setLayoutData(btnSubmitFormData);
 
 		FormData btnResetFormData = new FormData();
 		btnResetFormData.left = new FormAttachment(btnSubmit, 10);
-		btnResetFormData.top = new FormAttachment(edtDesc, 4);
+		btnResetFormData.top = new FormAttachment(100, -40);
 		btnReset.setLayoutData(btnResetFormData);
 		fillValue();
 		open();
@@ -126,6 +150,15 @@ public class SysRoleEditDialog extends Shell {
 	private void submit() {
 		sysRole.setRoleName(edtName.getText().trim());
 		sysRole.setDescription(edtDesc.getText().trim());
+
+		List<TreeNodeData> list = authTree.getSelections();
+		List<Long> menuIds = new ArrayList<Long>();
+		if (CollectionUtils.isNotEmpty(list)) {
+			for (TreeNodeData data : list) {
+				menuIds.add(Long.valueOf(data.getCode().toString()));
+			}
+		}
+		sysRole.setMenuIds(menuIds);
 
 		if (StringUtil.isBlank(sysRole.getRoleName())) {
 			new MsgBox(this, "名称不能为空").open();
@@ -154,6 +187,7 @@ public class SysRoleEditDialog extends Shell {
 	}
 
 	private void fillValue() {
+
 		if (id == null) {
 			sysRole = new SysRole();
 		} else {
@@ -166,6 +200,8 @@ public class SysRoleEditDialog extends Shell {
 				edtDesc.setText(sysRole.getDescription());
 			}
 		}
+		ResultDTO<List<TreeNodeData>> authReuslt = SysRoleController.getBean().listRoleAuth(sysRole.getId());
+		authTree.fillTree(authReuslt.getData());
 	}
 
 }

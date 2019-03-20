@@ -1,15 +1,18 @@
-package com.clzdl.crm.view.common;
+package com.clzdl.crm.view.common.tree;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.FocusAdapter;
+import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -23,73 +26,11 @@ public class SelectTree extends Composite {
 	private Text text;
 	private Shell popup;
 	private Tree tree;
-	private List<SelectTreeData> dataList;
+	private List<TreeNodeData> dataList;
 	private Object parentCode;
 	private Boolean isMulti = false;
-	private SelectTreeData result;
+	private TreeNodeData result;
 	private Object defaultCode;
-
-	public static class SelectTreeData {
-		private Object code;
-		private Object parentCode;
-		private String title;
-		private Boolean selected = false;
-
-		public SelectTreeData(Object code, Object parentCode, String title, Boolean selected) {
-			this.code = code;
-			this.parentCode = parentCode;
-			this.title = title;
-			this.selected = selected;
-		}
-
-		public Object getCode() {
-			return code;
-		}
-
-		public void setCode(Object code) {
-			this.code = code;
-		}
-
-		public Object getParentCode() {
-			return parentCode;
-		}
-
-		public void setParentCode(Object parentCode) {
-			this.parentCode = parentCode;
-		}
-
-		public String getTitle() {
-			return title;
-		}
-
-		public void setTitle(String title) {
-			this.title = title;
-		}
-
-		public Boolean getSelected() {
-			return selected;
-		}
-
-		public void setSelected(Boolean selected) {
-			this.selected = selected;
-		}
-
-		public Boolean compareParentCode(Object parentCode) {
-			if (parentCode instanceof Integer || parentCode instanceof Long || parentCode instanceof Double) {
-				return this.parentCode == parentCode;
-			} else {
-				return this.parentCode.equals(parentCode);
-			}
-		}
-
-		public Boolean compareCode(Object parentCode) {
-			if (parentCode instanceof Integer || parentCode instanceof Long || parentCode instanceof Double) {
-				return this.code == parentCode;
-			} else {
-				return this.code.equals(parentCode);
-			}
-		}
-	}
 
 	public SelectTree(Composite parent, int style, Object parentCode) {
 		super(parent, style);
@@ -97,7 +38,7 @@ public class SelectTree extends Composite {
 		createContent();
 	}
 
-	public SelectTree(Composite parent, int style, List<SelectTreeData> dataList, Object parentCode) {
+	public SelectTree(Composite parent, int style, List<TreeNodeData> dataList, Object parentCode) {
 		super(parent, style);
 		this.dataList = dataList;
 		this.parentCode = parentCode;
@@ -106,14 +47,20 @@ public class SelectTree extends Composite {
 	}
 
 	public Object getCodeValue() {
+		if (null == result) {
+			return null;
+		}
 		return result.getCode();
 	}
 
 	public String getTitleValue() {
+		if (null == result) {
+			return null;
+		}
 		return result.getTitle();
 	}
 
-	public void setDataList(List<SelectTreeData> dataList) {
+	public void setDataList(List<TreeNodeData> dataList) {
 		this.dataList = dataList;
 		createPopup();
 	}
@@ -146,11 +93,22 @@ public class SelectTree extends Composite {
 					checkPath(item.getParentItem(), checked, false);
 				} else {
 					text.setText(item.getText());
-					result = (SelectTreeData) item.getData();
+					result = (TreeNodeData) item.getData();
 					if (!isMulti) {
 						dropDown(false);
 					}
 				}
+			}
+		});
+
+		tree.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusLost(FocusEvent e) {
+				super.focusLost(e);
+				if (isFocusControl()) {
+					return;
+				}
+				dropDown(false);
 			}
 		});
 		buildTree();
@@ -214,6 +172,9 @@ public class SelectTree extends Composite {
 		}
 		popup.setBounds(rect.x, rect.y + rect.height, rect.width, 100);
 		popup.setVisible(true);
+		if (isFocusControl()) {
+			tree.setFocus();
+		}
 	}
 
 	private void createContent() {
@@ -243,11 +204,12 @@ public class SelectTree extends Composite {
 					if (text.getEditable())
 						return;
 					boolean dropped = isDropped();
-					if (text.getEditable() && text.isFocusControl())
+					if (text.getEditable() && text.isFocusControl()) {
 						text.selectAll();
-					if (!dropped) {
-						setFocus();
 					}
+//					if (!dropped) {
+//						setFocus();
+//					}
 					dropDown(!dropped);
 					break;
 				}
@@ -258,6 +220,7 @@ public class SelectTree extends Composite {
 		for (int i = 0; i < textEvents.length; ++i) {
 			text.addListener(textEvents[i], textListener);
 		}
+
 	}
 
 	private void buildTree() {
@@ -265,7 +228,7 @@ public class SelectTree extends Composite {
 			tree.removeAll();
 		}
 		TreeItem item = null;
-		for (SelectTreeData data : dataList) {
+		for (TreeNodeData data : dataList) {
 			if (!data.compareParentCode(parentCode)) {
 				continue;
 			}
@@ -275,6 +238,7 @@ public class SelectTree extends Composite {
 			item.setText(data.getTitle());
 			if (data.getSelected() || data.compareCode(defaultCode)) {
 				tree.setSelection(item);
+				text.setText(data.getTitle());
 			}
 			buildTreeItem(item, data.getCode());
 		}
@@ -282,7 +246,7 @@ public class SelectTree extends Composite {
 
 	private void buildTreeItem(TreeItem treeItem, Object parentCode) {
 		TreeItem item = null;
-		for (SelectTreeData data : dataList) {
+		for (TreeNodeData data : dataList) {
 			if (!data.compareParentCode(parentCode)) {
 				continue;
 			}
@@ -291,9 +255,23 @@ public class SelectTree extends Composite {
 			item.setText(data.getTitle());
 			if (data.getSelected() || data.compareCode(defaultCode)) {
 				tree.setSelection(item);
+				text.setText(data.getTitle());
 			}
 			buildTreeItem(item, data.getCode());
 		}
+	}
+
+	@Override
+	public boolean isFocusControl() {
+		checkWidget();
+		if (isFocus(text) || isFocus(tree) || isFocus(popup)) {
+			return true;
+		}
+		return super.isFocusControl();
+	}
+
+	private boolean isFocus(Control control) {
+		return control != null && !control.isDisposed() && control.isFocusControl();
 	}
 
 	public static void main(String[] args) {
@@ -307,19 +285,19 @@ public class SelectTree extends Composite {
 		int y = bounds.y + Math.max(0, (bounds.height - rect.height) / 2);
 		shell.setBounds(x, y, rect.width, rect.height);
 		shell.setLayout(new FillLayout());
-		List<SelectTreeData> list = new ArrayList<SelectTree.SelectTreeData>();
-		list.add(new SelectTreeData(1, 0, "title1", false));
-//		list.add(new SelectTreeData(2, 0, "title2", false));
-//		list.add(new SelectTreeData(3, 0, "title3", false));
-//		list.add(new SelectTreeData(11, 1, "title11", false));
-//		list.add(new SelectTreeData(12, 1, "title12", false));
-//		list.add(new SelectTreeData(13, 1, "title13", false));
-//		list.add(new SelectTreeData(21, 2, "title21", false));
-//		list.add(new SelectTreeData(22, 2, "title22", false));
-//		list.add(new SelectTreeData(23, 2, "title23", false));
-//		list.add(new SelectTreeData(31, 3, "title31", false));
-//		list.add(new SelectTreeData(32, 3, "title32", false));
-//		list.add(new SelectTreeData(33, 3, "title33", false));
+		List<TreeNodeData> list = new ArrayList<TreeNodeData>();
+		list.add(new TreeNodeData(1, 0, "title1", false));
+//		list.add(new TreeNodeData(2, 0, "title2", false));
+//		list.add(new TreeNodeData(3, 0, "title3", false));
+//		list.add(new TreeNodeData(11, 1, "title11", false));
+//		list.add(new TreeNodeData(12, 1, "title12", false));
+//		list.add(new TreeNodeData(13, 1, "title13", false));
+//		list.add(new TreeNodeData(21, 2, "title21", false));
+//		list.add(new TreeNodeData(22, 2, "title22", false));
+//		list.add(new TreeNodeData(23, 2, "title23", false));
+//		list.add(new TreeNodeData(31, 3, "title31", false));
+//		list.add(new TreeNodeData(32, 3, "title32", false));
+//		list.add(new TreeNodeData(33, 3, "title33", false));
 		SelectTree stTree = new SelectTree(shell, SWT.NONE, 0);
 		stTree.setDefault(3);
 		stTree.setDataList(list);

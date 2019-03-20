@@ -19,8 +19,8 @@ public class SysUserController extends BaseController {
 	public SysUserController() {
 	}
 
-	public ResultDTO login(String userName, String userPwd) {
-		ResultDTO result = new ResultDTO();
+	public ResultDTO<?> login(String userName, String userPwd) {
+		ResultDTO<?> result = new ResultDTO<Object>();
 		try {
 			sysUserService.login(userName, userPwd);
 

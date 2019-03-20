@@ -1,5 +1,10 @@
 package com.clzdl.crm.view.biz.panel.profile.content.sysuser;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.apache.commons.collections.CollectionUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -19,7 +24,9 @@ import org.slf4j.LoggerFactory;
 
 import com.base.mvc.enums.EnumUserSex;
 import com.base.util.string.StringUtil;
+import com.clzdl.crm.common.persistence.entity.SysRole;
 import com.clzdl.crm.common.persistence.entity.SysUser;
+import com.clzdl.crm.controller.sys.SysRoleController;
 import com.clzdl.crm.controller.sys.SysUserController;
 import com.clzdl.crm.dto.ResultDTO;
 import com.clzdl.crm.view.common.MsgBox;
@@ -41,8 +48,11 @@ public class SysUserEditDialog extends Shell {
 	private Text edtLoginName;
 	private Label txtLoginPwd;
 	private Text edtLoginPwd;
+	private Label txtRole;
+	private Group roleContainer;
 	private Button btnSubmit;
 	private Button btnReset;
+	private Set<Long> selectRuleId = new HashSet<Long>();
 
 	private SysUser sysUser = null;
 
@@ -104,6 +114,13 @@ public class SysUserEditDialog extends Shell {
 		txtLoginPwd = new Label(this, SWT.NONE);
 		txtLoginPwd.setText("密码");
 		edtLoginPwd = new Text(this, SWT.BORDER | SWT.PASSWORD);
+
+		/// 角色
+		txtRole = new Label(this, SWT.NONE);
+		txtRole.setText("角色");
+
+		roleContainer = new Group(this, SWT.NONE);
+		roleContainer.setLayout(new FillLayout());
 
 		btnSubmit = new Button(this, SWT.PUSH);
 		btnSubmit.setText("提交");
@@ -191,14 +208,25 @@ public class SysUserEditDialog extends Shell {
 		edtLoginPwdFormData.right = new FormAttachment(100, -10);
 		edtLoginPwd.setLayoutData(edtLoginPwdFormData);
 
+		FormData txtRoleFormData = new FormData();
+		txtRoleFormData.top = new FormAttachment(txtLoginPwd, 4);
+		txtRoleFormData.right = new FormAttachment(15);
+		txtRole.setLayoutData(txtRoleFormData);
+
+		FormData roleContainerPwdFormData = new FormData();
+		roleContainerPwdFormData.left = new FormAttachment(txtRole, 2);
+		roleContainerPwdFormData.top = new FormAttachment(edtLoginPwd, 4);
+		roleContainerPwdFormData.right = new FormAttachment(100, -10);
+		roleContainer.setLayoutData(roleContainerPwdFormData);
+
 		FormData btnSubmitFormData = new FormData();
 		btnSubmitFormData.left = new FormAttachment(45);
-		btnSubmitFormData.top = new FormAttachment(edtLoginPwd, 4);
+		btnSubmitFormData.top = new FormAttachment(roleContainer, 4);
 		btnSubmit.setLayoutData(btnSubmitFormData);
 
 		FormData btnResetFormData = new FormData();
 		btnResetFormData.left = new FormAttachment(btnSubmit, 10);
-		btnResetFormData.top = new FormAttachment(edtLoginPwd, 4);
+		btnResetFormData.top = new FormAttachment(roleContainer, 4);
 		btnReset.setLayoutData(btnResetFormData);
 		fillValue();
 		open();
@@ -229,6 +257,7 @@ public class SysUserEditDialog extends Shell {
 		sysUser.setSex(userSex.getCode().toString());
 		sysUser.setLoginName(edtLoginName.getText().trim());
 		sysUser.setLoginPwd(edtLoginPwd.getText().trim());
+		sysUser.setUserRoleIds(selectRuleId);
 
 		if (StringUtil.isBlank(sysUser.getName())) {
 			new MsgBox(this, "姓名不能为空").open();
@@ -295,6 +324,44 @@ public class SysUserEditDialog extends Shell {
 				edtLoginPwd.setText(sysUser.getLoginPwd());
 			}
 		}
+
+		ResultDTO<List<SysRole>> roleResult = SysRoleController.getBean().listUserRole(sysUser.getId());
+		fillRoleCheck(roleResult.getData());
+	}
+
+	private void fillRoleCheck(List<SysRole> listSysRole) {
+		if (CollectionUtils.isEmpty(listSysRole)) {
+			return;
+		}
+		SelectionAdapter listener = new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				super.widgetSelected(e);
+				SysRole sysRole = (SysRole) e.widget.getData();
+				if (sysRole.getSelected()) {
+					sysRole.setSelected(false);
+					if (selectRuleId.contains(sysRole.getId())) {
+						selectRuleId.remove(sysRole.getId());
+					}
+				} else {
+					sysRole.setSelected(true);
+					selectRuleId.add(sysRole.getId());
+				}
+			}
+		};
+		Button btnCheck = null;
+		for (SysRole sysRole : listSysRole) {
+			btnCheck = new Button(roleContainer, SWT.CHECK);
+			btnCheck.setText(sysRole.getDescription());
+			btnCheck.setData(sysRole);
+			btnCheck.addSelectionListener(listener);
+			if (sysRole.getSelected()) {
+				btnCheck.setSelection(true);
+				selectRuleId.add(sysRole.getId());
+			}
+
+		}
+
 	}
 
 }
