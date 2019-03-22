@@ -13,7 +13,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <!--  编译jdk版本  -->
-    <jdk.version>1.7</jdk.version>
+    <jdk.version>1.8</jdk.version>
     <project.name>cust-manager</project.name>
     <swt.version>4.10.0</swt.version>
     <spring.version>5.0.3.RELEASE</spring.version>
