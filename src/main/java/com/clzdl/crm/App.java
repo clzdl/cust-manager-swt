@@ -7,6 +7,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.ImageLoader;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -21,21 +22,49 @@ import com.clzdl.crm.view.common.LoadingDialog;
  */
 public class App {
 	private final static String _version = "0.0.1";
-	public final static String _launchSplashFile = "images/launch.jpg";
-	public final static String _appImageFile = "images/app.png";
+	private final static String _launchSplashFile = "images/launch.jpg";
+	private final static String _appImageFile = "images/app.png";
 	private final static Logger _logger = LoggerFactory.getLogger(App.class);
-	public static ApplicationContext context;
-	public static Display display;
-	public static Image[] loadingImages;
-	public static Image appImage;
-	public static LoginDialog loginDlg;
-	public static MainWindow mainWindow;
-	public static Color tableHeaderForeground;
-	public static Color tableItemBackground;
+	private static ApplicationContext context;
+	private static Display display;
+	private static Image[] loadingImages;
+	private static Image appImage;
+	private static LoginDialog loginDlg;
+	private static Color tableHeaderForeground;
+	private static Color tableItemBackground;
+	private static MainWindow mainWindow;
 
 	public App() {
 		tableHeaderForeground = display.getSystemColor(SWT.COLOR_GRAY);
 		tableItemBackground = display.getSystemColor(SWT.COLOR_GRAY);
+	}
+
+	public static Shell getMainWindow() {
+		return mainWindow;
+	}
+
+	public static Color getTabHeaderForeground() {
+		return tableHeaderForeground;
+	}
+
+	public static Color getTabItemBackground() {
+		return tableItemBackground;
+	}
+
+	public static Image[] getLoadingImgages() {
+		return loadingImages;
+	}
+
+	public static ApplicationContext getSpringContext() {
+		return context;
+	}
+
+	public static Image getAppImage() {
+		return appImage;
+	}
+
+	public static String getSplashImageFile() {
+		return _launchSplashFile;
 	}
 
 	public void launchSpring() {

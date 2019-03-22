@@ -36,7 +36,7 @@ public class MainWindow extends Shell {
 	public void createContent() {
 		setSize(800, 600);
 		setText("客户管理");
-		setImage(App.appImage);
+		setImage(App.getAppImage());
 		Monitor primary = getDisplay().getPrimaryMonitor();
 		Rectangle bounds = primary.getBounds();
 		Rectangle rect = getBounds();

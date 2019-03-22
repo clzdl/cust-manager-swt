@@ -22,7 +22,7 @@ public class CardInfoContent extends AbstractPanelRightContent {
 		table = new Table(this, SWT.BORDER | SWT.SINGLE | SWT.FULL_SELECTION);
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
-		table.setHeaderForeground(App.tableHeaderForeground);
+		table.setHeaderForeground(App.getTabHeaderForeground());
 		TableColumn colId = new TableColumn(table, SWT.NONE);
 		colId.setText("id");
 		colId.setWidth(50);

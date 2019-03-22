@@ -36,7 +36,7 @@ public class SysUserContent extends AbstractPanelRightContent {
 		table = new Table(this, SWT.BORDER | SWT.SINGLE | SWT.FULL_SELECTION);
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
-		table.setHeaderForeground(App.tableHeaderForeground);
+		table.setHeaderForeground(App.getTabHeaderForeground());
 		TableColumn colId = new TableColumn(table, SWT.NONE);
 		colId.setText("id");
 		colId.setWidth(50);
@@ -81,14 +81,14 @@ public class SysUserContent extends AbstractPanelRightContent {
 			@Override
 			public Integer refresh(final Integer pageNo, final Integer pageSize) {
 				final PageModel<SysUser> pm = new PageModel<SysUser>();
-				LoadingDialog loading = new LoadingDialog(App.mainWindow, App.loadingImages);
+				LoadingDialog loading = new LoadingDialog(App.getMainWindow(), App.getLoadingImgages());
 				loading.start(new TaskLoading() {
 					@Override
 					public void doing() {
 						ResultDTO<PageModel<SysUser>> result = SysUserController.getBean().list(searchCondition, pageNo,
 								pageSize);
 						if (result.getCode() != ResultDTO.SUCCESS_CODE) {
-							new MsgBox(App.mainWindow, result.getErrMsg()).open();
+							new MsgBox(App.getMainWindow(), result.getErrMsg()).open();
 							return;
 
 						} else {
@@ -104,7 +104,7 @@ public class SysUserContent extends AbstractPanelRightContent {
 				for (SysUser user : pm.getList()) {
 					tableItem = new TableItem(table, SWT.NONE);
 					if (pos++ % 2 == 1) {
-						tableItem.setBackground(App.tableItemBackground);
+						tableItem.setBackground(App.getTabItemBackground());
 					}
 					tableItem.setText(new String[] { user.getId().toString(), user.getName(), user.getPhone(),
 							user.getSexOutput(), user.getLoginName(), user.getLoginPwd(), user.getCreateTimeOutput() });
@@ -123,7 +123,7 @@ public class SysUserContent extends AbstractPanelRightContent {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				super.widgetSelected(e);
-				new SysUserEditDialog(App.mainWindow, null);
+				new SysUserEditDialog(App.getMainWindow(), null);
 				pager.refreshPage(false);
 			}
 
@@ -137,7 +137,7 @@ public class SysUserContent extends AbstractPanelRightContent {
 				// TODO Auto-generated method stub
 				super.widgetSelected(e);
 				TableItem item[] = table.getSelection();
-				new SysUserEditDialog(App.mainWindow, Long.valueOf(item[0].getText(Constants.ID_INDEX).trim()));
+				new SysUserEditDialog(App.getMainWindow(), Long.valueOf(item[0].getText(Constants.ID_INDEX).trim()));
 				pager.refreshPage(false);
 			}
 		});
@@ -148,14 +148,14 @@ public class SysUserContent extends AbstractPanelRightContent {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				super.widgetSelected(e);
-				if (SWT.CANCEL == new MsgBox(App.mainWindow, SWT.OK | SWT.CANCEL, "确认删除?").open()) {
+				if (SWT.CANCEL == new MsgBox(App.getMainWindow(), SWT.OK | SWT.CANCEL, "确认删除?").open()) {
 					return;
 				}
 				TableItem item[] = table.getSelection();
 				ResultDTO<?> result = SysUserController.getBean()
 						.deleteById(Long.valueOf(item[0].getText(Constants.ID_INDEX).trim()));
 				if (result.getCode() != ResultDTO.SUCCESS_CODE) {
-					new MsgBox(App.mainWindow, result.getErrMsg()).open();
+					new MsgBox(App.getMainWindow(), result.getErrMsg()).open();
 				} else {
 					pager.refreshPage(false);
 				}

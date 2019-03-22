@@ -8,7 +8,7 @@ public class Splash extends AbstractSplash {
 	private App app;
 
 	public Splash(Display display, App app) {
-		super(display, app._launchSplashFile);
+		super(display, App.getSplashImageFile());
 		this.app = app;
 	}
 

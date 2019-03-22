@@ -14,11 +14,11 @@ public abstract class BaseController {
 	private final static Logger _logger = LoggerFactory.getLogger(BaseController.class);
 
 	protected static Object getBeanFromContainer(Class<?> clazz) {
-		return App.context.getBean(clazz);
+		return App.getSpringContext().getBean(clazz);
 	}
 
 	protected static Object getBeanFromContainer(String beanName) {
-		return App.context.getBean(beanName);
+		return App.getSpringContext().getBean(beanName);
 	}
 
 	protected void validatePermissions(String permission) throws Exception {
