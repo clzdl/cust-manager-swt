@@ -17,6 +17,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 
+import com.clzdl.crm.controller.sys.SysUserController;
 import com.clzdl.crm.view.biz.panel.biz.BizPanel;
 import com.clzdl.crm.view.biz.panel.profile.ProfilePanel;
 import com.clzdl.crm.view.common.AbstractComposite;
@@ -49,9 +50,7 @@ public class MainWindow extends Shell {
 		////
 		ToolBar toolBar = new ToolBar(this, SWT.HORIZONTAL);
 		underToolBarSeparator = new Label(this, SWT.SEPARATOR | SWT.BORDER);
-		panelContainer.add(new BizPanel(this, SWT.BORDER));
-		panelContainer.add(new ProfilePanel(this, SWT.BORDER));
-
+		buildPanel();
 		ToolItem toolItem = null;
 		Integer index = 0;
 		for (AbstractComposite composite : panelContainer) {
@@ -114,6 +113,21 @@ public class MainWindow extends Shell {
 			} else {
 				composite.setVisible(false);
 			}
+		}
+	}
+
+	private void buildPanel() {
+		AbstractComposite composite = new BizPanel(this, SWT.BORDER);
+		if (SysUserController.getBean().havePermission(composite.getPermission())) {
+			panelContainer.add(composite);
+		} else {
+			composite.dispose();
+		}
+		composite = new ProfilePanel(this, SWT.BORDER);
+		if (SysUserController.getBean().havePermission(composite.getPermission())) {
+			panelContainer.add(composite);
+		} else {
+			composite.dispose();
 		}
 	}
 }

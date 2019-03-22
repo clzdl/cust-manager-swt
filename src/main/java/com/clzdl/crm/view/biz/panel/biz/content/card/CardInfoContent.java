@@ -9,6 +9,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
 import com.clzdl.crm.App;
+import com.clzdl.crm.common.auth.enums.EnumSysPermissionProfile;
 import com.clzdl.crm.view.common.AbstractComposite;
 import com.clzdl.crm.view.common.TablePager;
 import com.clzdl.crm.view.common.TablePager.PagerOperation;
@@ -19,7 +20,7 @@ public class CardInfoContent extends AbstractComposite {
 	private TablePager pager;
 
 	public CardInfoContent(Composite parent, int style) {
-		super(parent, style, title, null);
+		super(parent, style, title, EnumSysPermissionProfile.VIPCARD);
 		setLayout(new FormLayout());
 		table = new Table(this, SWT.BORDER | SWT.SINGLE | SWT.FULL_SELECTION);
 		table.setHeaderVisible(true);

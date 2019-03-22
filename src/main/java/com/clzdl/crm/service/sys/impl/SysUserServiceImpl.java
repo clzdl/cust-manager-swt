@@ -1,7 +1,10 @@
 package com.clzdl.crm.service.sys.impl;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -20,7 +23,13 @@ import com.base.mvc.page.PageModel;
 import com.base.mvc.service.mybatis.AbastractEntityService;
 import com.base.util.cipher.MD5Util;
 import com.clzdl.crm.ExceptionMessage;
+import com.clzdl.crm.common.persistence.entity.SysMenu;
+import com.clzdl.crm.common.persistence.entity.SysRole;
+import com.clzdl.crm.common.persistence.entity.SysRoleUser;
 import com.clzdl.crm.common.persistence.entity.SysUser;
+import com.clzdl.crm.service.sys.ISysMenuService;
+import com.clzdl.crm.service.sys.ISysRoleMenuService;
+import com.clzdl.crm.service.sys.ISysRoleService;
 import com.clzdl.crm.service.sys.ISysUserRoleService;
 import com.clzdl.crm.service.sys.ISysUserService;
 
@@ -40,6 +49,12 @@ public class SysUserServiceImpl extends AbastractEntityService<SysUser> implemen
 
 	@Resource
 	private ISysUserRoleService sysUserRoleService;
+	@Resource
+	private ISysRoleMenuService sysRoleMenuService;
+	@Resource
+	private ISysMenuService sysMenuService;
+	@Resource
+	private ISysRoleService sysRoleService;
 
 	protected SysUserServiceImpl() {
 		super(SysUser.class);
@@ -92,6 +107,43 @@ public class SysUserServiceImpl extends AbastractEntityService<SysUser> implemen
 				sysUserRoleService.insert(entity.getId(), roleId);
 			}
 		}
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public List<SysMenu> listSysAllMenuByUserId(Long sysUserId) throws Exception {
+		List<SysRoleUser> roleUserList = sysUserRoleService.listByUserId(sysUserId);
+		if (CollectionUtils.isEmpty(roleUserList)) {
+			return new ArrayList<SysMenu>();
+		}
+
+		Set<Long> roleIds = new HashSet<Long>();
+		for (SysRoleUser roleUser : roleUserList) {
+			roleIds.add(roleUser.getSysRoleId());
+		}
+		Set<Long> menuIds = sysRoleMenuService.listByRoleIds(roleIds);
+		if (CollectionUtils.isEmpty(menuIds)) {
+			return new ArrayList<SysMenu>();
+		}
+		return sysMenuService.listByIds(menuIds);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public List<SysRole> listSysRoleByUserId(Long sysUserId) throws Exception {
+		List<SysRoleUser> roleUserList = sysUserRoleService.listByUserId(sysUserId);
+		if (CollectionUtils.isEmpty(roleUserList)) {
+			return new ArrayList<SysRole>();
+		}
+
+		Set<Long> roleIds = new HashSet<Long>();
+		for (SysRoleUser roleUser : roleUserList) {
+			roleIds.add(roleUser.getSysRoleId());
+		}
+		if (CollectionUtils.isEmpty(roleIds)) {
+			return new ArrayList<SysRole>();
+		}
+		return sysRoleService.listByIds(roleIds);
 	}
 
 	@Override

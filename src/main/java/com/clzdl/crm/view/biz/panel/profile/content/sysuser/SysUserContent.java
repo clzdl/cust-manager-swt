@@ -16,6 +16,7 @@ import org.eclipse.swt.widgets.TableItem;
 import com.base.mvc.page.PageModel;
 import com.clzdl.crm.App;
 import com.clzdl.crm.Constants;
+import com.clzdl.crm.common.auth.enums.EnumSysPermissionProfile;
 import com.clzdl.crm.common.persistence.entity.SysUser;
 import com.clzdl.crm.controller.sys.SysUserController;
 import com.clzdl.crm.dto.ResultDTO;
@@ -33,7 +34,7 @@ public class SysUserContent extends AbstractComposite {
 	private SysUser searchCondition = new SysUser();
 
 	public SysUserContent(Composite parent, int style) {
-		super(parent, style, title, null);
+		super(parent, style, title, EnumSysPermissionProfile.SYSUSER);
 		setLayout(new FormLayout());
 		table = new Table(this, SWT.BORDER | SWT.SINGLE | SWT.FULL_SELECTION);
 		table.setHeaderVisible(true);

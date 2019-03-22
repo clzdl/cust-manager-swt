@@ -16,6 +16,7 @@ import org.eclipse.swt.widgets.TableItem;
 import com.base.mvc.page.PageModel;
 import com.clzdl.crm.App;
 import com.clzdl.crm.Constants;
+import com.clzdl.crm.common.auth.enums.EnumSysPermissionProfile;
 import com.clzdl.crm.common.persistence.entity.SysMenu;
 import com.clzdl.crm.controller.sys.SysMenuController;
 import com.clzdl.crm.dto.ResultDTO;
@@ -33,7 +34,7 @@ public class SysMenuContent extends AbstractComposite {
 	private SysMenu searchCondition = new SysMenu();
 
 	public SysMenuContent(Composite parent, int style) {
-		super(parent, style, title, null);
+		super(parent, style, title, EnumSysPermissionProfile.SYSMENU);
 		setLayout(new FormLayout());
 		table = new Table(this, SWT.BORDER | SWT.SINGLE | SWT.FULL_SELECTION);
 		table.setHeaderVisible(true);

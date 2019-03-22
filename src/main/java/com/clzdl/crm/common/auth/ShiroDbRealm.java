@@ -1,15 +1,20 @@
 package com.clzdl.crm.common.auth;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 
 import com.base.auth.shiro.AbastractShiroRealm;
 import com.base.auth.usercontext.BaseUserContext;
 import com.base.auth.usercontext.SysCurrentUserContext;
 import com.base.exception.BizException;
+import com.base.util.string.StringUtil;
 import com.clzdl.crm.ExceptionMessage;
+import com.clzdl.crm.common.persistence.entity.SysMenu;
+import com.clzdl.crm.common.persistence.entity.SysRole;
 import com.clzdl.crm.common.persistence.entity.SysUser;
 import com.clzdl.crm.service.sys.ISysUserService;
 
@@ -38,16 +43,14 @@ public class ShiroDbRealm extends AbastractShiroRealm {
 	protected Set<String> CreatePermissionSet(BaseUserContext userContext) throws Exception {
 
 		Set<String> result = new HashSet<String>();
-		result.add("/sysmenu/tree.json");
-
-//		List<SysMenu> sysMenuList = sysUserService.listSysAllMenuByUserId(userContext.getUserId());
-//		if (CollectionUtils.isNotEmpty(sysMenuList)) {
-//			for (SysMenu menu : sysMenuList) {
-//				if (StringUtil.isNotBlank(menu.getHref())) {
-//					result.add(menu.getHref());
-//				}
-//			}
-//		}
+		List<SysMenu> sysMenuList = sysUserService.listSysAllMenuByUserId(userContext.getUserId());
+		if (CollectionUtils.isNotEmpty(sysMenuList)) {
+			for (SysMenu menu : sysMenuList) {
+				if (StringUtil.isNotBlank(menu.getHref())) {
+					result.add(menu.getHref());
+				}
+			}
+		}
 
 		return result;
 	}
@@ -55,14 +58,14 @@ public class ShiroDbRealm extends AbastractShiroRealm {
 	@Override
 	protected Set<String> CreateRoleNameSet(BaseUserContext userContext) throws Exception {
 		Set<String> result = new HashSet<String>();
-//		List<SysRole> sysRoleList = sysUserService.listSysRoleByUserId(userContext.getUserId());
-//		if (CollectionUtils.isNotEmpty(sysRoleList)) {
-//			for (SysRole role : sysRoleList) {
-//				if (StringUtil.isNotBlank(role.getRoleName())) {
-//					result.add(role.getRoleName());
-//				}
-//			}
-//		}
+		List<SysRole> sysRoleList = sysUserService.listSysRoleByUserId(userContext.getUserId());
+		if (CollectionUtils.isNotEmpty(sysRoleList)) {
+			for (SysRole role : sysRoleList) {
+				if (StringUtil.isNotBlank(role.getRoleName())) {
+					result.add(role.getRoleName());
+				}
+			}
+		}
 		return result;
 	}
 

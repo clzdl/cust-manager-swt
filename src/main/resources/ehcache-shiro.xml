@@ -3,7 +3,7 @@
          xsi:noNamespaceSchemaLocation="../config/ehcache.xsd">
     <!--diskStore：缓存数据持久化的目录 地址  -->
     <diskStore path="java.io.tmpdir/shiro-ehcache" />
-    <cache name = "com.anxun.pencraft.adminweb.common.auth.ShiroDbRealm.authorizationCache"
+    <cache name = "authorizationCache"
             maxElementsInMemory="1000"
             maxElementsOnDisk="100000"
             eternal="false"

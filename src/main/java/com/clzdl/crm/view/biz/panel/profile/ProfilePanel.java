@@ -15,6 +15,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 
 import com.clzdl.crm.common.auth.enums.EnumSysPermissionProfile;
+import com.clzdl.crm.controller.sys.SysUserController;
 import com.clzdl.crm.view.biz.panel.profile.content.sysmenu.SysMenuContent;
 import com.clzdl.crm.view.biz.panel.profile.content.sysrole.SysRoleContent;
 import com.clzdl.crm.view.biz.panel.profile.content.sysuser.SysUserContent;
@@ -25,7 +26,6 @@ public class ProfilePanel extends AbstractComposite {
 	private Sash sash;
 	private Table leftMenuTab;
 	private List<AbstractComposite> rightContents = new ArrayList<AbstractComposite>();
-	private AbstractComposite currentContent;
 
 	public ProfilePanel(Composite parent, int style) {
 		super(parent, style, title, EnumSysPermissionProfile.PROFILE);
@@ -34,18 +34,13 @@ public class ProfilePanel extends AbstractComposite {
 		leftMenuTab.setLinesVisible(true);
 
 		sash = new Sash(this, SWT.VERTICAL);
-		rightContents.add(new SysUserContent(this, SWT.BORDER));
-		rightContents.add(new SysRoleContent(this, SWT.BORDER));
-		rightContents.add(new SysMenuContent(this, SWT.BORDER));
-
+		buildContent();
 		leftMenuTab.addSelectionListener(new SelectionAdapter() {
 
 			@Override
 			public void widgetDefaultSelected(SelectionEvent e) {
 				super.widgetDefaultSelected(e);
-				currentContent.setVisible(false);
-				currentContent = (AbstractComposite) e.item.getData();
-				currentContent.setVisible(true);
+				refreshContent((AbstractComposite) e.item.getData());
 			}
 		});
 
@@ -78,7 +73,6 @@ public class ProfilePanel extends AbstractComposite {
 			content.setLayoutData(contentFormData);
 			if (0 == index++) {
 				leftMenuTab.setSelection(item);
-				currentContent = content;
 			} else {
 				content.setVisible(false);
 			}
@@ -96,6 +90,38 @@ public class ProfilePanel extends AbstractComposite {
 
 			}
 		});
+	}
+
+	private void refreshContent(AbstractComposite composite) {
+		for (AbstractComposite content : rightContents) {
+			if (content.equals(composite)) {
+				content.setVisible(true);
+			} else {
+				content.setVisible(false);
+			}
+		}
+	}
+
+	private void buildContent() {
+		AbstractComposite composite = new SysUserContent(this, SWT.BORDER);
+		if (SysUserController.getBean().havePermission(composite.getPermission())) {
+			rightContents.add(composite);
+		} else {
+			composite.dispose();
+		}
+		composite = new SysRoleContent(this, SWT.BORDER);
+		if (SysUserController.getBean().havePermission(composite.getPermission())) {
+			rightContents.add(composite);
+		} else {
+			composite.dispose();
+		}
+
+		composite = new SysMenuContent(this, SWT.BORDER);
+		if (SysUserController.getBean().havePermission(composite.getPermission())) {
+			rightContents.add(composite);
+		} else {
+			composite.dispose();
+		}
 	}
 
 }

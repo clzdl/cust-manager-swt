@@ -5,6 +5,7 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import com.base.mvc.page.PageModel;
+import com.clzdl.crm.common.auth.enums.EnumSysPermissionProfile;
 import com.clzdl.crm.common.persistence.entity.SysUser;
 import com.clzdl.crm.controller.BaseController;
 import com.clzdl.crm.dto.ResultDTO;
@@ -78,6 +79,15 @@ public class SysUserController extends BaseController {
 		}
 
 		return result;
+	}
+
+	public Boolean havePermission(EnumSysPermissionProfile permission) {
+		try {
+			validatePermissions(permission.getCode());
+		} catch (Exception e) {
+			return false;
+		}
+		return true;
 	}
 
 	public static SysUserController getBean() {

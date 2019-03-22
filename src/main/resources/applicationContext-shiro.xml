@@ -44,8 +44,10 @@
     </bean>
 	
 	<bean id="securityManager" class="org.apache.shiro.mgt.DefaultSecurityManager">
+	 	<property name="cacheManager" ref="cacheManager"></property>
 	    <!-- Single realm app.  If you have multiple realms, use the 'realms' property instead. -->
 	    <property name="realm" ref="shiroDbRealm"/>
+	     <property name="sessionManager" ref="sessionManager"/>
 	</bean>
 	
 	<bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>

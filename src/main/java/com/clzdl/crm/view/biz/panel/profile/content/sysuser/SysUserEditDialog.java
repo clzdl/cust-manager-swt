@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.base.mvc.enums.EnumUserSex;
+import com.base.util.cipher.MD5Util;
 import com.base.util.string.StringUtil;
 import com.clzdl.crm.common.persistence.entity.SysRole;
 import com.clzdl.crm.common.persistence.entity.SysUser;
@@ -256,7 +257,7 @@ public class SysUserEditDialog extends Shell {
 		sysUser.setEmail(edtEmail.getText().trim());
 		sysUser.setSex(userSex.getCode().toString());
 		sysUser.setLoginName(edtLoginName.getText().trim());
-		sysUser.setLoginPwd(edtLoginPwd.getText().trim());
+		sysUser.setLoginPwd(MD5Util.MD5Encode(edtLoginPwd.getText().trim()));
 		sysUser.setUserRoleIds(selectRuleId);
 
 		if (StringUtil.isBlank(sysUser.getName())) {

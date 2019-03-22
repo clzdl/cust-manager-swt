@@ -16,6 +16,7 @@ import org.eclipse.swt.widgets.TableItem;
 import com.base.mvc.page.PageModel;
 import com.clzdl.crm.App;
 import com.clzdl.crm.Constants;
+import com.clzdl.crm.common.auth.enums.EnumSysPermissionProfile;
 import com.clzdl.crm.common.persistence.entity.SysRole;
 import com.clzdl.crm.controller.sys.SysRoleController;
 import com.clzdl.crm.dto.ResultDTO;
@@ -33,7 +34,7 @@ public class SysRoleContent extends AbstractComposite {
 	private SysRole searchCondition = new SysRole();
 
 	public SysRoleContent(Composite parent, int style) {
-		super(parent, style, title, null);
+		super(parent, style, title, EnumSysPermissionProfile.SYSROLE);
 		setLayout(new FormLayout());
 		table = new Table(this, SWT.BORDER | SWT.SINGLE | SWT.FULL_SELECTION);
 		table.setHeaderVisible(true);

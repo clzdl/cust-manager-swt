@@ -15,6 +15,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 
 import com.clzdl.crm.common.auth.enums.EnumSysPermissionProfile;
+import com.clzdl.crm.controller.sys.SysUserController;
 import com.clzdl.crm.view.biz.panel.biz.content.card.CardInfoContent;
 import com.clzdl.crm.view.biz.panel.biz.content.customer.CustInfoContent;
 import com.clzdl.crm.view.common.AbstractComposite;
@@ -24,7 +25,6 @@ public class BizPanel extends AbstractComposite {
 	private Sash sash;
 	private Table leftMenuTab;
 	private List<AbstractComposite> rightContents = new ArrayList<AbstractComposite>();
-	private AbstractComposite currentContent;
 
 	public BizPanel(Composite parent, int style) {
 		super(parent, style, title, EnumSysPermissionProfile.BIZ);
@@ -34,17 +34,14 @@ public class BizPanel extends AbstractComposite {
 		leftMenuTab.setLinesVisible(true);
 
 		sash = new Sash(this, SWT.VERTICAL);
-		rightContents.add(new CustInfoContent(this, SWT.BORDER));
-		rightContents.add(new CardInfoContent(this, SWT.BORDER));
+		buildContent();
 
 		leftMenuTab.addSelectionListener(new SelectionAdapter() {
 
 			@Override
 			public void widgetDefaultSelected(SelectionEvent e) {
 				super.widgetDefaultSelected(e);
-				currentContent.setVisible(false);
-				currentContent = (AbstractComposite) e.item.getData();
-				currentContent.setVisible(true);
+				refreshContent((AbstractComposite) e.item.getData());
 			}
 		});
 
@@ -74,10 +71,7 @@ public class BizPanel extends AbstractComposite {
 			item.setText(content.getTitle());
 			content.setLayoutData(contentFormData);
 			if (0 == index++) {
-				currentContent = content;
 				leftMenuTab.setSelection(item);
-			} else {
-				content.setVisible(false);
 			}
 		}
 
@@ -92,6 +86,32 @@ public class BizPanel extends AbstractComposite {
 
 			}
 		});
+	}
+
+	private void refreshContent(AbstractComposite composite) {
+		for (AbstractComposite content : rightContents) {
+			if (content.equals(composite)) {
+				content.setVisible(true);
+			} else {
+				content.setVisible(false);
+			}
+		}
+	}
+
+	private void buildContent() {
+		AbstractComposite composite = new CustInfoContent(this, SWT.BORDER);
+		if (SysUserController.getBean().havePermission(composite.getPermission())) {
+			rightContents.add(composite);
+		} else {
+			composite.dispose();
+		}
+		composite = new CardInfoContent(this, SWT.BORDER);
+		if (SysUserController.getBean().havePermission(composite.getPermission())) {
+			rightContents.add(composite);
+		} else {
+			composite.dispose();
+		}
+
 	}
 
 }
