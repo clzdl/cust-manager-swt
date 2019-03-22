@@ -14,20 +14,21 @@ import org.eclipse.swt.widgets.Sash;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 
+import com.clzdl.crm.common.auth.enums.EnumSysPermissionProfile;
 import com.clzdl.crm.view.biz.panel.profile.content.sysmenu.SysMenuContent;
 import com.clzdl.crm.view.biz.panel.profile.content.sysrole.SysRoleContent;
 import com.clzdl.crm.view.biz.panel.profile.content.sysuser.SysUserContent;
-import com.clzdl.crm.view.common.AbstractPanelRightContent;
+import com.clzdl.crm.view.common.AbstractComposite;
 
-public class ProfilePanel extends Composite {
-
+public class ProfilePanel extends AbstractComposite {
+	private final static String title = "配置数据";
 	private Sash sash;
 	private Table leftMenuTab;
-	private List<AbstractPanelRightContent> rightContents = new ArrayList<AbstractPanelRightContent>();
-	private AbstractPanelRightContent currentContent;
+	private List<AbstractComposite> rightContents = new ArrayList<AbstractComposite>();
+	private AbstractComposite currentContent;
 
 	public ProfilePanel(Composite parent, int style) {
-		super(parent, style);
+		super(parent, style, title, EnumSysPermissionProfile.PROFILE);
 		setLayout(new FormLayout());
 		leftMenuTab = new Table(this, SWT.BORDER);
 		leftMenuTab.setLinesVisible(true);
@@ -43,7 +44,7 @@ public class ProfilePanel extends Composite {
 			public void widgetDefaultSelected(SelectionEvent e) {
 				super.widgetDefaultSelected(e);
 				currentContent.setVisible(false);
-				currentContent = (AbstractPanelRightContent) e.item.getData();
+				currentContent = (AbstractComposite) e.item.getData();
 				currentContent.setVisible(true);
 			}
 		});
@@ -70,7 +71,7 @@ public class ProfilePanel extends Composite {
 
 		TableItem item = null;
 		Integer index = 0;
-		for (AbstractPanelRightContent content : rightContents) {
+		for (AbstractComposite content : rightContents) {
 			item = new TableItem(leftMenuTab, SWT.NULL);
 			item.setData(content);
 			item.setText(content.getTitle());

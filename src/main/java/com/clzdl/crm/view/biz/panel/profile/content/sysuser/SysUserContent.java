@@ -5,6 +5,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
@@ -18,21 +19,22 @@ import com.clzdl.crm.Constants;
 import com.clzdl.crm.common.persistence.entity.SysUser;
 import com.clzdl.crm.controller.sys.SysUserController;
 import com.clzdl.crm.dto.ResultDTO;
-import com.clzdl.crm.view.common.AbstractPanelRightContent;
+import com.clzdl.crm.view.common.AbstractComposite;
 import com.clzdl.crm.view.common.LoadingDialog;
 import com.clzdl.crm.view.common.LoadingDialog.TaskLoading;
 import com.clzdl.crm.view.common.MsgBox;
 import com.clzdl.crm.view.common.TablePager;
 import com.clzdl.crm.view.common.TablePager.PagerOperation;
 
-public class SysUserContent extends AbstractPanelRightContent {
+public class SysUserContent extends AbstractComposite {
 	private final static String title = "系统用户信息";
 	private Table table;
 	private TablePager pager;
 	private SysUser searchCondition = new SysUser();
 
 	public SysUserContent(Composite parent, int style) {
-		super(parent, style, title);
+		super(parent, style, title, null);
+		setLayout(new FormLayout());
 		table = new Table(this, SWT.BORDER | SWT.SINGLE | SWT.FULL_SELECTION);
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);

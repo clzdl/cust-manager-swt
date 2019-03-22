@@ -48,6 +48,7 @@ public class CustInfoEditDialog extends Shell {
 	public CustInfoEditDialog(Shell parent, Long id) {
 		super(parent, SWT.DIALOG_TRIM | SWT.PRIMARY_MODAL);
 		this.id = id;
+		setLayout(new FormLayout());
 
 		setSize(400, 300);
 		setText("修改");

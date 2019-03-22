@@ -8,8 +8,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.base.exception.BizException;
 import com.base.mvc.page.PageModel;
 import com.base.mvc.service.mybatis.AbastractEntityService;
+import com.clzdl.crm.ExceptionMessage;
 import com.clzdl.crm.common.persistence.entity.SysMenu;
 import com.clzdl.crm.common.persistence.entity.SysUser;
 import com.clzdl.crm.service.sys.ISysMenuService;
@@ -42,6 +44,16 @@ public class SysMenuServiceImpl extends AbastractEntityService<SysMenu> implemen
 
 		builder.orderByDesc("id");
 		return super.listPageModelByExample(builder.build(), pageNo, pageSize);
+	}
+
+	@Override
+	public boolean deleteById(Long id) throws Exception {
+		Integer cnt = super.countByExample(
+				Example.builder(SysMenu.class).where(Sqls.custom().andEqualTo("parentId", id)).build());
+		if (cnt > 0) {
+			throw new BizException(ExceptionMessage.EXIST_SUBORDINATE_DELETE_WRONG);
+		}
+		return super.deleteById(id);
 	}
 
 	@Override

@@ -3,22 +3,24 @@ package com.clzdl.crm.view.biz.panel.biz.content.card;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
 import com.clzdl.crm.App;
-import com.clzdl.crm.view.common.AbstractPanelRightContent;
+import com.clzdl.crm.view.common.AbstractComposite;
 import com.clzdl.crm.view.common.TablePager;
 import com.clzdl.crm.view.common.TablePager.PagerOperation;
 
-public class CardInfoContent extends AbstractPanelRightContent {
+public class CardInfoContent extends AbstractComposite {
 	private final static String title = "会员卡信息";
 	private Table table;
 	private TablePager pager;
 
 	public CardInfoContent(Composite parent, int style) {
-		super(parent, style, title);
+		super(parent, style, title, null);
+		setLayout(new FormLayout());
 		table = new Table(this, SWT.BORDER | SWT.SINGLE | SWT.FULL_SELECTION);
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
