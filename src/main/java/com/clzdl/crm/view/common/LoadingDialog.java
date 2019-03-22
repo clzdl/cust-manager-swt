@@ -9,8 +9,6 @@ import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 public class LoadingDialog extends Shell {
@@ -20,7 +18,7 @@ public class LoadingDialog extends Shell {
 	private Integer currentImage = 0;
 	private Boolean slowAnimation = false;
 	private Integer animationLoopCount = 0;
-	private Composite parent;
+	private Shell parent;
 
 	public interface TaskLoading {
 		void doing();
@@ -28,33 +26,6 @@ public class LoadingDialog extends Shell {
 
 	static {
 		executorService = Executors.newSingleThreadExecutor();
-	}
-
-	public LoadingDialog(Composite parent, Image[] images) {
-		super(SWT.PRIMARY_MODAL);
-		this.images = images;
-		this.parent = parent;
-		addPaintListener(new PaintListener() {
-			@Override
-			public void paintControl(PaintEvent e) {
-				Image img = getCurrentImage();
-				// Display the image, then erase the rest
-				e.gc.drawImage(img, 0, 0);
-			}
-		});
-	}
-
-	public LoadingDialog(Display display, Image[] images) {
-		super(display, SWT.PRIMARY_MODAL);
-		this.images = images;
-		addPaintListener(new PaintListener() {
-			@Override
-			public void paintControl(PaintEvent e) {
-				Image img = getCurrentImage();
-				// Display the image, then erase the rest
-				e.gc.drawImage(img, 0, 0);
-			}
-		});
 	}
 
 	public LoadingDialog(Shell parent, Image[] images) {
@@ -72,49 +43,35 @@ public class LoadingDialog extends Shell {
 	}
 
 	public void start(final TaskLoading task) {
-		Integer imgWidth = images[0].getImageData().width;
-		Integer imgHeight = images[0].getImageData().height;
-		setLayout(new FillLayout());
-		setSize(imgWidth, imgHeight);
-
-		/// 主屏幕显示位置
-		Rectangle bounds = getDisplay().getPrimaryMonitor().getBounds();
-		if (parent != null) {
-			bounds = parent.getBounds();
+		if (null != parent && parent.isVisible()) {
+			Integer imgWidth = images[0].getImageData().width;
+			Integer imgHeight = images[0].getImageData().height;
+			setLayout(new FillLayout());
+			setSize(imgWidth, imgHeight);
+			/// 主屏幕显示位置
+			Rectangle bounds = parent.getBounds();
+			Rectangle rect = getBounds();
+			int x = bounds.x + Math.max(0, (bounds.width - rect.width) / 2);
+			int y = bounds.y + Math.max(0, (bounds.height - rect.height) / 2);
+			setBounds(x, y, imgWidth, imgHeight);
+			open();
+			startAnimationTimer();
 		}
-		Rectangle rect = getBounds();
-		int x = bounds.x + Math.max(0, (bounds.width - rect.width) / 2);
-		int y = bounds.y + Math.max(0, (bounds.height - rect.height) / 2);
-		setBounds(x, y, imgWidth, imgHeight);
-		open();
-		startAnimationTimer();
-		executorService.execute(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					task.doing();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-
-				getDisplay().asyncExec(new Runnable() {
-					@Override
-					public void run() {
-						dispose();
-					}
-				});
-
-			}
-		});
+		run(task);
 		while (!isDisposed()) {
 			if (!getDisplay().readAndDispatch()) {
 				getDisplay().sleep();
 			}
 		}
+
 	}
 
 	public static void closeExecutor() {
 		executorService.shutdownNow();
+	}
+
+	// 继承shell 需要此函数
+	protected void checkSubclass() {
 	}
 
 	private void startAnimationTimer() {
@@ -159,8 +116,23 @@ public class LoadingDialog extends Shell {
 		return delayTime > 0 ? delayTime : _defaultLoadingDelayTime;
 	}
 
-	// 继承shell 需要此函数
-	protected void checkSubclass() {
+	private void run(final TaskLoading task) {
+		executorService.execute(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					task.doing();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				getDisplay().asyncExec(new Runnable() {
+					@Override
+					public void run() {
+						dispose();
+					}
+				});
+			}
+		});
 	}
 
 }
