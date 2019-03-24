@@ -15,20 +15,22 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.base.util.string.StringUtil;
-import com.clzdl.crm.common.persistence.entity.SysMenu;
-import com.clzdl.crm.controller.sys.SysMenuController;
-import com.clzdl.crm.dto.ResultDTO;
+import com.clzdl.crm.App;
 import com.clzdl.crm.enums.EnumSysMenuType;
+import com.clzdl.crm.springboot.persistence.entity.SysMenu;
+import com.clzdl.crm.utils.HttpUtil;
+import com.clzdl.crm.utils.HttpUtil.HttpParam;
 import com.clzdl.crm.view.common.MsgBox;
 import com.clzdl.crm.view.common.tree.SelectTree;
 import com.clzdl.crm.view.common.tree.TreeNodeData;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.framework.common.util.json.JsonUtil;
+import com.framework.common.util.string.StringUtil;
 
 public class SysMenuEditDialog extends Shell {
 	private final static Logger _logger = LoggerFactory.getLogger(SysMenuEditDialog.class);
@@ -199,13 +201,11 @@ public class SysMenuEditDialog extends Shell {
 			return;
 		}
 
-		ResultDTO<?> result = SysMenuController.getBean().save(sysMenu);
-		if (result.getCode() != ResultDTO.SUCCESS_CODE) {
-			MessageBox box = new MessageBox(this);
-			box.setMessage(result.getErrMsg());
-			box.open();
-		} else {
+		try {
+			HttpUtil.get("/panel/profile/sysmenu/save.json", new HttpParam("entity", sysMenu));
 			close();
+		} catch (Exception ex) {
+			new MsgBox(App.getMainWindow(), ex.getMessage()).open();
 		}
 
 	}
@@ -216,23 +216,28 @@ public class SysMenuEditDialog extends Shell {
 	}
 
 	private void fillValue() {
-		ResultDTO<List<SysMenu>> allMenus = SysMenuController.getBean().listAll();
-		if (id == null) {
-			sysMenu = new SysMenu();
-		} else {
-			ResultDTO<SysMenu> result = SysMenuController.getBean().getById(id);
-			if (result.getCode() != ResultDTO.SUCCESS_CODE) {
-				new MsgBox(this, result.getErrMsg()).open();
+		try {
+			List<SysMenu> allMenus = new ArrayList<SysMenu>();
+			JsonNode result = HttpUtil.get("/panel/profile/sysmenu/listall.json");
+			for (JsonNode node : result.get("list")) {
+				allMenus.add(JsonUtil.jsonNodeToObject(node, SysMenu.class));
+			}
+
+			if (id == null) {
+				sysMenu = new SysMenu();
 			} else {
-				sysMenu = result.getData();
+				result = HttpUtil.get("/panel/profile/sysmenu/getbtid.json", new HttpParam("id", id));
+				sysMenu = JsonUtil.jsonNodeToObject(result, SysMenu.class);
 				edtName.setText(sysMenu.getName());
 				edtPermission.setText(sysMenu.getHref());
-
 				stParent.setDefault(sysMenu.getParentId());
 				cboMenuType.select(sysMenu.getMenuType());
 			}
+			stParent.setDataList(buildSelTreeList(allMenus, sysMenu.getParentId()));
+		} catch (Exception e) {
+			new MsgBox(App.getMainWindow(), e.getMessage()).open();
 		}
-		stParent.setDataList(buildSelTreeList(allMenus.getData(), sysMenu.getParentId()));
+
 	}
 
 	private List<TreeNodeData> buildSelTreeList(List<SysMenu> list, Long defaultCode) {

@@ -13,19 +13,16 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.base.util.string.StringUtil;
-import com.clzdl.crm.common.persistence.entity.SysRole;
-import com.clzdl.crm.controller.sys.SysRoleController;
-import com.clzdl.crm.dto.ResultDTO;
+import com.clzdl.crm.springboot.persistence.entity.SysRole;
 import com.clzdl.crm.view.common.MsgBox;
 import com.clzdl.crm.view.common.tree.AuthTree;
 import com.clzdl.crm.view.common.tree.TreeNodeData;
+import com.framework.common.util.string.StringUtil;
 
 public class SysRoleEditDialog extends Shell {
 	private final static Logger _logger = LoggerFactory.getLogger(SysRoleEditDialog.class);
@@ -170,14 +167,14 @@ public class SysRoleEditDialog extends Shell {
 			return;
 		}
 
-		ResultDTO<?> result = SysRoleController.getBean().save(sysRole);
-		if (result.getCode() != ResultDTO.SUCCESS_CODE) {
-			MessageBox box = new MessageBox(this);
-			box.setMessage(result.getErrMsg());
-			box.open();
-		} else {
-			close();
-		}
+//		ResultDTO<?> result = SysRoleController.getBean().save(sysRole);
+//		if (result.getCode() != ResultDTO.SUCCESS_CODE) {
+//			MessageBox box = new MessageBox(this);
+//			box.setMessage(result.getErrMsg());
+//			box.open();
+//		} else {
+//			close();
+//		}
 
 	}
 
@@ -191,17 +188,17 @@ public class SysRoleEditDialog extends Shell {
 		if (id == null) {
 			sysRole = new SysRole();
 		} else {
-			ResultDTO<SysRole> result = SysRoleController.getBean().getById(id);
-			if (result.getCode() != ResultDTO.SUCCESS_CODE) {
-				new MsgBox(this, result.getErrMsg()).open();
-			} else {
-				sysRole = result.getData();
-				edtName.setText(sysRole.getRoleName());
-				edtDesc.setText(sysRole.getDescription());
-			}
+//			ResultDTO<SysRole> result = SysRoleController.getBean().getById(id);
+//			if (result.getCode() != ResultDTO.SUCCESS_CODE) {
+//				new MsgBox(this, result.getErrMsg()).open();
+//			} else {
+//				sysRole = result.getData();
+//				edtName.setText(sysRole.getRoleName());
+//				edtDesc.setText(sysRole.getDescription());
+//			}
 		}
-		ResultDTO<List<TreeNodeData>> authReuslt = SysRoleController.getBean().listRoleAuth(sysRole.getId());
-		authTree.fillTree(authReuslt.getData());
+//		ResultDTO<List<TreeNodeData>> authReuslt = SysRoleController.getBean().listRoleAuth(sysRole.getId());
+//		authTree.fillTree(authReuslt.getData());
 	}
 
 }

@@ -13,14 +13,19 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Sash;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.clzdl.crm.common.auth.enums.EnumSysPermissionProfile;
-import com.clzdl.crm.controller.sys.SysUserController;
+import com.clzdl.crm.springboot.auth.EnumSysPermissionProfile;
+import com.clzdl.crm.utils.HttpUtil;
+import com.clzdl.crm.utils.HttpUtil.HttpParam;
 import com.clzdl.crm.view.biz.panel.biz.content.card.CardInfoContent;
 import com.clzdl.crm.view.biz.panel.biz.content.customer.CustInfoContent;
 import com.clzdl.crm.view.common.AbstractComposite;
+import com.fasterxml.jackson.databind.JsonNode;
 
 public class BizPanel extends AbstractComposite {
+	private final static Logger _logger = LoggerFactory.getLogger(BizPanel.class);
 	private final static String title = "业务数据";
 	private Sash sash;
 	private Table leftMenuTab;
@@ -99,17 +104,25 @@ public class BizPanel extends AbstractComposite {
 	}
 
 	private void buildContent() {
-		AbstractComposite composite = new CustInfoContent(this, SWT.BORDER);
-		if (SysUserController.getBean().havePermission(composite.getPermission())) {
-			rightContents.add(composite);
-		} else {
-			composite.dispose();
-		}
-		composite = new CardInfoContent(this, SWT.BORDER);
-		if (SysUserController.getBean().havePermission(composite.getPermission())) {
-			rightContents.add(composite);
-		} else {
-			composite.dispose();
+		List<AbstractComposite> list = new ArrayList<AbstractComposite>();
+		list.add(new CustInfoContent(this, SWT.BORDER));
+		list.add(new CardInfoContent(this, SWT.BORDER));
+
+		try {
+			JsonNode result = null;
+			for (AbstractComposite composite : list) {
+				result = HttpUtil.get("/panel/profile/sysuser//havepermission.json",
+						new HttpParam[] { new HttpParam("permission", composite.getPermission().getCode()) });
+
+				if (result.asBoolean()) {
+					rightContents.add(composite);
+				} else {
+					composite.dispose();
+				}
+			}
+
+		} catch (Exception e) {
+			_logger.error(e.getMessage(), e);
 		}
 
 	}

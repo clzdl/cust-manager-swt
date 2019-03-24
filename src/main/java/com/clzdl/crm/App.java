@@ -10,9 +10,9 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import com.clzdl.crm.springboot.SpringbootReadyListener;
+import com.clzdl.crm.springboot.SpringbootWebSrv;
 import com.clzdl.crm.view.biz.LoginDialog;
 import com.clzdl.crm.view.common.LoadingDialog;
 
@@ -25,7 +25,6 @@ public class App {
 	private final static String _launchSplashFile = "images/launch.jpg";
 	private final static String _appImageFile = "images/app.png";
 	private final static Logger _logger = LoggerFactory.getLogger(App.class);
-	private static ApplicationContext context;
 	private static Display display;
 	private static Image[] loadingImages;
 	private static Image appImage;
@@ -33,6 +32,7 @@ public class App {
 	private static Color tableHeaderForeground;
 	private static Color tableItemBackground;
 	private static MainWindow mainWindow;
+	private Thread springbootSrvThread;
 
 	public App() {
 		tableHeaderForeground = display.getSystemColor(SWT.COLOR_GRAY);
@@ -55,10 +55,6 @@ public class App {
 		return loadingImages;
 	}
 
-	public static ApplicationContext getSpringContext() {
-		return context;
-	}
-
 	public static Image getAppImage() {
 		return appImage;
 	}
@@ -69,14 +65,15 @@ public class App {
 
 	public void launchSpring() {
 		try {
-			context = new ClassPathXmlApplicationContext(
-					new String[] { "classpath:/applicationContext.xml", "classpath:/applicationContext-shiro.xml" });
+			springbootSrvThread = new Thread(new SpringbootWebSrv());
+			springbootSrvThread.start();
+			SpringbootReadyListener.latch.await();
 		} catch (Exception e) {
-			_logger.error("{}:{}", e.getMessage(), e);
+			_logger.error(e.getMessage(), e);
 		}
 	}
 
-	public void show() {
+	public void show() throws Exception {
 		appImage = new Image(display,
 				new ImageLoader().load(this.getClass().getResource("/").getPath() + _appImageFile)[0]);
 		loginDlg = new LoginDialog(display);
@@ -94,6 +91,8 @@ public class App {
 		}
 		appImage.dispose();
 		LoadingDialog.closeExecutor();
+
+		springbootSrvThread.join();
 		display.dispose();
 	}
 
@@ -147,7 +146,7 @@ public class App {
 		}
 	}
 
-	public static void main(String[] args) throws InterruptedException {
+	public static void main(String[] args) throws Exception {
 		display = new Display();
 		App app = new App();
 		app.convertImageDataToImages(display.getSystemColor(SWT.COLOR_GRAY));
@@ -155,6 +154,7 @@ public class App {
 		Display.setAppVersion(_version);
 		new Splash(display, app).createContents();
 		app.show();
+		System.exit(0);
 	}
 
 }

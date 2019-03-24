@@ -11,18 +11,20 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.base.mvc.enums.EnumUserSex;
-import com.base.util.string.StringUtil;
-import com.clzdl.crm.common.persistence.entity.CmUserInfo;
-import com.clzdl.crm.controller.biz.UserInfoController;
-import com.clzdl.crm.dto.ResultDTO;
+import com.clzdl.crm.App;
+import com.clzdl.crm.enums.EnumUserSex;
+import com.clzdl.crm.springboot.persistence.entity.CmUserInfo;
+import com.clzdl.crm.utils.HttpUtil;
+import com.clzdl.crm.utils.HttpUtil.HttpParam;
 import com.clzdl.crm.view.common.MsgBox;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.framework.common.util.json.JsonUtil;
+import com.framework.common.util.string.StringUtil;
 
 public class CustInfoEditDialog extends Shell {
 	private final static Logger _logger = LoggerFactory.getLogger(CustInfoEditDialog.class);
@@ -224,13 +226,11 @@ public class CustInfoEditDialog extends Shell {
 			return;
 		}
 
-		ResultDTO result = UserInfoController.getBean().save(cmUserInfo);
-		if (result.getCode() != ResultDTO.SUCCESS_CODE) {
-			MessageBox box = new MessageBox(this);
-			box.setMessage(result.getErrMsg());
-			box.open();
-		} else {
+		try {
+			HttpUtil.get("/panel/biz/customer/save.json", new HttpParam("entity", cmUserInfo));
 			close();
+		} catch (Exception ex) {
+			new MsgBox(App.getMainWindow(), ex.getMessage()).open();
 		}
 
 	}
@@ -247,11 +247,10 @@ public class CustInfoEditDialog extends Shell {
 		if (id == null) {
 			cmUserInfo = new CmUserInfo();
 		} else {
-			ResultDTO<CmUserInfo> result = UserInfoController.getBean().getById(id);
-			if (result.getCode() != ResultDTO.SUCCESS_CODE) {
-				new MsgBox(this, result.getErrMsg()).open();
-			} else {
-				cmUserInfo = result.getData();
+			CmUserInfo cmUserInfo = null;
+			try {
+				JsonNode result = HttpUtil.get("/panel/biz/customer/getbyid.json", new HttpParam("id", id));
+				cmUserInfo = JsonUtil.jsonNodeToObject(result.get("data"), CmUserInfo.class);
 				edtName.setText(cmUserInfo.getName());
 				edtPhone.setText(cmUserInfo.getPhone());
 				EnumUserSex enumSex = EnumUserSex.getEnum(cmUserInfo.getSex().intValue());
@@ -265,7 +264,10 @@ public class CustInfoEditDialog extends Shell {
 				}
 				edtEmail.setText(cmUserInfo.getEmail());
 				edtRemark.setText(cmUserInfo.getRemark());
+			} catch (Exception e) {
+				new MsgBox(App.getMainWindow(), e.getMessage()).open();
 			}
+
 		}
 	}
 

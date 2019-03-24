@@ -9,7 +9,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
 import com.clzdl.crm.App;
-import com.clzdl.crm.common.auth.enums.EnumSysPermissionProfile;
+import com.clzdl.crm.springboot.auth.EnumSysPermissionProfile;
 import com.clzdl.crm.view.common.AbstractComposite;
 import com.clzdl.crm.view.common.TablePager;
 import com.clzdl.crm.view.common.TablePager.PagerOperation;

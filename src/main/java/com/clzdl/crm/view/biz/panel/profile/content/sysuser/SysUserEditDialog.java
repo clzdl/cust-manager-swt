@@ -16,21 +16,17 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.base.mvc.enums.EnumUserSex;
-import com.base.util.cipher.MD5Util;
-import com.base.util.string.StringUtil;
-import com.clzdl.crm.common.persistence.entity.SysRole;
-import com.clzdl.crm.common.persistence.entity.SysUser;
-import com.clzdl.crm.controller.sys.SysRoleController;
-import com.clzdl.crm.controller.sys.SysUserController;
-import com.clzdl.crm.dto.ResultDTO;
+import com.clzdl.crm.enums.EnumUserSex;
+import com.clzdl.crm.springboot.persistence.entity.SysRole;
+import com.clzdl.crm.springboot.persistence.entity.SysUser;
 import com.clzdl.crm.view.common.MsgBox;
+import com.framework.common.util.cipher.MD5Util;
+import com.framework.common.util.string.StringUtil;
 
 public class SysUserEditDialog extends Shell {
 	private final static Logger _logger = LoggerFactory.getLogger(SysUserEditDialog.class);
@@ -280,14 +276,14 @@ public class SysUserEditDialog extends Shell {
 			return;
 		}
 
-		ResultDTO<?> result = SysUserController.getBean().save(sysUser);
-		if (result.getCode() != ResultDTO.SUCCESS_CODE) {
-			MessageBox box = new MessageBox(this);
-			box.setMessage(result.getErrMsg());
-			box.open();
-		} else {
-			close();
-		}
+//		ResultDTO<?> result = SysUserController.getBean().save(sysUser);
+//		if (result.getCode() != ResultDTO.SUCCESS_CODE) {
+//			MessageBox box = new MessageBox(this);
+//			box.setMessage(result.getErrMsg());
+//			box.open();
+//		} else {
+//			close();
+//		}
 
 	}
 
@@ -304,30 +300,30 @@ public class SysUserEditDialog extends Shell {
 		if (id == null) {
 			sysUser = new SysUser();
 		} else {
-			ResultDTO<SysUser> result = SysUserController.getBean().getById(id);
-			if (result.getCode() != ResultDTO.SUCCESS_CODE) {
-				new MsgBox(this, result.getErrMsg()).open();
-			} else {
-				sysUser = result.getData();
-				edtName.setText(sysUser.getName());
-				edtPhone.setText(sysUser.getPhone());
-				EnumUserSex enumSex = EnumUserSex.getEnum(Integer.valueOf(sysUser.getSex()));
-				switch (enumSex) {
-				case MAN:
-					radioMen.setSelection(true);
-					break;
-				default:
-					radioWomen.setSelection(true);
-					break;
-				}
-				edtEmail.setText(sysUser.getEmail());
-				edtLoginName.setText(sysUser.getLoginName());
-				edtLoginPwd.setText(sysUser.getLoginPwd());
-			}
+//			ResultDTO<SysUser> result = SysUserController.getBean().getById(id);
+//			if (result.getCode() != ResultDTO.SUCCESS_CODE) {
+//				new MsgBox(this, result.getErrMsg()).open();
+//			} else {
+//				sysUser = result.getData();
+//				edtName.setText(sysUser.getName());
+//				edtPhone.setText(sysUser.getPhone());
+//				EnumUserSex enumSex = EnumUserSex.getEnum(Integer.valueOf(sysUser.getSex()));
+//				switch (enumSex) {
+//				case MAN:
+//					radioMen.setSelection(true);
+//					break;
+//				default:
+//					radioWomen.setSelection(true);
+//					break;
+//				}
+//				edtEmail.setText(sysUser.getEmail());
+//				edtLoginName.setText(sysUser.getLoginName());
+//				edtLoginPwd.setText(sysUser.getLoginPwd());
+//			}
 		}
 
-		ResultDTO<List<SysRole>> roleResult = SysRoleController.getBean().listUserRole(sysUser.getId());
-		fillRoleCheck(roleResult.getData());
+//		ResultDTO<List<SysRole>> roleResult = SysRoleController.getBean().listUserRole(sysUser.getId());
+//		fillRoleCheck(roleResult.getData());
 	}
 
 	private void fillRoleCheck(List<SysRole> listSysRole) {

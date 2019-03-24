@@ -2,7 +2,7 @@ package com.clzdl.crm.view.common;
 
 import org.eclipse.swt.widgets.Composite;
 
-import com.clzdl.crm.common.auth.enums.EnumSysPermissionProfile;
+import com.clzdl.crm.springboot.auth.EnumSysPermissionProfile;
 
 public class AbstractComposite extends Composite implements IPermission {
 	private String title;

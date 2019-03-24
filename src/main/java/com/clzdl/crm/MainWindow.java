@@ -16,13 +16,18 @@ import org.eclipse.swt.widgets.Monitor;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.clzdl.crm.controller.sys.SysUserController;
+import com.clzdl.crm.utils.HttpUtil;
+import com.clzdl.crm.utils.HttpUtil.HttpParam;
 import com.clzdl.crm.view.biz.panel.biz.BizPanel;
 import com.clzdl.crm.view.biz.panel.profile.ProfilePanel;
 import com.clzdl.crm.view.common.AbstractComposite;
+import com.fasterxml.jackson.databind.JsonNode;
 
 public class MainWindow extends Shell {
+	private final static Logger _logger = LoggerFactory.getLogger(MainWindow.class);
 	private Label bottomLabel;
 	private Label underToolBarSeparator;
 	private List<AbstractComposite> panelContainer = new ArrayList<AbstractComposite>();
@@ -117,17 +122,26 @@ public class MainWindow extends Shell {
 	}
 
 	private void buildPanel() {
-		AbstractComposite composite = new BizPanel(this, SWT.BORDER);
-		if (SysUserController.getBean().havePermission(composite.getPermission())) {
-			panelContainer.add(composite);
-		} else {
-			composite.dispose();
-		}
-		composite = new ProfilePanel(this, SWT.BORDER);
-		if (SysUserController.getBean().havePermission(composite.getPermission())) {
-			panelContainer.add(composite);
-		} else {
-			composite.dispose();
+		List<AbstractComposite> list = new ArrayList<AbstractComposite>();
+		list.add(new BizPanel(this, SWT.BORDER));
+		list.add(new ProfilePanel(this, SWT.BORDER));
+
+		try {
+			JsonNode result = null;
+			for (AbstractComposite composite : list) {
+				result = HttpUtil.get("/panel/profile/sysuser//havepermission.json",
+						new HttpParam[] { new HttpParam("permission", composite.getPermission().getCode()) });
+
+				if (result.asBoolean()) {
+					panelContainer.add(composite);
+				} else {
+					composite.dispose();
+				}
+			}
+
+		} catch (Exception e) {
+			_logger.error(e.getMessage(), e);
+			dispose();
 		}
 	}
 }

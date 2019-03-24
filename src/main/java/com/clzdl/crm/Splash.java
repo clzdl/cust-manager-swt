@@ -18,9 +18,7 @@ public class Splash extends AbstractSplash {
 		try {
 			refreshView(10);
 			app.launchSpring();
-			refreshView(30);
-			Thread.sleep(10);
-			refreshView(70);
+			refreshView(60);
 			Thread.sleep(10);
 			refreshView(100);
 		} catch (InterruptedException e) {

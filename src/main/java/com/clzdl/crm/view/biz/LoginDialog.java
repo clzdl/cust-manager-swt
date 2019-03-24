@@ -10,14 +10,13 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.clzdl.crm.controller.sys.SysUserController;
-import com.clzdl.crm.dto.ResultDTO;
+import com.clzdl.crm.utils.HttpUtil;
+import com.clzdl.crm.utils.HttpUtil.HttpParam;
 
 public class LoginDialog extends Shell {
 	private final static Logger _logger = LoggerFactory.getLogger(LoginDialog.class);
@@ -110,19 +109,22 @@ public class LoginDialog extends Shell {
 	private void login() {
 		_logger.info("userName:{},pwd:{}", edtName.getText(), edtPwd.getText());
 		try {
-			ResultDTO result = SysUserController.getBean().login(edtName.getText(), edtPwd.getText());
-			if (result.getCode() != ResultDTO.SUCCESS_CODE) {
-				MessageBox box = new MessageBox(this);
-				box.setMessage(result.getErrMsg());
-				box.open();
-				reset();
-			} else {
-				logStatus = true;
-			}
+//			ResultDTO result = SysUserController.getBean().login(edtName.getText(), edtPwd.getText());
+//			if (result.getCode() != ResultDTO.SUCCESS_CODE) {
+//				MessageBox box = new MessageBox(this);
+//				box.setMessage(result.getErrMsg());
+//				box.open();
+//				reset();
+//			} else {
+//				logStatus = true;
+//			}
+			HttpUtil.get("/panel/profile/sysuser/login.json", new HttpParam("userName", edtName.getText()),
+					new HttpParam("userPwd", edtPwd.getText()));
+			logStatus = true;
 		} catch (Exception e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+
 		if (logStatus || ++tryTime >= 3) {
 			dispose();
 		}

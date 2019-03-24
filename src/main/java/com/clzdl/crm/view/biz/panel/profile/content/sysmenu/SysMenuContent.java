@@ -13,19 +13,21 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 
-import com.base.mvc.page.PageModel;
 import com.clzdl.crm.App;
 import com.clzdl.crm.Constants;
-import com.clzdl.crm.common.auth.enums.EnumSysPermissionProfile;
-import com.clzdl.crm.common.persistence.entity.SysMenu;
-import com.clzdl.crm.controller.sys.SysMenuController;
-import com.clzdl.crm.dto.ResultDTO;
+import com.clzdl.crm.springboot.auth.EnumSysPermissionProfile;
+import com.clzdl.crm.springboot.persistence.entity.SysMenu;
+import com.clzdl.crm.utils.HttpUtil;
+import com.clzdl.crm.utils.HttpUtil.HttpParam;
 import com.clzdl.crm.view.common.AbstractComposite;
 import com.clzdl.crm.view.common.LoadingDialog;
 import com.clzdl.crm.view.common.LoadingDialog.TaskLoading;
 import com.clzdl.crm.view.common.MsgBox;
 import com.clzdl.crm.view.common.TablePager;
 import com.clzdl.crm.view.common.TablePager.PagerOperation;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.framework.common.util.json.JsonUtil;
+import com.framework.mybatis.page.PageModel;
 
 public class SysMenuContent extends AbstractComposite {
 	private final static String title = "系统菜单信息";
@@ -78,15 +80,14 @@ public class SysMenuContent extends AbstractComposite {
 				loading.start(new TaskLoading() {
 					@Override
 					public void doing() {
-						ResultDTO<PageModel<SysMenu>> result = SysMenuController.getBean().list(searchCondition, pageNo,
-								pageSize);
-						if (result.getCode() != ResultDTO.SUCCESS_CODE) {
-							new MsgBox(App.getMainWindow(), result.getErrMsg()).open();
-							return;
-
-						} else {
-							pm.setTotalRecords(result.getData().getTotalRecords());
-							pm.setList(result.getData().getList());
+						try {
+							JsonNode result = HttpUtil.get("/panel/profile/sysmenu/list.json",
+									new HttpParam("entity", searchCondition));
+							for (JsonNode node : result.get("list")) {
+								pm.getList().add(JsonUtil.jsonNodeToObject(node, SysMenu.class));
+							}
+						} catch (Exception e) {
+							new MsgBox(App.getMainWindow(), e.getMessage()).open();
 						}
 					}
 				});
@@ -144,12 +145,11 @@ public class SysMenuContent extends AbstractComposite {
 					return;
 				}
 				TableItem item[] = table.getSelection();
-				ResultDTO<?> result = SysMenuController.getBean()
-						.deleteById(Long.valueOf(item[0].getText(Constants.ID_INDEX).trim()));
-				if (result.getCode() != ResultDTO.SUCCESS_CODE) {
-					new MsgBox(App.getMainWindow(), result.getErrMsg()).open();
-				} else {
-					pager.refreshPage(false);
+				try {
+					HttpUtil.get("/panel/profile/sysmenu/deletebyid.json",
+							new HttpParam("id", Long.valueOf(item[0].getText(Constants.ID_INDEX).trim())));
+				} catch (Exception ex) {
+					new MsgBox(App.getMainWindow(), ex.getMessage()).open();
 				}
 			}
 		});

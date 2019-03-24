@@ -1,6 +1,6 @@
 package com.clzdl.crm.view.common;
 
-import com.clzdl.crm.common.auth.enums.EnumSysPermissionProfile;
+import com.clzdl.crm.springboot.auth.EnumSysPermissionProfile;
 
 public interface IPermission {
 

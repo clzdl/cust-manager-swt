@@ -13,15 +13,20 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Sash;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.clzdl.crm.common.auth.enums.EnumSysPermissionProfile;
-import com.clzdl.crm.controller.sys.SysUserController;
+import com.clzdl.crm.springboot.auth.EnumSysPermissionProfile;
+import com.clzdl.crm.utils.HttpUtil;
+import com.clzdl.crm.utils.HttpUtil.HttpParam;
 import com.clzdl.crm.view.biz.panel.profile.content.sysmenu.SysMenuContent;
 import com.clzdl.crm.view.biz.panel.profile.content.sysrole.SysRoleContent;
 import com.clzdl.crm.view.biz.panel.profile.content.sysuser.SysUserContent;
 import com.clzdl.crm.view.common.AbstractComposite;
+import com.fasterxml.jackson.databind.JsonNode;
 
 public class ProfilePanel extends AbstractComposite {
+	private final static Logger _logger = LoggerFactory.getLogger(ProfilePanel.class);
 	private final static String title = "配置数据";
 	private Sash sash;
 	private Table leftMenuTab;
@@ -103,24 +108,24 @@ public class ProfilePanel extends AbstractComposite {
 	}
 
 	private void buildContent() {
-		AbstractComposite composite = new SysUserContent(this, SWT.BORDER);
-		if (SysUserController.getBean().havePermission(composite.getPermission())) {
-			rightContents.add(composite);
-		} else {
-			composite.dispose();
-		}
-		composite = new SysRoleContent(this, SWT.BORDER);
-		if (SysUserController.getBean().havePermission(composite.getPermission())) {
-			rightContents.add(composite);
-		} else {
-			composite.dispose();
-		}
+		List<AbstractComposite> list = new ArrayList<AbstractComposite>();
+		list.add(new SysUserContent(this, SWT.BORDER));
+		list.add(new SysRoleContent(this, SWT.BORDER));
+		list.add(new SysMenuContent(this, SWT.BORDER));
+		try {
+			JsonNode result = null;
+			for (AbstractComposite composite : list) {
+				result = HttpUtil.get("/panel/profile/sysuser//havepermission.json",
+						new HttpParam[] { new HttpParam("permission", composite.getPermission().getCode()) });
 
-		composite = new SysMenuContent(this, SWT.BORDER);
-		if (SysUserController.getBean().havePermission(composite.getPermission())) {
-			rightContents.add(composite);
-		} else {
-			composite.dispose();
+				if (result.asBoolean()) {
+					rightContents.add(composite);
+				} else {
+					composite.dispose();
+				}
+			}
+		} catch (Exception e) {
+			_logger.error(e.getMessage(), e);
 		}
 	}
 
