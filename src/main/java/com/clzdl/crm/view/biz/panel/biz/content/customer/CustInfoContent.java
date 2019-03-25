@@ -129,6 +129,9 @@ public class CustInfoContent extends AbstractComposite {
 			public void widgetSelected(SelectionEvent e) {
 				super.widgetSelected(e);
 				TableItem item[] = table.getSelection();
+				if (0 >= item.length) {
+					return;
+				}
 				new CustInfoEditDialog(App.getMainWindow(), Long.valueOf(item[0].getText(Constants.ID_INDEX).trim()));
 				pager.refreshPage(false);
 			}

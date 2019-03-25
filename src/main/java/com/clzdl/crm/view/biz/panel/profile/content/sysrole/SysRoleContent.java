@@ -118,9 +118,11 @@ public class SysRoleContent extends AbstractComposite {
 		modifyItem.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				// TODO Auto-generated method stub
 				super.widgetSelected(e);
 				TableItem item[] = table.getSelection();
+				if (0 >= item.length) {
+					return;
+				}
 				new SysRoleEditDialog(App.getMainWindow(), Long.valueOf(item[0].getText(Constants.ID_INDEX).trim()));
 				pager.refreshPage(false);
 			}
