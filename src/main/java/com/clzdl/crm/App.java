@@ -75,7 +75,7 @@ public class App {
 
 	public void show() throws Exception {
 		appImage = new Image(display,
-				new ImageLoader().load(this.getClass().getResource("/").getPath() + _appImageFile)[0]);
+				new ImageLoader().load(this.getClass().getClassLoader().getResourceAsStream(_appImageFile))[0]);
 		loginDlg = new LoginDialog(display);
 		if (!loginDlg.isLogin()) {
 			return;
@@ -97,8 +97,12 @@ public class App {
 	}
 
 	public void convertImageDataToImages(Color defaultBackground) {
+//		ImageData[] loadingImageData = new ImageLoader()
+//				.load(this.getClass().getResource("/").getPath() + "/images/loading.gif");
+
 		ImageData[] loadingImageData = new ImageLoader()
-				.load(this.getClass().getResource("/").getPath() + "/images/loading.gif");
+				.load(this.getClass().getClassLoader().getResourceAsStream("images/loading.gif"));
+
 		loadingImages = new Image[loadingImageData.length];
 		// Step 1: Determine the size of the resulting images.
 		int width = 0, height = 0;

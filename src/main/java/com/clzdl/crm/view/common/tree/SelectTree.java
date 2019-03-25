@@ -1,6 +1,5 @@
 package com.clzdl.crm.view.common.tree;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.swt.SWT;
@@ -13,10 +12,8 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Monitor;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
@@ -272,44 +269,6 @@ public class SelectTree extends Composite {
 
 	private boolean isFocus(Control control) {
 		return control != null && !control.isDisposed() && control.isFocusControl();
-	}
-
-	public static void main(String[] args) {
-		final Display display = new Display();
-		final Shell shell = new Shell(display);
-		shell.setSize(300, 200);
-		Monitor primary = display.getPrimaryMonitor();
-		Rectangle bounds = primary.getBounds();
-		Rectangle rect = shell.getBounds();
-		int x = bounds.x + Math.max(0, (bounds.width - rect.width) / 2);
-		int y = bounds.y + Math.max(0, (bounds.height - rect.height) / 2);
-		shell.setBounds(x, y, rect.width, rect.height);
-		shell.setLayout(new FillLayout());
-		List<TreeNodeData> list = new ArrayList<TreeNodeData>();
-		list.add(new TreeNodeData(1, 0, "title1", false));
-//		list.add(new TreeNodeData(2, 0, "title2", false));
-//		list.add(new TreeNodeData(3, 0, "title3", false));
-//		list.add(new TreeNodeData(11, 1, "title11", false));
-//		list.add(new TreeNodeData(12, 1, "title12", false));
-//		list.add(new TreeNodeData(13, 1, "title13", false));
-//		list.add(new TreeNodeData(21, 2, "title21", false));
-//		list.add(new TreeNodeData(22, 2, "title22", false));
-//		list.add(new TreeNodeData(23, 2, "title23", false));
-//		list.add(new TreeNodeData(31, 3, "title31", false));
-//		list.add(new TreeNodeData(32, 3, "title32", false));
-//		list.add(new TreeNodeData(33, 3, "title33", false));
-		SelectTree stTree = new SelectTree(shell, SWT.NONE, 0);
-		stTree.setDefault(3);
-		stTree.setDataList(list);
-		new Text(shell, SWT.BORDER);
-		stTree.setDefault(2);
-		shell.open();
-		while (!shell.isDisposed()) {
-			if (!display.readAndDispatch()) {
-				display.sleep();
-			}
-		}
-		display.dispose();
 	}
 
 }

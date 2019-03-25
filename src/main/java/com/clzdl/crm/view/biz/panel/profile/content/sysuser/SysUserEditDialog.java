@@ -92,7 +92,6 @@ public class SysUserEditDialog extends Shell {
 				super.widgetSelected(e);
 			}
 		});
-		radioWomen.setSelection(true);
 		radioMen = new Button(sexGroup, SWT.RADIO);
 		radioMen.setText("男");
 		radioMen.addSelectionListener(new SelectionAdapter() {

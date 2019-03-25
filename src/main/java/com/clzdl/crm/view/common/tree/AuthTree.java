@@ -9,12 +9,8 @@ import org.apache.commons.collections.CollectionUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Monitor;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 
@@ -148,41 +144,6 @@ public class AuthTree extends Composite {
 			}
 			buildTreeItem(item, data.getCode());
 		}
-	}
-
-	public static void main(String[] args) {
-		final Display display = new Display();
-		final Shell shell = new Shell(display);
-		shell.setSize(300, 200);
-		Monitor primary = display.getPrimaryMonitor();
-		Rectangle bounds = primary.getBounds();
-		Rectangle rect = shell.getBounds();
-		int x = bounds.x + Math.max(0, (bounds.width - rect.width) / 2);
-		int y = bounds.y + Math.max(0, (bounds.height - rect.height) / 2);
-		shell.setBounds(x, y, rect.width, rect.height);
-		shell.setLayout(new FillLayout());
-		List<TreeNodeData> list = new ArrayList<TreeNodeData>();
-		list.add(new TreeNodeData(1, 0, "title1", false));
-		list.add(new TreeNodeData(2, 0, "title2", false));
-		list.add(new TreeNodeData(3, 0, "title3", false));
-		list.add(new TreeNodeData(11, 1, "title11", false));
-		list.add(new TreeNodeData(12, 1, "title12", true));
-		list.add(new TreeNodeData(13, 1, "title13", false));
-		list.add(new TreeNodeData(21, 2, "title21", false));
-		list.add(new TreeNodeData(22, 2, "title22", false));
-		list.add(new TreeNodeData(23, 2, "title23", false));
-		list.add(new TreeNodeData(31, 3, "title31", false));
-		list.add(new TreeNodeData(32, 3, "title32", false));
-		list.add(new TreeNodeData(33, 3, "title33", false));
-		AuthTree authTree = new AuthTree(shell, SWT.NONE, 0);
-		authTree.fillTree(list);
-		shell.open();
-		while (!shell.isDisposed()) {
-			if (!display.readAndDispatch()) {
-				display.sleep();
-			}
-		}
-		display.dispose();
 	}
 
 }
