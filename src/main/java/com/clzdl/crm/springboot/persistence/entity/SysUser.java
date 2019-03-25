@@ -11,8 +11,11 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.clzdl.crm.enums.EnumUserSex;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.framework.common.util.date.DateUtil;
 
+@JsonInclude(Include.NON_NULL)
 @Table(name = "sys_user")
 public class SysUser {
 	/**
@@ -255,6 +258,9 @@ public class SysUser {
 	}
 
 	public String getCreateTimeOutput() {
+		if (createTime == null) {
+			return "";
+		}
 		return DateUtil.formatDate(DateUtil._DATE_TIME_FORMAT1, createTime);
 	}
 
@@ -263,6 +269,9 @@ public class SysUser {
 	}
 
 	public String getSexOutput() {
+		if (null == sex) {
+			return "";
+		}
 		EnumUserSex enumSex = EnumUserSex.getEnum(Integer.valueOf(sex));
 		if (null != enumSex) {
 			return enumSex.getName();

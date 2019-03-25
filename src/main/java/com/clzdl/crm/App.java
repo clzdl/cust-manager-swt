@@ -21,7 +21,7 @@ import com.clzdl.crm.view.common.LoadingDialog;
  *
  */
 public class App {
-	private final static String _version = "0.0.1";
+	private final static String _version = "0.1.0";
 	private final static String _launchSplashFile = "images/launch.jpg";
 	private final static String _appImageFile = "images/app.png";
 	private final static Logger _logger = LoggerFactory.getLogger(App.class);

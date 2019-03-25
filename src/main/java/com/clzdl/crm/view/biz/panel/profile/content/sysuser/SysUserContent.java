@@ -91,8 +91,8 @@ public class SysUserContent extends AbstractComposite {
 					@Override
 					public void doing() {
 						try {
-							JsonNode result = HttpUtil.get("/panel/profile/sysuser/list.json",
-									new HttpParam("entity", searchCondition));
+							JsonNode result = HttpUtil.postJson("/panel/profile/sysuser/list.json",
+									JsonUtil.toJson(searchCondition));
 							for (JsonNode node : result.get("list")) {
 								pm.getList().add(JsonUtil.jsonNodeToObject(node, SysUser.class));
 							}
@@ -156,13 +156,13 @@ public class SysUserContent extends AbstractComposite {
 					return;
 				}
 				TableItem item[] = table.getSelection();
-//				ResultDTO<?> result = SysUserController.getBean()
-//						.deleteById(Long.valueOf(item[0].getText(Constants.ID_INDEX).trim()));
-//				if (result.getCode() != ResultDTO.SUCCESS_CODE) {
-//					new MsgBox(App.getMainWindow(), result.getErrMsg()).open();
-//				} else {
-//					pager.refreshPage(false);
-//				}
+				try {
+					HttpUtil.get("/panel/profile/sysuser/deletebyid.json",
+							new HttpParam("id", Long.valueOf(item[0].getText(Constants.ID_INDEX).trim())));
+					pager.refreshPage(false);
+				} catch (Exception ex) {
+					new MsgBox(App.getMainWindow(), ex.getMessage()).open();
+				}
 			}
 		});
 

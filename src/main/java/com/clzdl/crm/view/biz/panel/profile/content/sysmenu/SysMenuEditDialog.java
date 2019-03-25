@@ -226,7 +226,7 @@ public class SysMenuEditDialog extends Shell {
 			if (id == null) {
 				sysMenu = new SysMenu();
 			} else {
-				result = HttpUtil.get("/panel/profile/sysmenu/getbtid.json", new HttpParam("id", id));
+				result = HttpUtil.get("/panel/profile/sysmenu/getbyid.json", new HttpParam("id", id));
 				sysMenu = JsonUtil.jsonNodeToObject(result, SysMenu.class);
 				edtName.setText(sysMenu.getName());
 				edtPermission.setText(sysMenu.getHref());

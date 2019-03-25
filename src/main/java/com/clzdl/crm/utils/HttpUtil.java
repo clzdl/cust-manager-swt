@@ -65,6 +65,24 @@ public class HttpUtil {
 		return _post(uri, params);
 	}
 
+	public static JsonNode postJson(String uri, String json) throws Exception {
+		_logger.info("http request uri:{},json:{}", uri, json);
+		String resp = HttpSendClientFactory.getCookieInstance().postJson(domain + uri, null, json);
+		return _parse(resp);
+	}
+
+	public static JsonNode postJson(String uri, String json, HttpParam... paramArray) throws Exception {
+		Map<String, Object> params = new HashMap<String, Object>();
+		if (paramArray != null) {
+			for (int i = 0; i < paramArray.length; ++i) {
+				params.put(paramArray[i].getName(), paramArray[i].getValue());
+			}
+		}
+
+		String resp = HttpSendClientFactory.getCookieInstance().postJson(domain + uri, params, json);
+		return _parse(resp);
+	}
+
 	public static JsonNode post(String uri) throws Exception {
 		_logger.info("http request:{}", uri);
 		return _post(uri, null);
