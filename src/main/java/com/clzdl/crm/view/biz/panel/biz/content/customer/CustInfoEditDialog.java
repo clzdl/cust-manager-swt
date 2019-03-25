@@ -226,7 +226,7 @@ public class CustInfoEditDialog extends Shell {
 		}
 
 		try {
-			HttpUtil.get("/panel/biz/customer/save.json", new HttpParam("entity", cmUserInfo));
+			HttpUtil.postJsonObject("/panel/biz/customer/save.json", cmUserInfo);
 			close();
 		} catch (Exception ex) {
 			new MsgBox(App.getMainWindow(), ex.getMessage()).open();
@@ -246,10 +246,9 @@ public class CustInfoEditDialog extends Shell {
 		if (id == null) {
 			cmUserInfo = new CmUserInfo();
 		} else {
-			CmUserInfo cmUserInfo = null;
 			try {
 				JsonNode result = HttpUtil.get("/panel/biz/customer/getbyid.json", new HttpParam("id", id));
-				cmUserInfo = JsonUtil.jsonNodeToObject(result.get("data"), CmUserInfo.class);
+				cmUserInfo = JsonUtil.jsonNodeToObject(result, CmUserInfo.class);
 				edtName.setText(cmUserInfo.getName());
 				edtPhone.setText(cmUserInfo.getPhone());
 				EnumUserSex enumSex = EnumUserSex.getEnum(cmUserInfo.getSex().intValue());

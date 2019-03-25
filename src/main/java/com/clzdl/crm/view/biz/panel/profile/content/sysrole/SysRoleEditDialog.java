@@ -18,10 +18,15 @@ import org.eclipse.swt.widgets.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.clzdl.crm.App;
 import com.clzdl.crm.springboot.persistence.entity.SysRole;
+import com.clzdl.crm.utils.HttpUtil;
+import com.clzdl.crm.utils.HttpUtil.HttpParam;
 import com.clzdl.crm.view.common.MsgBox;
 import com.clzdl.crm.view.common.tree.AuthTree;
 import com.clzdl.crm.view.common.tree.TreeNodeData;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.framework.common.util.json.JsonUtil;
 import com.framework.common.util.string.StringUtil;
 
 public class SysRoleEditDialog extends Shell {
@@ -167,15 +172,12 @@ public class SysRoleEditDialog extends Shell {
 			return;
 		}
 
-//		ResultDTO<?> result = SysRoleController.getBean().save(sysRole);
-//		if (result.getCode() != ResultDTO.SUCCESS_CODE) {
-//			MessageBox box = new MessageBox(this);
-//			box.setMessage(result.getErrMsg());
-//			box.open();
-//		} else {
-//			close();
-//		}
-
+		try {
+			HttpUtil.postJsonObject("/panel/profile/sysrole/save.json", sysRole);
+			close();
+		} catch (Exception ex) {
+			new MsgBox(App.getMainWindow(), ex.getMessage()).open();
+		}
 	}
 
 	private void reset() {
@@ -184,21 +186,29 @@ public class SysRoleEditDialog extends Shell {
 	}
 
 	private void fillValue() {
+		try {
+			JsonNode result = null;
+			if (id == null) {
+				sysRole = new SysRole();
+			} else {
+				result = HttpUtil.get("/panel/profile/sysrole/getbyid.json", new HttpParam("id", id));
+				sysRole = JsonUtil.jsonNodeToObject(result, SysRole.class);
+				edtName.setText(sysRole.getRoleName());
+				edtDesc.setText(sysRole.getDescription());
+			}
 
-		if (id == null) {
-			sysRole = new SysRole();
-		} else {
-//			ResultDTO<SysRole> result = SysRoleController.getBean().getById(id);
-//			if (result.getCode() != ResultDTO.SUCCESS_CODE) {
-//				new MsgBox(this, result.getErrMsg()).open();
-//			} else {
-//				sysRole = result.getData();
-//				edtName.setText(sysRole.getRoleName());
-//				edtDesc.setText(sysRole.getDescription());
-//			}
+			List<TreeNodeData> authList = new ArrayList<TreeNodeData>();
+			result = HttpUtil.get("/panel/profile/sysrole/listroleauth.json", new HttpParam("roleId", sysRole.getId()));
+			for (JsonNode node : result) {
+				authList.add(new TreeNodeData(Long.valueOf(node.get("code").asLong()),
+						Long.valueOf(node.get("parentCode").asLong()), node.get("title").textValue(),
+						node.get("selected").asBoolean()));
+			}
+			authTree.fillTree(authList);
+		} catch (Exception e) {
+			new MsgBox(this, e.getMessage()).open();
 		}
-//		ResultDTO<List<TreeNodeData>> authReuslt = SysRoleController.getBean().listRoleAuth(sysRole.getId());
-//		authTree.fillTree(authReuslt.getData());
+
 	}
 
 }

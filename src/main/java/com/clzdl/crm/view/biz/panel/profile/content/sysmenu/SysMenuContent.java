@@ -81,8 +81,8 @@ public class SysMenuContent extends AbstractComposite {
 					@Override
 					public void doing() {
 						try {
-							JsonNode result = HttpUtil.get("/panel/profile/sysmenu/list.json",
-									new HttpParam("entity", searchCondition));
+							JsonNode result = HttpUtil.postJsonObject("/panel/profile/sysmenu/list.json",
+									searchCondition);
 							for (JsonNode node : result.get("list")) {
 								pm.getList().add(JsonUtil.jsonNodeToObject(node, SysMenu.class));
 							}
@@ -148,6 +148,7 @@ public class SysMenuContent extends AbstractComposite {
 				try {
 					HttpUtil.get("/panel/profile/sysmenu/deletebyid.json",
 							new HttpParam("id", Long.valueOf(item[0].getText(Constants.ID_INDEX).trim())));
+					pager.refreshPage(false);
 				} catch (Exception ex) {
 					new MsgBox(App.getMainWindow(), ex.getMessage()).open();
 				}

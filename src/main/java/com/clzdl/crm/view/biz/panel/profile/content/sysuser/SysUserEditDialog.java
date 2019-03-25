@@ -282,7 +282,7 @@ public class SysUserEditDialog extends Shell {
 		}
 
 		try {
-			HttpUtil.postJson("/panel/profile/sysuser/save.json", JsonUtil.toJson(sysUser));
+			HttpUtil.postJsonString("/panel/profile/sysuser/save.json", JsonUtil.toJson(sysUser));
 			close();
 		} catch (Exception ex) {
 			new MsgBox(App.getMainWindow(), ex.getMessage()).open();

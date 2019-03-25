@@ -202,7 +202,7 @@ public class SysMenuEditDialog extends Shell {
 		}
 
 		try {
-			HttpUtil.get("/panel/profile/sysmenu/save.json", new HttpParam("entity", sysMenu));
+			HttpUtil.postJsonObject("/panel/profile/sysmenu/save.json", sysMenu);
 			close();
 		} catch (Exception ex) {
 			new MsgBox(App.getMainWindow(), ex.getMessage()).open();
@@ -219,7 +219,7 @@ public class SysMenuEditDialog extends Shell {
 		try {
 			List<SysMenu> allMenus = new ArrayList<SysMenu>();
 			JsonNode result = HttpUtil.get("/panel/profile/sysmenu/listall.json");
-			for (JsonNode node : result.get("list")) {
+			for (JsonNode node : result) {
 				allMenus.add(JsonUtil.jsonNodeToObject(node, SysMenu.class));
 			}
 

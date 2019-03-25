@@ -10,8 +10,11 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.clzdl.crm.enums.EnumSysMenuType;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.framework.common.util.date.DateUtil;
 
+@JsonInclude(Include.NON_NULL)
 @Table(name = "sys_menu")
 public class SysMenu {
 	/**
@@ -251,6 +254,9 @@ public class SysMenu {
 	}
 
 	public String getMenuTypeOutput() {
+		if (null == menuType) {
+			return "";
+		}
 		EnumSysMenuType enumType = EnumSysMenuType.getEnum(menuType.intValue());
 		if (enumType != null) {
 			return enumType.getName();
@@ -263,6 +269,9 @@ public class SysMenu {
 	}
 
 	public String getCreateTimeOutput() {
+		if (null == createTime) {
+			return "";
+		}
 		return DateUtil.formatDate(DateUtil._DATE_TIME_FORMAT1, createTime);
 	}
 

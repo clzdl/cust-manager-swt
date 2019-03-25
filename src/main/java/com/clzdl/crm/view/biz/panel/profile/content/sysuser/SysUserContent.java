@@ -91,7 +91,7 @@ public class SysUserContent extends AbstractComposite {
 					@Override
 					public void doing() {
 						try {
-							JsonNode result = HttpUtil.postJson("/panel/profile/sysuser/list.json",
+							JsonNode result = HttpUtil.postJsonString("/panel/profile/sysuser/list.json",
 									JsonUtil.toJson(searchCondition));
 							for (JsonNode node : result.get("list")) {
 								pm.getList().add(JsonUtil.jsonNodeToObject(node, SysUser.class));
@@ -111,7 +111,8 @@ public class SysUserContent extends AbstractComposite {
 						tableItem.setBackground(App.getTabItemBackground());
 					}
 					tableItem.setText(new String[] { user.getId().toString(), user.getName(), user.getPhone(),
-							user.getSexOutput(), user.getLoginName(), user.getLoginPwd(), user.getCreateTimeOutput() });
+							user.getEmail(), user.getSexOutput(), user.getLoginName(), user.getLoginPwd(),
+							user.getCreateTimeOutput() });
 				}
 
 				return (int) pm.getTotalRecords();

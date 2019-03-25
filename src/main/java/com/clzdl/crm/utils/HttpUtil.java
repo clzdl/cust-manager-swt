@@ -65,10 +65,14 @@ public class HttpUtil {
 		return _post(uri, params);
 	}
 
-	public static JsonNode postJson(String uri, String json) throws Exception {
+	public static JsonNode postJsonString(String uri, String json) throws Exception {
 		_logger.info("http request uri:{},json:{}", uri, json);
 		String resp = HttpSendClientFactory.getCookieInstance().postJson(domain + uri, null, json);
 		return _parse(resp);
+	}
+
+	public static JsonNode postJsonObject(String uri, Object json) throws Exception {
+		return postJsonString(uri, JsonUtil.toJson(json));
 	}
 
 	public static JsonNode postJson(String uri, String json, HttpParam... paramArray) throws Exception {

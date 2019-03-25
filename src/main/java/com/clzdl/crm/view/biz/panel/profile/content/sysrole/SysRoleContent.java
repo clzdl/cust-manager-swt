@@ -71,8 +71,8 @@ public class SysRoleContent extends AbstractComposite {
 					@Override
 					public void doing() {
 						try {
-							JsonNode result = HttpUtil.get("/panel/profile/sysrole/list.json",
-									new HttpParam("entity", searchCondition));
+							JsonNode result = HttpUtil.postJsonObject("/panel/profile/sysrole/list.json",
+									searchCondition);
 							for (JsonNode node : result.get("list")) {
 								pm.getList().add(JsonUtil.jsonNodeToObject(node, SysRole.class));
 							}
@@ -136,13 +136,14 @@ public class SysRoleContent extends AbstractComposite {
 					return;
 				}
 				TableItem item[] = table.getSelection();
-//				ResultDTO<?> result = SysRoleController.getBean()
-//						.deleteById(Long.valueOf(item[0].getText(Constants.ID_INDEX).trim()));
-//				if (result.getCode() != ResultDTO.SUCCESS_CODE) {
-//					new MsgBox(App.getMainWindow(), result.getErrMsg()).open();
-//				} else {
-//					pager.refreshPage(false);
-//				}
+
+				try {
+					HttpUtil.get("/panel/profile/sysrole/deletebyid.json",
+							new HttpParam("id", Long.valueOf(item[0].getText(Constants.ID_INDEX).trim())));
+					pager.refreshPage(false);
+				} catch (Exception ex) {
+					new MsgBox(App.getMainWindow(), ex.getMessage()).open();
+				}
 			}
 		});
 

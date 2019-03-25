@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.clzdl.crm.springboot.persistence.entity.SysRole;
@@ -23,14 +24,15 @@ public class SysRoleController extends AbstractShiroController {
 	private ISysRoleService sysRoleService;
 
 	@RequestMapping("/list.json")
-	public void list(SysRole entity, Integer pageNo, Integer pageSize, HttpServletRequest request,
+	public void list(@RequestBody SysRole entity, Integer pageNo, Integer pageSize, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		PageModel<SysRole> pm = sysRoleService.listPageModel(entity, pageNo, pageSize);
 		ajaxSuccess(response, pm);
 	}
 
 	@RequestMapping("/save.json")
-	public void save(SysRole entity, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public void save(@RequestBody SysRole entity, HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
 		sysRoleService.save(entity);
 		ajaxSuccess(response);
 	}

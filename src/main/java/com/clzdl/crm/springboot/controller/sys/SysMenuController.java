@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.clzdl.crm.springboot.persistence.entity.SysMenu;
@@ -22,14 +23,15 @@ public class SysMenuController extends AbstractShiroController {
 	private ISysMenuService sysMenuService;
 
 	@RequestMapping("/list.json")
-	public void list(SysMenu entity, Integer pageNo, Integer pageSize, HttpServletRequest request,
+	public void list(@RequestBody SysMenu entity, Integer pageNo, Integer pageSize, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		PageModel<SysMenu> pm = sysMenuService.listPageModel(entity, pageNo, pageSize);
 		ajaxSuccess(response, pm);
 	}
 
 	@RequestMapping("/save.json")
-	public void save(SysMenu entity, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public void save(@RequestBody SysMenu entity, HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
 		sysMenuService.save(entity);
 		ajaxSuccess(response);
 	}

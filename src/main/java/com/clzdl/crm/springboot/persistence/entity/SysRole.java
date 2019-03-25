@@ -10,6 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.framework.common.util.date.DateUtil;
+
 @Table(name = "sys_role")
 public class SysRole {
 	/**
@@ -135,7 +137,10 @@ public class SysRole {
 	}
 
 	public String getCreateTimeOutput() {
-		return createTimeOutput;
+		if (null == createTime) {
+			return "";
+		}
+		return DateUtil.formatDate(DateUtil._DATE_TIME_FORMAT1, createTime);
 	}
 
 	public void setCreateTimeOutput(String createTimeOutput) {

@@ -208,6 +208,9 @@ public class CmUserInfo {
 	}
 
 	public String getSexOutput() {
+		if (sex == null) {
+			return "";
+		}
 		EnumUserSex enumSex = EnumUserSex.getEnum(sex.intValue());
 		if (null != enumSex) {
 			return enumSex.getName();
@@ -220,6 +223,9 @@ public class CmUserInfo {
 	}
 
 	public String getCreateTimeOutput() {
+		if (null == createTime) {
+			return "";
+		}
 		return DateUtil.formatDate(DateUtil._DATE_TIME_FORMAT1, createTime);
 	}
 

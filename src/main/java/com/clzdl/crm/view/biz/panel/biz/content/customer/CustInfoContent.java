@@ -81,8 +81,7 @@ public class CustInfoContent extends AbstractComposite {
 					@Override
 					public void doing() {
 						try {
-							JsonNode result = HttpUtil.get("/panel/biz/customer/list.json",
-									new HttpParam("entity", searchCondition));
+							JsonNode result = HttpUtil.postJsonObject("/panel/biz/customer/list.json", searchCondition);
 							for (JsonNode node : result.get("list")) {
 								pm.getList().add(JsonUtil.jsonNodeToObject(node, CmUserInfo.class));
 							}
@@ -128,7 +127,6 @@ public class CustInfoContent extends AbstractComposite {
 		modifyItem.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				// TODO Auto-generated method stub
 				super.widgetSelected(e);
 				TableItem item[] = table.getSelection();
 				new CustInfoEditDialog(App.getMainWindow(), Long.valueOf(item[0].getText(Constants.ID_INDEX).trim()));
@@ -146,13 +144,15 @@ public class CustInfoContent extends AbstractComposite {
 					return;
 				}
 				TableItem item[] = table.getSelection();
-//				ResultDTO<?> result = UserInfoController.getBean()
-//						.deleteById(Long.valueOf(item[0].getText(Constants.ID_INDEX).trim()));
-//				if (result.getCode() != ResultDTO.SUCCESS_CODE) {
-//					new MsgBox(App.getMainWindow(), result.getErrMsg()).open();
-//				} else {
-//					pager.refreshPage(false);
-//				}
+
+				try {
+					HttpUtil.get("/panel/biz/customer/deletebyid.json",
+							new HttpParam("id", item[0].getText(Constants.ID_INDEX).trim()));
+					pager.refreshPage(false);
+
+				} catch (Exception ex) {
+					new MsgBox(App.getMainWindow(), ex.getMessage()).open();
+				}
 			}
 		});
 
