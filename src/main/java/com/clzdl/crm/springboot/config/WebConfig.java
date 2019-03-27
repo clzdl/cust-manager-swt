@@ -10,6 +10,8 @@ import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.support.http.StatViewServlet;
@@ -22,7 +24,7 @@ import com.google.code.kaptcha.impl.DefaultKaptcha;
 import com.google.code.kaptcha.util.Config;
 
 @Configuration
-public class WebConfig {
+public class WebConfig extends WebMvcConfigurerAdapter {
 
 	/**
 	 * druidServlet注册
@@ -107,6 +109,13 @@ public class WebConfig {
 	@Bean
 	public ServletListenerRegistrationBean<ConfigListener> configListenerRegistration() {
 		return new ServletListenerRegistrationBean<>(new ConfigListener());
+	}
+
+	@Override
+	public void addResourceHandlers(ResourceHandlerRegistry registry) {
+		if (!registry.hasMappingForPattern("/web/**")) {
+			registry.addResourceHandler("/web/**").addResourceLocations("classpath:/web/");
+		}
 	}
 
 	/**

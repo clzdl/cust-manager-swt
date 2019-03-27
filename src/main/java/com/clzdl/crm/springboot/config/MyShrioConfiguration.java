@@ -125,5 +125,7 @@ public class MyShrioConfiguration extends ShiroConfiguration {
 	@Override
 	protected void addFilterChainDefinitionMap(Map<String, String> map) {
 		map.put("/panel/profile/sysuser/login.json", "anon");
+		map.put("/web/**", "anon");
+		map.put("/resources/web/**", "anon");
 	}
 }
