@@ -10,7 +10,10 @@
   "dependencies": {
     "vue": "^2.6.6",
     "postcss-px2rem": "^0.3.0",
-    "vue-router": "^3.0.1"
+    "vue-router": "^3.0.1",
+    "vuex": "^3.0.1",
+    "axios": "^0.18",
+    "vue-axios": "^2.1.4"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.5.0",

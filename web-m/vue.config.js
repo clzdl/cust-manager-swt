@@ -18,5 +18,16 @@ module.exports = {
                       }
               return args })
 
+  },
+  devServer: {
+    proxy: {//如需跨域请求多个域名，在此对象进行扩展即可
+      '/api': {
+          target: 'http://127.0.0.1:8088/',
+          ws: true,
+          changeOrigin: true,
+          pathRewrite: { '^/api': '/' }
+        }
+    }
   }
+
 }
