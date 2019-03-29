@@ -5,4 +5,5 @@ import com.framework.mybatis.service.IBizService;
 
 public interface IUserInfoService extends IBizService<CmUserInfo> {
 
+	void add(String userName, String userPhone) throws Exception;
 }

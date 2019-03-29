@@ -43,6 +43,14 @@ public class UserInfoServiceImpl extends AbastractBizService<CmUserInfo> impleme
 	}
 
 	@Override
+	public void add(String userName, String userPhone) throws Exception {
+		CmUserInfo entity = new CmUserInfo();
+		entity.setName(userName);
+		entity.setPhone(userPhone);
+		super.insert(entity);
+	}
+
+	@Override
 	protected Map<Long, CmUserInfo> list2Map(List<CmUserInfo> list) {
 		// TODO Auto-generated method stub
 		return null;
