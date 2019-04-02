@@ -33,17 +33,7 @@
            flex: 1;
            justify-content: center;
            align-items: center;
-           height: 96px;
-           .nav-user-img-box {
-               width: 152px;
-               padding: 0 10px;
-               img {
-                   display: block;
-                   width: 100%;
-                   height: auto;
-                   vertical-align: middle;
-               }
-           }
+           height: 50px;
            a {
                position: relative;
                display: block;

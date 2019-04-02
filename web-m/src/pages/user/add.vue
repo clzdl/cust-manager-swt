@@ -1,16 +1,49 @@
 <template>
-    <div class="index-page-container container">
-        <div class="cg-sign-title">添加</div>
-        <div class="cg-sign-container">
-            <div class="cg-input-container"><input v-model="userName" placeholder="请输入姓名"/></div>
-            <div class="cg-input-container"><input v-model="userPhone" placeholder="请输入姓名"/></div>
-            <div class="cg-sign-btn" @click="addUser">提交</div>
-        </div>
-    </div>
+  <div>
+    <van-cell-group>
+      <van-field
+        v-model="userName"
+        required
+        clearable
+        label="用户名"
+        right-icon="question-o"
+        placeholder="请输入用户名"
+        @click-right-icon="$toast('question')"
+      />
+
+      <van-field
+        v-model="userPhone"
+        required
+        label="电话"
+        placeholder="请输入手机号码"
+        required
+      />
+
+      <van-row type="flex" justify="center">
+        <van-radio-group v-model="sex"
+                class="demo-radio-group" >
+                <van-col span="">
+                  <van-radio  name="0">女</van-radio>
+                </van-col>
+                <van-col span="">
+                  <van-radio  name="1">男</van-radio>
+                </van-col>
+        </van-radio-group>
+      </van-row>
+      <van-row type="flex" justify="center">
+          <van-button type="primary" size="small" @click="addUser()">提交</van-button>
+      </van-row>
+
+
+    </van-cell-group>
+
+
+ </div>
 </template>
 <script >
+  import { Field,RadioGroup,Radio,CellGroup,Row, Col,Button } from 'vant';
 
-  import { post,get } from '../../assets/js/axiosUtil'
+  import { post,get } from '../../assets/js/axiosUtil';
   export default {
     metaInfo: {
 	    title: '用户添加',
@@ -19,16 +52,25 @@
   		return {
               userName:"",
               userPhone:"",
-              sex:0,
+              sex:'0',
               isClick:false,   ///防止重复点击标识
           }
       },
       created () {
 
       },
-
+      components:{
+        [Field.name]: Field,
+        [RadioGroup.name]: RadioGroup,
+        [Radio.name] : Radio,
+        [CellGroup.name]: CellGroup,
+        [Row.name]:Row,
+        [Col.name]:Col,
+        [Button.name]:Button
+      },
       methods: {
         addUser() {
+          console.log("====================");
             if(this.isClick === true){
               return ;
             }
@@ -45,7 +87,8 @@
             this.$store.dispatch("user/add",
               {
                 "userName":this.userName,
-                "userPhone":this.userPhone
+                "userPhone":this.userPhone,
+                "sex":this.sex
               }
             ).then((data) => {
               this.$globalTip({
@@ -66,49 +109,6 @@
       }
   }
 </script>
-
-<style lang="scss">
-.cg-sign-title{
-    margin-top:64px;
-    text-align: center;
-    font-size: 36px;
+<style lang="less">
 
 }
-.cg-sign-container{
-    display: flex;
-    flex-direction: column;
-    margin-top: 64px;
-    .cg-input-container{
-        height: 70px;
-        line-height: 70px;
-        width: 60%;
-        margin:0 auto;
-        margin-bottom: 32px;
-        display: flex;
-        overflow: hidden;
-        align-items: center;
-        border:solid #e2e2e2 1px;
-        border-radius: 8px;
-        input{
-            height: 70px;
-            line-height: 70px;
-            padding-left: 16px;
-            width: 100%;
-            border: none;
-            outline:none
-        }
-    }
-    .cg-sign-btn{
-        height: 70px;
-        line-height: 70px;
-        text-align: center;
-        background-color: #ff0000;
-        width: 60%;
-        margin: 0 auto;
-        color: #fff;
-        font-size: 28px;
-        border-radius: 8px;
-        margin-bottom: 32px;
-    }
-}
-</style>

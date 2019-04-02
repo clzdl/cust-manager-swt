@@ -1,11 +1,10 @@
 <template>
-   <div class="index-page-container">
-       <transition name="viewf">
-           <router-view class="router-view-container"></router-view>
-       </transition>
-       <app-footer></app-footer>
-   </div>
-
+  <div>
+      <transition name="viewf">
+          <router-view class="router-view-container"></router-view>
+      </transition>
+    <app-footer></app-footer>
+  </div>
 </template>
 
 <script>
@@ -16,9 +15,10 @@
         }
     }
 </script>
-<style lang="scss">
-    .router-view-container {
-        padding: 0 0 180px 0;
-        min-height: 100vh;
-    }
+<style>
+body {
+  font-size: 24px;
+  background-color: #f8f8f8;
+  -webkit-font-smoothing: antialiased;
+}  
 </style>
