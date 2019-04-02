@@ -10,7 +10,7 @@
 </template>
 <script >
 
-  import { post } from '../../assets/js/axiosUtil'
+  import { post,get } from '../../assets/js/axiosUtil'
   export default {
     metaInfo: {
 	    title: '用户添加',
@@ -42,15 +42,17 @@
             }
 
             this.isClick = true;
-            post('/api/web/user/add.json',
-            {
-              "userName":this.userName,
-              "userPhone":this.userPhone
-            }).then((data) => {
+            this.$store.dispatch("user/add",
+              {
+                "userName":this.userName,
+                "userPhone":this.userPhone
+              }
+            ).then((data) => {
               this.$globalTip({
                   type: "success",
                   text: `添加成功!`
               });
+              this.isClick = false;
             }).catch(({errMsg}) => {
               this.$globalTip({
                 type: "warning",
