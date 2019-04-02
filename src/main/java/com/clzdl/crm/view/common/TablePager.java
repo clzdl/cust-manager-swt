@@ -22,7 +22,7 @@ public class TablePager extends Composite {
 	private Button btnNext;
 	private Button btnLast;
 	private Label txtCount;
-	private Label txtPage; /// 当前页号显示
+	private Button txtPage; /// 当前页号显示
 	///
 	private PagerOperation pagerOperation;
 
@@ -58,7 +58,7 @@ public class TablePager extends Composite {
 	private void createContent(Composite parent, int style) {
 		setLayout(new FormLayout());
 		txtCount = new Label(this, SWT.NONE);
-		txtPage = new Label(this, SWT.NONE);
+		txtPage = new Button(this, SWT.NONE);
 
 		btnFirst = new Button(this, SWT.PUSH);
 		btnFirst.setText("<");
@@ -104,8 +104,7 @@ public class TablePager extends Composite {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				pageNo = 1;
-				count = pagerOperation.refresh(pageNo, pageSize);
-				refreshButton();
+				refresh(pageNo, pageSize);
 				super.widgetSelected(e);
 			}
 		};
@@ -114,8 +113,7 @@ public class TablePager extends Composite {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				pageNo = getLastPageNo();
-				count = pagerOperation.refresh(pageNo, pageSize);
-				refreshButton();
+				refresh(pageNo, pageSize);
 				super.widgetSelected(e);
 			}
 		};
@@ -124,8 +122,7 @@ public class TablePager extends Composite {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				--pageNo;
-				count = pagerOperation.refresh(pageNo, pageSize);
-				refreshButton();
+				refresh(pageNo, pageSize);
 				super.widgetSelected(e);
 			}
 		};
@@ -134,8 +131,7 @@ public class TablePager extends Composite {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				++pageNo;
-				count = pagerOperation.refresh(pageNo, pageSize);
-				refreshButton();
+				refresh(pageNo, pageSize);
 				super.widgetSelected(e);
 			}
 		};
@@ -144,6 +140,14 @@ public class TablePager extends Composite {
 		btnLast.addSelectionListener(lastSelectionAdapter);
 		btnPrev.addSelectionListener(prevSelectionAdapter);
 		btnNext.addSelectionListener(nextSelectionAdapter);
+
+		txtPage.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				super.widgetSelected(e);
+				refresh(pageNo, pageSize);
+			}
+		});
 	}
 
 	private Integer getLastPageNo() {
@@ -152,7 +156,7 @@ public class TablePager extends Composite {
 
 	private void refreshButton() {
 		txtCount.setText("共:" + count + "条");
-		txtPage.setText("第 " + pageNo + " 页");
+		txtPage.setText("第 < " + pageNo + " > 页");
 		if (count <= pageSize) {
 			/// 单页
 			btnNext.setEnabled(false);
@@ -186,6 +190,11 @@ public class TablePager extends Composite {
 				}
 			}
 		}
+	}
+
+	private void refresh(Integer pageNo, Integer pageSize) {
+		count = pagerOperation.refresh(pageNo, pageSize);
+		refreshButton();
 	}
 
 }
