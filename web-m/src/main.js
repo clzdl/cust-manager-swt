@@ -9,6 +9,11 @@ import 'amfe-flexible';
 
 Vue.use(VueAxios, axios);
 
+import Vuetify from 'vuetify'
+import 'vuetify/dist/vuetify.min.css'
+import 'material-design-icons-iconfont/dist/material-design-icons.css' // Ensure you are using css-loader
+Vue.use(Vuetify,{iconfont: 'md'})
+
 regPulgins(Vue);
 Vue.config.productionTip = false
 new Vue({

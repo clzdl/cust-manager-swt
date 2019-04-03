@@ -16,7 +16,7 @@ const routes = [
 			{ path: "", component: Index, name: ""},
 			{ path: "h1", component: HelloWorld, name: "/h1"},
 			{ path: "h0", component: HelloWorld0, name: "/h0"},
-			{ path: "user/add", component: UserAdd, name: "/user/add"}
+			{ path: "user/add", component: UserAdd, name: "/user/add"},
 		]
 	},
 ]

@@ -1,9 +1,9 @@
 <template>
-    <div class="web-app-container">
+     <v-app id="inspire">
         <transition name="view">
             <router-view></router-view>
         </transition>
-    </div>
+    </v-app>
 </template>
 
 <style lang="less">

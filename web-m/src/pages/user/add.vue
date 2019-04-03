@@ -1,73 +1,81 @@
 <template>
-  <div>
-    <van-cell-group>
-      <van-field
-        v-model="userName"
-        required
-        clearable
-        label="用户名"
-        right-icon="question-o"
-        placeholder="请输入用户名"
-        @click-right-icon="$toast('question')"
-      />
+  <v-form
+    ref="form"
+    v-model="valid"
+    lazy-validation
+  >
+    <v-text-field
+      v-model="userName"
+      :counter="20"
+      :rules="nameRules"
+      label="用户名"
+      required
+    ></v-text-field>
 
-      <van-field
-        v-model="userPhone"
-        required
-        label="电话"
-        placeholder="请输入手机号码"
-        required
-      />
+    <v-text-field
+      v-model="userPhone"
+      :counter="11"
+      :rules="nameRules"
+      label="手机号码"
+      required
+    ></v-text-field>
 
-      <van-row type="flex" justify="center">
-        <van-radio-group v-model="sex"
-                class="demo-radio-group" >
-                <van-col span="">
-                  <van-radio  name="0">女</van-radio>
-                </van-col>
-                <van-col span="">
-                  <van-radio  name="1">男</van-radio>
-                </van-col>
-        </van-radio-group>
-      </van-row>
-      <van-row type="flex" justify="center">
-          <van-button type="primary" size="small" @click="addUser()">提交</van-button>
-      </van-row>
+    <v-text-field
+      v-model="email"
+      label="邮箱"
+      required
+    ></v-text-field>
 
 
-    </van-cell-group>
+    <v-radio-group v-model="sex" row>
+      <v-radio label="女" value="0"></v-radio>
+      <v-radio label="男" value="1"></v-radio>
+    </v-radio-group>
+
+    <v-btn
+      :disabled="isClick"
+      color="success"
+      @click="addUser"
+    >
+      提交
+    </v-btn>
+
+    <v-btn
+      color="error"
+      @click="reset"
+    >
+      重置
+    </v-btn>
 
 
- </div>
+  </v-form>
 </template>
 <script >
-  import { Field,RadioGroup,Radio,CellGroup,Row, Col,Button } from 'vant';
-
-  import { post,get } from '../../assets/js/axiosUtil';
-  export default {
-    metaInfo: {
-	    title: '用户添加',
-    },
-  	data () {
-  		return {
-              userName:"",
-              userPhone:"",
-              sex:'0',
-              isClick:false,   ///防止重复点击标识
-          }
+    import { post,get } from '../../assets/js/axiosUtil';
+    export default {
+      metaInfo: {
+        title: '用户添加',
       },
+      data: () =>({
+
+          userName:"",
+          nameRules: [
+            v => !!v || '姓名未必填项',
+            v => (v && v.length <= 10) || '长度不能超过10个字符'
+          ],
+          userPhone:"",
+          sex:"0",
+          // emailRules: [
+          //   v => !!v || 'E-mail is required',
+          //   v => /.+@.+/.test(v) || 'E-mail must be valid'
+          // ],
+          isClick:false,   ///防止重复点击标识
+
+      }),
       created () {
 
       },
-      components:{
-        [Field.name]: Field,
-        [RadioGroup.name]: RadioGroup,
-        [Radio.name] : Radio,
-        [CellGroup.name]: CellGroup,
-        [Row.name]:Row,
-        [Col.name]:Col,
-        [Button.name]:Button
-      },
+
       methods: {
         addUser() {
           console.log("====================");
@@ -109,6 +117,3 @@
       }
   }
 </script>
-<style lang="less">
-
-}
