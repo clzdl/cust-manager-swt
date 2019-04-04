@@ -20,5 +20,10 @@ body {
   font-size: 24px;
   background-color: #f8f8f8;
   -webkit-font-smoothing: antialiased;
-}  
+}
+
+.router-view-container {
+    padding: 0 0 180px 0;
+    min-height: 100vh;
+}
 </style>
