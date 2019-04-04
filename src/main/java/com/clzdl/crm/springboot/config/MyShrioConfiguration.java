@@ -20,6 +20,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 
+import com.clzdl.crm.springboot.auth.AjaxFormAuthenticationFilter;
 import com.clzdl.crm.springboot.auth.ShiroDbRealm;
 import com.framework.shrio.config.ShiroConfiguration;
 
@@ -94,7 +95,10 @@ public class MyShrioConfiguration extends ShiroConfiguration {
 	// Filter工厂，设置对应的过滤条件和跳转条件
 	@Bean(name = "shiroFilter")
 	public ShiroFilterFactoryBean shiroFilterFactoryBean() {
-		return super.shiroFilterFactoryBean(securityManager());
+		ShiroFilterFactoryBean shiroFilterFactoryBean = super.shiroFilterFactoryBean(securityManager());
+		shiroFilterFactoryBean.getFilters().put("authc", new AjaxFormAuthenticationFilter());
+		return shiroFilterFactoryBean;
+
 	}
 
 	/**

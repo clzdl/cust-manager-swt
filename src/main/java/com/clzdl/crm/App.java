@@ -63,6 +63,18 @@ public class App {
 		return _launchSplashFile;
 	}
 
+	public static Display getDisplay() {
+		return display;
+	}
+
+	public static Boolean login() {
+		loginDlg = new LoginDialog(display);
+		if (!loginDlg.isLogin()) {
+			return false;
+		}
+		return true;
+	}
+
 	public void launchSpring() {
 		try {
 			springbootSrvThread = new Thread(new SpringbootWebSrv());
@@ -76,8 +88,7 @@ public class App {
 	public void show() throws Exception {
 		appImage = new Image(display,
 				new ImageLoader().load(this.getClass().getClassLoader().getResourceAsStream(_appImageFile))[0]);
-		loginDlg = new LoginDialog(display);
-		if (!loginDlg.isLogin()) {
+		if (!login()) {
 			return;
 		}
 		mainWindow = new MainWindow(display);

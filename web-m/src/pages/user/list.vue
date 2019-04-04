@@ -1,5 +1,6 @@
 <template>
-<div v-infinite-scroll="loadMore"
+<div class ="activity-page-index-container"
+     v-infinite-scroll="loadMore"
      infinite-scroll-disabled="busy"
      infinite-scroll-distance="30"
      infinite-scroll-immediate-check="false"

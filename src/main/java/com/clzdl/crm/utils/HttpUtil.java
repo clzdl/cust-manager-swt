@@ -6,6 +6,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.clzdl.crm.App;
 import com.clzdl.crm.ExceptionMessage;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.framework.common.exception.BizException;
@@ -14,6 +15,7 @@ import com.framework.common.util.net.http.client.HttpSendClientFactory;
 
 public class HttpUtil {
 	private final static Integer _successFlagCode = 1;
+	private final static Integer _errNoLoginCode = 1;
 	private final static Logger _logger = LoggerFactory.getLogger(HttpUtil.class);
 	public static String domain = "http://127.0.0.1:8088";
 
@@ -113,7 +115,16 @@ public class HttpUtil {
 		}
 
 		if (jsonNode.get("flag").asInt() != _successFlagCode) {
-			throw new BizException(ExceptionMessage.getEnum(jsonNode.get("errorCode").asInt()));
+			if (jsonNode.get("errorCode").asInt() == _errNoLoginCode) {
+				App.getDisplay().asyncExec(new Runnable() {
+					@Override
+					public void run() {
+						App.login();
+					}
+				});
+			} else {
+				throw new BizException(ExceptionMessage.getEnum(jsonNode.get("errorCode").asInt()));
+			}
 		}
 		return jsonNode.get("data");
 	}
