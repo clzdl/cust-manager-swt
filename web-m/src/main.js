@@ -8,6 +8,9 @@ import VueAxios from 'vue-axios'
 import 'amfe-flexible';
 
 Vue.use(VueAxios, axios);
+////下滑分页
+import infiniteScroll from "vue-infinite-scroll";
+Vue.use(infiniteScroll);
 
 import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.min.css'

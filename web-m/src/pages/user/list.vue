@@ -1,4 +1,9 @@
 <template>
+<div v-infinite-scroll="loadMore"
+     infinite-scroll-disabled="busy"
+     infinite-scroll-distance="30"
+     infinite-scroll-immediate-check="false"
+>
   <v-layout row>
     <v-flex xs12 sm6 offset-sm3>
       <v-card>
@@ -37,6 +42,7 @@
       </v-card>
     </v-flex>
   </v-layout>
+</div>
 </template>
 
 <script>
@@ -51,6 +57,9 @@
       }
     },
     computed:{
+      end () {
+        return this.count === this.list.length;
+      },
       itemList(){
         return this.list.map(item => {
           const {id,userName,userPhone} = item;
@@ -58,32 +67,39 @@
                 id,
                 userName,
                 userPhone,
-                path: `/user/${id}`
+                path: `/user/${id}`,
           }
         })
       },
     },
 
     created(){
-      this.busy = true;
-      this.$store.dispatch("user/list",
-        {
-          "pageIndex":this.pageIndex,
-          "pageSize":this.pageSize
-        }
-      ).then((data) => {
-          	const {list, count} = data
-            this.list.push(...list)
-            this.count = count;
-            this.busy = false;
-            this.pageIndex++;
-      }).catch(({errMsg}) => {
-        this.$globalTip({
-          type: "warning",
-          text: "errMsg"
+      this.getList();
+    },
+    methods:{
+      getList(){
+        this.busy = true;
+        this.$store.dispatch("user/list",
+          {
+            "pageIndex":this.pageIndex,
+            "pageSize":this.pageSize
+          }
+        ).then((data) => {
+            	const {list, count} = data
+              this.list.push(...list)
+              this.count = count;
+              this.busy = false;
+              this.pageIndex++;
+        }).catch(({errMsg}) => {
+          this.busy = false;
         });
-
-      });
+      },
+      loadMore () {
+        if (this.busy === false && !this.end) {
+          this.busy = true;
+          this.getList()
+        }
+      }
     }
 
   }
