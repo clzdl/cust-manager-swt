@@ -8,6 +8,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.clzdl.crm.springboot.service.biz.user.IUserInfoService;
+import com.clzdl.crm.springboot.vo.UserVO;
+import com.framework.mybatis.page.AjaxData;
 import com.framework.shrio.controller.AbstractShiroController;
 
 @Controller
@@ -23,4 +25,9 @@ public class WebUserController extends AbstractShiroController {
 		ajaxSuccess(response);
 	}
 
+	@RequestMapping("/list.json")
+	public void handleList(Integer pageIndex, Integer pageSize, HttpServletResponse response) throws Exception {
+		AjaxData<UserVO> data = userInfoService.listVo(pageIndex, pageSize);
+		ajaxSuccess(response, data);
+	}
 }

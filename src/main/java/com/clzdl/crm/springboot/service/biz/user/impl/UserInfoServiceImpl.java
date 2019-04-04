@@ -10,6 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.clzdl.crm.springboot.persistence.entity.CmUserInfo;
 import com.clzdl.crm.springboot.service.biz.user.IUserInfoService;
+import com.clzdl.crm.springboot.vo.UserVO;
+import com.framework.mybatis.page.AjaxData;
 import com.framework.mybatis.page.PageModel;
 import com.framework.mybatis.service.AbastractBizService;
 
@@ -48,6 +50,14 @@ public class UserInfoServiceImpl extends AbastractBizService<CmUserInfo> impleme
 		entity.setName(userName);
 		entity.setPhone(userPhone);
 		super.insert(entity);
+	}
+
+	@Override
+	public AjaxData<UserVO> listVo(Integer pageIndex, Integer pageSize) throws Exception {
+
+		PageModel<CmUserInfo> pm = super.listPageModelByExample(
+				Example.builder(CmUserInfo.class).orderByDesc("id").build(), pageIndex, pageSize);
+		return new AjaxData<UserVO>(pm.getTotalRecords(), UserVO.buildDataList(pm.getList()));
 	}
 
 	@Override
