@@ -9,6 +9,8 @@ export default {
 		add ({commit, state}, data) {
 			return get(`${baseUrl}/user/add.json`,data);
 		},
-
+		list({commit, state}, data){
+			return get(`${baseUrl}/user/list.json`,data);
+		}
 	}
 }
