@@ -2,7 +2,8 @@ const autoprefixer = require('autoprefixer');
 const pxtorem = require('postcss-pxtorem');
 module.exports = {
   publicPath: '/web/',
-
+  // 生产环境是否生成 sourceMap 文件
+  productionSourceMap: true,
   css: {
      loaderOptions: {
        postcss: {
