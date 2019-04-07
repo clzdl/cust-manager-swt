@@ -18,7 +18,11 @@ import 'material-design-icons-iconfont/dist/material-design-icons.css' // Ensure
 Vue.use(Vuetify,{iconfont: 'md'})
 
 regPulgins(Vue);
-Vue.config.productionTip = false
+
+
+Vue.config.productionTip = true;
+
+
 new Vue({
   router,
   store,
