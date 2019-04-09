@@ -18,7 +18,6 @@ import com.alibaba.druid.support.http.StatViewServlet;
 import com.alibaba.druid.support.http.WebStatFilter;
 import com.alibaba.druid.support.spring.stat.BeanTypeAutoProxyCreator;
 import com.alibaba.druid.support.spring.stat.DruidStatInterceptor;
-import com.clzdl.crm.Constants;
 import com.framework.common.util.filter.xss.XssFilter;
 import com.framework.common.web.listener.ConfigListener;
 import com.google.code.kaptcha.impl.DefaultKaptcha;
@@ -118,8 +117,10 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 			registry.addResourceHandler("/web/**").addResourceLocations("classpath:/web/");
 		}
 		if (!registry.hasMappingForPattern("/img/**")) {
-			registry.addResourceHandler("/img/**").addResourceLocations("file:" + Constants.IMG_SITE);
+			registry.addResourceHandler("/img/**")
+					.addResourceLocations("file:" + System.getProperty("user.dir") + "/img/");
 		}
+
 	}
 
 	/**

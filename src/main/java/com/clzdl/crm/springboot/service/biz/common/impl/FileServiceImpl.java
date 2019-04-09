@@ -1,13 +1,15 @@
 package com.clzdl.crm.springboot.service.biz.common.impl;
 
+import java.io.File;
+
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.clzdl.crm.Constants;
 import com.clzdl.crm.springboot.service.biz.common.IFileService;
 import com.clzdl.crm.springboot.vo.UploadResultVO;
 import com.framework.common.util.cipher.MD5Util;
 import com.framework.common.util.file.FileUtil;
-import com.framework.common.util.properties.PropUtil;
 import com.framework.common.util.string.StringUtil;
 
 /**
@@ -24,8 +26,8 @@ public class FileServiceImpl implements IFileService {
 		UploadResultVO result = null;
 		if (file != null && StringUtil.isNotBlank(file.getOriginalFilename())) {
 			String fileName = insertSourceFile(file.getOriginalFilename(), file.getSize(), file.getContentType(),
-					file.getBytes(), PropUtil.getInstance().get("img.path"));
-			result = new UploadResultVO(fileName, file.getContentType(), fileName);
+					file.getBytes(), getPath());
+			result = new UploadResultVO(fileName, file.getContentType(), Constants.IMG_SITE + fileName);
 		}
 		return result;
 	}
@@ -39,4 +41,11 @@ public class FileServiceImpl implements IFileService {
 		return uuid + suffix;
 	}
 
+	private String getPath() throws Exception {
+		String path = System.getProperty("user.dir") + "/img/";
+		if (!FileUtil.fileExist(path)) {
+			new File(path).mkdir();
+		}
+		return path;
+	}
 }
