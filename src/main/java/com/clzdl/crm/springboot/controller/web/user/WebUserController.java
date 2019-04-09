@@ -1,4 +1,4 @@
-package com.clzdl.crm.springboot.controller.web;
+package com.clzdl.crm.springboot.controller.web.user;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
