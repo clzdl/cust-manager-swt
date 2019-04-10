@@ -5,10 +5,11 @@
   >
     <UploadComp :uploadUrl="uploadImgUrl" :selImgUrl.sync="selImgUrl"></UploadComp>
     <v-btn
+      :disabled="isClick"
       color="success"
-      @click="test"
+      @click="add"
     >
-      test
+      提交
     </v-btn>
   </v-form>
 
@@ -20,14 +21,44 @@
     export default {
       data: () =>({
         uploadImgUrl,
-        selImgUrl:""
+        selImgUrl:"",
+        isClick:false,   ///防止重复点击标识
       }),
       created () {
 
       },
       methods:{
-        test:function (){
-            console.log(this.selImgUrl);
+        add:function (){
+          if(this.isClick === true){
+            return ;
+          }
+
+          if(this.selImgUrl == ""){
+            this.$globalTip({
+               type: "warning",
+               text: "请先选择图片"
+            });
+            return ;
+          }
+
+          this.isClick = true;
+          this.$store.dispatch("worksImg/add",
+            {
+              "imgUrl":this.selImgUrl,
+            }
+          ).then((data) => {
+            this.$globalTip({
+                type: "success",
+                text: `添加成功!`
+            });
+            this.isClick = false;
+          }).catch(({errMsg}) => {
+            this.$globalTip({
+              type: "warning",
+              text: "errMsg"
+            });
+            this.isClick = false;
+          });
         },
 
       },
