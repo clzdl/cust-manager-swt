@@ -25,8 +25,8 @@
     
     <!--  Java接口和实体类  -->
     <targetJavaProject>${basedir}/src/main/java</targetJavaProject>
-    <targetMapperPackage>com.clzdl.crm.common.persistence.dao</targetMapperPackage>
-    <targetModelPackage>com.clzdl.crm.common.persistence.entity</targetModelPackage>
+    <targetMapperPackage>com.clzdl.crm.springboot.persistence.dao</targetMapperPackage>
+    <targetModelPackage>com.clzdl.crm.springboot.persistence.entity</targetModelPackage>
     <!--  XML生成路径  -->
     <targetResourcesProject>${basedir}/src/main/resources</targetResourcesProject>
     <targetXMLPackage>mapper</targetXMLPackage>
