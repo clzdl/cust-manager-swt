@@ -19,7 +19,8 @@ import 'vuetify/dist/vuetify.min.css'
 import Vuetify from 'vuetify'
 Vue.use(Vuetify,{iconfont: 'md'})
 
-
+import uploader from 'vue-simple-uploader';
+Vue.use(uploader);
 
 
 Vue.config.productionTip = true;

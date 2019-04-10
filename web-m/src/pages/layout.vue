@@ -4,14 +4,12 @@
         <router-view class="router-view-container"></router-view>
     </transition>
 
-
-    
     <v-card class ="app-footer-container" flat>
      <v-bottom-nav
        :active.sync="linkUrl"
        :value="true"
        absolute
-       fixed="true"
+       :fixed="true"
        color="transparent">
          <v-btn
            color="teal"

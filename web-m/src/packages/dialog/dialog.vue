@@ -22,13 +22,13 @@
             }
         },
         methods: {
-    		clickOut () {
-    			this.$emit('input', false)
-            },
-            close () {
-    			console.log('close')
-	            this.$emit('input', false)
-            }
+      		clickOut () {
+      			this.$emit('input', false)
+          },
+          close () {
+  			   console.log('close')
+            this.$emit('input', false)
+          }
         },
         mounted () {
         }

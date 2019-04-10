@@ -22,8 +22,6 @@
     }
 </script>
 <style lang="scss">
-
-@import "../assets/scss/minix";
 .index-page-container {
     position: relative;
     background: #ffffff;
