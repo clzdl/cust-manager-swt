@@ -1,4 +1,4 @@
-/*系统管理-菜单*/
+
 CREATE TABLE `cm_user_info` (
 	`id` BIGINT(20) NOT NULL AUTO_INCREMENT COMMENT '用户信息表',
 	`name` VARCHAR(50) NOT NULL DEFAULT '' COMMENT '用户名',
