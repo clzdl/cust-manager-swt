@@ -11,6 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.clzdl.crm.springboot.persistence.entity.CmUserInfo;
 import com.clzdl.crm.springboot.persistence.entity.CmWorksImages;
 import com.clzdl.crm.springboot.service.biz.user.IWorksImageService;
+import com.clzdl.crm.springboot.vo.WorkImgVO;
+import com.framework.mybatis.page.AjaxData;
 import com.framework.mybatis.page.PageModel;
 import com.framework.mybatis.service.AbastractBizService;
 
@@ -50,6 +52,14 @@ public class WorksImageServiceImpl extends AbastractBizService<CmWorksImages> im
 		entity.setName(userName);
 		entity.setImgUrl(imgUrl);
 		super.insert(entity);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public AjaxData<WorkImgVO> listVo(CmWorksImages entity, Integer pageIndex, Integer pageSize) throws Exception {
+		PageModel<CmWorksImages> pm = super.listPageModelByExample(
+				Example.builder(CmWorksImages.class).orderByDesc("id").build(), pageIndex, pageSize);
+		return new AjaxData<WorkImgVO>(pm.getTotalRecords(), WorkImgVO.buildDataList(pm.getList()));
 	}
 
 	@Override

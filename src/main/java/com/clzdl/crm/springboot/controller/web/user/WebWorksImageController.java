@@ -7,7 +7,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.clzdl.crm.springboot.persistence.entity.CmWorksImages;
 import com.clzdl.crm.springboot.service.biz.user.IWorksImageService;
+import com.clzdl.crm.springboot.vo.WorkImgVO;
+import com.framework.mybatis.page.AjaxData;
 import com.framework.shrio.controller.AbstractShiroController;
 
 @Controller
@@ -21,6 +24,13 @@ public class WebWorksImageController extends AbstractShiroController {
 			throws Exception {
 		worksImageService.add(userName, imgUrl);
 		ajaxSuccess(response);
+	}
+
+	@RequestMapping("/list.json")
+	public void handleList(CmWorksImages entity, Integer pageIndex, Integer pageSize, HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		AjaxData<WorkImgVO> data = worksImageService.listVo(entity, pageIndex, pageSize);
+		ajaxSuccess(response, data);
 	}
 
 }
