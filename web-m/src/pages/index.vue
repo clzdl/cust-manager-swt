@@ -1,25 +1,21 @@
 <template>
-    <div class="index-page-container container">
-
-    </div>
+<div class="index-page-container container">
+</div>
 </template>
 <script>
+export default {
+    metaInfo: {
+        title: '****',
+    },
+    data() {
+        return {}
+    },
+    created() {
 
-    export default {
-	    metaInfo: {
-		    title: '****',
-	    },
-    	data () {
-    		return {
-        }
-      },
-      created () {
-
-      },
-      components: {},
-      methods: {
-      }
-    }
+    },
+    components: {},
+    methods: {}
+}
 </script>
 <style lang="scss">
 .index-page-container {

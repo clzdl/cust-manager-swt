@@ -17,7 +17,9 @@ regPulgins(Vue);
 import 'material-design-icons-iconfont/dist/material-design-icons.css' // Ensure you are using css-loader
 import 'vuetify/dist/vuetify.min.css'
 import Vuetify from 'vuetify'
-Vue.use(Vuetify,{iconfont: 'md'})
+Vue.use(Vuetify, {
+    iconfont: 'md'
+})
 
 import uploader from 'vue-simple-uploader';
 Vue.use(uploader);
@@ -27,8 +29,10 @@ Vue.config.productionTip = true;
 
 
 new Vue({
-  router,
-  store,
-  render: h => h("App"),
-  components: {App}
+    router,
+    store,
+    render: h => h("App"),
+    components: {
+        App
+    }
 }).$mount('#app')

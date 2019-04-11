@@ -1,20 +1,12 @@
 <template>
-<div class ="activity-page-index-container"
-     v-infinite-scroll="loadMore"
-     infinite-scroll-disabled="busy"
-     infinite-scroll-distance="30"
-     infinite-scroll-immediate-check="false"
->
+<div class="activity-page-index-container" v-infinite-scroll="loadMore" infinite-scroll-disabled="busy" infinite-scroll-distance="30" infinite-scroll-immediate-check="false">
   <v-layout row>
     <v-flex xs12 sm6 offset-sm3>
       <v-card>
         <v-toolbar color="cyan" dark>
           <v-toolbar-side-icon></v-toolbar-side-icon>
-
           <v-toolbar-title>用户列表</v-toolbar-title>
-
           <v-spacer></v-spacer>
-
           <v-btn icon>
             <v-icon>search</v-icon>
           </v-btn>
@@ -47,61 +39,68 @@
 </template>
 
 <script>
-  export default {
-    data () {
-      return {
-        pageIndex: 1,
-        pageSize: 10,
-        count:0,
-        busy:false,
-        list: [],
-      }
+export default {
+  data() {
+    return {
+      pageIndex: 1,
+      pageSize: 10,
+      count: 0,
+      busy: false,
+      list: [],
+    }
+  },
+  computed: {
+    end() {
+      return this.count === this.list.length;
     },
-    computed:{
-      end () {
-        return this.count === this.list.length;
-      },
-      itemList(){
-        return this.list.map(item => {
-          const {id,userName,userPhone} = item;
-          return {
-                id,
-                userName,
-                userPhone,
-                path: `/user/${id}`,
-          }
-        })
-      },
-    },
-
-    created(){
-      this.getList();
-    },
-    methods:{
-      getList(){
-        this.busy = true;
-        this.$store.dispatch("user/list",
-          {
-            "pageIndex":this.pageIndex,
-            "pageSize":this.pageSize
-          }
-        ).then((data) => {
-            	const {list, count} = data
-              this.list.push(...list)
-              this.count = count;
-              this.busy = false;
-              this.pageIndex++;
-        }).catch(({errMsg}) => {
-          this.busy = false;
-        });
-      },
-      loadMore () {
-        if (this.busy === false && !this.end) {
-          this.busy = true;
-          this.getList()
+    itemList() {
+      return this.list.map(item => {
+        const {
+          id,
+          userName,
+          userPhone
+        } = item;
+        return {
+          id,
+          userName,
+          userPhone,
+          path: `/user/${id}`,
         }
+      })
+    },
+  },
+
+  created() {
+    this.getList();
+  },
+  methods: {
+    getList() {
+      this.busy = true;
+      this.$store.dispatch("user/list", {
+        "pageIndex": this.pageIndex,
+        "pageSize": this.pageSize
+      }).then((data) => {
+        const {
+          list,
+          count
+        } = data
+        this.list.push(...list)
+        this.count = count;
+        this.busy = false;
+        this.pageIndex++;
+      }).catch(({
+        errMsg
+      }) => {
+        this.busy = false;
+      });
+    },
+    loadMore() {
+      if (this.busy === false && !this.end) {
+        this.busy = true;
+        this.getList()
       }
     }
-
   }
+
+}
 </script>
