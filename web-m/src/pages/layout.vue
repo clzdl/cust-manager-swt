@@ -11,9 +11,8 @@
                 <v-icon>history</v-icon>
             </v-btn>
 
-            <v-btn color="teal" flat value="/web/card/list">
-
-                <span>会员卡</span>
+            <v-btn color="teal" flat value="/web/works/list">
+                <span>作品</span>
                 <v-icon>favorite</v-icon>
             </v-btn>
 

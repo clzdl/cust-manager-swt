@@ -13,7 +13,8 @@ const UserList = () =>
     import ("../pages/user/list.vue");
 const UploadWork = () =>
     import ("../pages/works/upload.vue");
-
+const ListWork = () =>
+    import ("../pages/works/list.vue");
 
 const routes = [{
     path: "/web",
@@ -37,6 +38,11 @@ const routes = [{
             path: "works/upload",
             component: UploadWork,
             name: "/works/upload"
+        },
+        {
+            path: "works/list",
+            component: ListWork,
+            name: "/works/list"
         },
     ]
 }, ]

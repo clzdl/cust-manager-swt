@@ -19,6 +19,7 @@ export default {
     props: {
         uploadUrl: "",
         selImgUrl: "",
+        fileName: "",
     },
     data: function() {
         return {
@@ -60,7 +61,7 @@ export default {
             } else {
                 this.imageUrl = dataResp.data.path;
                 this.$emit("update:selImgUrl", this.imageUrl);
-                this.$emit("submit");
+                this.$emit("update:fileName", dataResp.data.fileName);
             }
         }
     }

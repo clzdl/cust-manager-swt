@@ -1,46 +1,44 @@
 <template>
 <div class="activity-page-index-container" v-infinite-scroll="loadMore" infinite-scroll-disabled="busy" infinite-scroll-distance="30" infinite-scroll-immediate-check="false">
-    <v-layout row>
+    <v-layout>
         <v-flex xs12 sm6 offset-sm3>
             <v-card>
                 <v-toolbar color="cyan" dark>
                     <v-toolbar-side-icon></v-toolbar-side-icon>
-                    <v-toolbar-title>用户列表</v-toolbar-title>
+                    <v-toolbar-title>作品列表</v-toolbar-title>
                     <v-spacer></v-spacer>
                     <v-btn icon>
-                        <router-link to="/web/user/add">
-                            <v-icon>add</v-icon>
+                        <router-link to="/web/works/upload">
+                            <v-icon>file_upload</v-icon>
                         </router-link>
 
                     </v-btn>
                 </v-toolbar>
-
-                <v-list two-line>
-                    <template v-for="(item, index) in itemList">
-                        <v-list-tile
-                          :key="index"
-                          avatar
-                          @click=""
-                        >
-                          <v-list-tile-avatar>
-                            <img :src="require('../../assets/img/user-face.jpg')">
-                          </v-list-tile-avatar>
-
-                          <v-list-tile-content>
-                            <v-list-tile-title v-html="item.userName"></v-list-tile-title>
-                            <v-list-tile-sub-title v-html="item.userPhone"></v-list-tile-sub-title>
-                          </v-list-tile-content>
-
-                        </v-list-tile>
-
-                      </template>
-                </v-list>
+                <v-container grid-list-sm fluid>
+                    <v-layout row wrap>
+                        <v-flex v-for="(item, index) in itemList" :key="index" xs4 d-flex>
+                            <v-card flat tile class="d-flex">
+                                <v-img :src="item.imgUrl" aspect-ratio="1" class="grey lighten-2">
+                                    <template v-slot:placeholder>
+                                    <v-layout
+                                      fill-height
+                                      align-center
+                                      justify-center
+                                      ma-0
+                                    >
+                                      <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
+                                    </v-layout>
+                                  </template>
+                                </v-img>
+                            </v-card>
+                        </v-flex>
+                    </v-layout>
+                </v-container>
             </v-card>
         </v-flex>
     </v-layout>
 </div>
 </template>
-
 <script>
 export default {
     data() {
@@ -60,26 +58,25 @@ export default {
             return this.list.map(item => {
                 const {
                     id,
-                    userName,
-                    userPhone
+                    name,
+                    imgUrl
                 } = item;
                 return {
                     id,
-                    userName,
-                    userPhone,
-                    path: `/user/${id}`,
+                    name,
+                    imgUrl,
+                    path: `/worksImg/${id}`,
                 }
             })
         },
     },
-
     created() {
         this.getList();
     },
     methods: {
         getList() {
             this.busy = true;
-            this.$store.dispatch("user/list", {
+            this.$store.dispatch("worksImg/list", {
                 "pageIndex": this.pageIndex,
                 "pageSize": this.pageSize
             }).then((data) => {
@@ -104,6 +101,5 @@ export default {
             }
         }
     }
-
 }
 </script>
