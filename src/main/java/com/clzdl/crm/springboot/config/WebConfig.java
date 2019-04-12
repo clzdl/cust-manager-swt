@@ -2,10 +2,13 @@ package com.clzdl.crm.springboot.config;
 
 import java.util.Properties;
 
+import javax.servlet.MultipartConfigElement;
+
 import org.springframework.aop.Advisor;
 import org.springframework.aop.support.DefaultPointcutAdvisor;
 import org.springframework.aop.support.JdkRegexpMethodPointcut;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -144,4 +147,18 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 		return defaultKaptcha;
 	}
 
+	/**
+	 * 文件上传配置
+	 * 
+	 * @return
+	 */
+	@Bean
+	public MultipartConfigElement multipartConfigElement() {
+		MultipartConfigFactory factory = new MultipartConfigFactory();
+		// 单个文件最大
+		factory.setMaxFileSize("10MB"); // KB,MB
+		// 设置总上传数据总大小
+		factory.setMaxRequestSize("100MB");
+		return factory.createMultipartConfig();
+	}
 }

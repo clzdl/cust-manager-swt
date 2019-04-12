@@ -15,6 +15,7 @@ import org.eclipse.swt.widgets.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.clzdl.crm.App;
 import com.clzdl.crm.utils.HttpUtil;
 import com.clzdl.crm.utils.HttpUtil.HttpParam;
 
@@ -27,6 +28,7 @@ public class LoginDialog extends Shell {
 
 	public LoginDialog(Display parent) {
 		super(parent, SWT.DIALOG_TRIM | SWT.PRIMARY_MODAL);
+		setImage(App.getAppImage());
 		setSize(300, 150);
 		setText("登录");
 		Rectangle bounds = parent.getPrimaryMonitor().getBounds();
