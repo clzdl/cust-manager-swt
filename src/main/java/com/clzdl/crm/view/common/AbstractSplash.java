@@ -87,7 +87,7 @@ public abstract class AbstractSplash {
 		splashShell.pack();
 
 		Rectangle splashRect = splashShell.getBounds();
-		Rectangle displayRect = display.getBounds();
+		Rectangle displayRect = display.getPrimaryMonitor().getBounds();
 
 		int x = (displayRect.width - splashRect.width) / 2;
 		int y = (displayRect.height - splashRect.height) / 2;

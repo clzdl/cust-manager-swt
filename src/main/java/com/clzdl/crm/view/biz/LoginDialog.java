@@ -29,7 +29,7 @@ public class LoginDialog extends Shell {
 		super(parent, SWT.DIALOG_TRIM | SWT.PRIMARY_MODAL);
 		setSize(300, 150);
 		setText("登录");
-		Rectangle bounds = parent.getBounds();
+		Rectangle bounds = parent.getPrimaryMonitor().getBounds();
 		Rectangle rect = getBounds();
 		int x = bounds.x + Math.max(0, (bounds.width - rect.width) / 2);
 		int y = bounds.y + Math.max(0, (bounds.height - rect.height) / 2);
