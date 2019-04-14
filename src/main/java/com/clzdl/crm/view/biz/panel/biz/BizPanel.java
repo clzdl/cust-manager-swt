@@ -21,6 +21,7 @@ import com.clzdl.crm.utils.HttpUtil;
 import com.clzdl.crm.utils.HttpUtil.HttpParam;
 import com.clzdl.crm.view.biz.panel.biz.content.card.CardInfoContent;
 import com.clzdl.crm.view.biz.panel.biz.content.customer.CustInfoContent;
+import com.clzdl.crm.view.biz.panel.biz.content.works.WorkImgContent;
 import com.clzdl.crm.view.common.AbstractComposite;
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -107,11 +108,12 @@ public class BizPanel extends AbstractComposite {
 		List<AbstractComposite> list = new ArrayList<AbstractComposite>();
 		list.add(new CustInfoContent(this, SWT.BORDER));
 		list.add(new CardInfoContent(this, SWT.BORDER));
+		list.add(new WorkImgContent(this, SWT.BORDER));
 
 		try {
 			JsonNode result = null;
 			for (AbstractComposite composite : list) {
-				result = HttpUtil.get("/panel/profile/sysuser//havepermission.json",
+				result = HttpUtil.get("/panel/profile/sysuser/havepermission.json",
 						new HttpParam[] { new HttpParam("permission", composite.getPermission().getCode()) });
 
 				if (result.asBoolean()) {
