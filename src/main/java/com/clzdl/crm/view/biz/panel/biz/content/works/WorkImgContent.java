@@ -47,12 +47,12 @@ public class WorkImgContent extends AbstractComposite {
 
 		TableColumn colName = new TableColumn(table, SWT.NONE);
 		colName.setText("名称");
-		colName.setWidth(150);
+		colName.setWidth(100);
 		colName.setAlignment(SWT.CENTER);
 
 		TableColumn colSex = new TableColumn(table, SWT.NONE);
 		colSex.setText("图片地址");
-		colSex.setWidth(50);
+		colSex.setWidth(300);
 		colSex.setAlignment(SWT.CENTER);
 
 		TableColumn createDate = new TableColumn(table, SWT.NONE);
