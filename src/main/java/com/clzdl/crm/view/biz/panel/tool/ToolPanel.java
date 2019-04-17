@@ -1,4 +1,4 @@
-package com.clzdl.crm.view.biz.panel.profile;
+package com.clzdl.crm.view.biz.panel.tool;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,21 +19,19 @@ import org.slf4j.LoggerFactory;
 import com.clzdl.crm.springboot.auth.EnumSysPermissionProfile;
 import com.clzdl.crm.utils.HttpUtil;
 import com.clzdl.crm.utils.HttpUtil.HttpParam;
-import com.clzdl.crm.view.biz.panel.profile.content.sysmenu.SysMenuContent;
-import com.clzdl.crm.view.biz.panel.profile.content.sysrole.SysRoleContent;
-import com.clzdl.crm.view.biz.panel.profile.content.sysuser.SysUserContent;
+import com.clzdl.crm.view.biz.panel.tool.content.Video2GIfContent;
 import com.clzdl.crm.view.common.AbstractComposite;
 import com.fasterxml.jackson.databind.JsonNode;
 
-public class ProfilePanel extends AbstractComposite {
-	private final static Logger _logger = LoggerFactory.getLogger(ProfilePanel.class);
-	private final static String title = "配置数据";
+public class ToolPanel extends AbstractComposite {
+	private final static Logger _logger = LoggerFactory.getLogger(ToolPanel.class);
+	private final static String title = "常用工具";
 	private Sash sash;
 	private Table leftMenuTab;
 	private List<AbstractComposite> rightContents = new ArrayList<AbstractComposite>();
 
-	public ProfilePanel(Composite parent, int style) {
-		super(parent, style, title, EnumSysPermissionProfile.PROFILE);
+	public ToolPanel(Composite parent, int style) {
+		super(parent, style, title, EnumSysPermissionProfile.NONE);
 		setLayout(new FormLayout());
 		leftMenuTab = new Table(this, SWT.BORDER);
 		leftMenuTab.setLinesVisible(true);
@@ -109,9 +107,7 @@ public class ProfilePanel extends AbstractComposite {
 
 	private void buildContent() {
 		List<AbstractComposite> list = new ArrayList<AbstractComposite>();
-		list.add(new SysUserContent(this, SWT.BORDER));
-		list.add(new SysRoleContent(this, SWT.BORDER));
-		list.add(new SysMenuContent(this, SWT.BORDER));
+		list.add(new Video2GIfContent(this, SWT.BORDER));
 		try {
 			JsonNode result = null;
 			for (AbstractComposite composite : list) {

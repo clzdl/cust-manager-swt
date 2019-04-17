@@ -39,7 +39,16 @@
 	    <scope>compile</scope>
 	</dependency>
 				
-  	
+  	<dependency>
+	      <groupId>io.humble</groupId>
+	      <artifactId>humble-video-all</artifactId>
+	      <version>0.3.0</version>
+	  </dependency>
+	  <dependency>
+	    <groupId>io.humble</groupId>
+	    <artifactId>humble-video-arch-x86_64-w64-mingw32</artifactId>
+	    <version>0.3.0</version>
+	  </dependency>
 	
 	<!-- 
 	安装到本地仓库
@@ -53,20 +62,21 @@
 	/home/java/software/eclipse/plugins/org.eclipse.osgi_3.13.200.v20181130-2106.jar
 	/home/java/software/eclipse/plugins/org.eclipse.ui.workbench_3.112.100.v20181127-1518.jar
   -->
-	  
+	  <!-- 
 	<dependency>
 		<groupId>org.eclipse.swt</groupId>
 		<artifactId>org.eclipse.swt.gtk.linux.x86_64</artifactId>
 		<version>${swt.version}</version>
 	</dependency>
-	
-	 <!-- 
+		-->	
+
+	 
 	<dependency>
 		<groupId>org.eclipse.swt</groupId>
 		<artifactId>org.eclipse.swt.win32.win32.x86_64</artifactId>
 		<version>${swt.version}</version>
 	</dependency>
-	-->	
+	
 	<dependency>
 		<groupId>org.eclipse.</groupId>
 		<artifactId>core-commands</artifactId>
@@ -115,17 +125,21 @@
          <version>0.0.2</version>
       </dependency>
       <dependency>
-          <groupId>cl.basic</groupId>
-          <artifactId>framework-shrio</artifactId>
-          <version>0.0.2</version>
-       </dependency>
-	
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.1</version>
-      <scope>test</scope>
-    </dependency>
+         <groupId>cl.basic</groupId>
+         <artifactId>framework-shrio</artifactId>
+         <version>0.0.2</version>
+      </dependency>
+	  
+	  <dependency>
+	    <groupId>com.madgag</groupId>
+	    <artifactId>animated-gif-lib</artifactId>
+	    <version>1.4</version>
+	  </dependency>
+	  <dependency>
+	      <groupId>junit</groupId>
+	      <artifactId>junit</artifactId>
+	      <scope>test</scope>
+	  </dependency>
   </dependencies>
   <build>
     <resources>

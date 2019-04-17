@@ -19,10 +19,12 @@ import org.eclipse.swt.widgets.ToolItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.clzdl.crm.springboot.auth.EnumSysPermissionProfile;
 import com.clzdl.crm.utils.HttpUtil;
 import com.clzdl.crm.utils.HttpUtil.HttpParam;
 import com.clzdl.crm.view.biz.panel.biz.BizPanel;
 import com.clzdl.crm.view.biz.panel.profile.ProfilePanel;
+import com.clzdl.crm.view.biz.panel.tool.ToolPanel;
 import com.clzdl.crm.view.common.AbstractComposite;
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -125,17 +127,22 @@ public class MainWindow extends Shell {
 		List<AbstractComposite> list = new ArrayList<AbstractComposite>();
 		list.add(new BizPanel(this, SWT.BORDER));
 		list.add(new ProfilePanel(this, SWT.BORDER));
+		list.add(new ToolPanel(this, SWT.BORDER));
 
 		try {
 			JsonNode result = null;
 			for (AbstractComposite composite : list) {
-				result = HttpUtil.get("/panel/profile/sysuser//havepermission.json",
-						new HttpParam[] { new HttpParam("permission", composite.getPermission().getCode()) });
-
-				if (result.asBoolean()) {
+				if (EnumSysPermissionProfile.NONE == composite.getPermission()) {
 					panelContainer.add(composite);
 				} else {
-					composite.dispose();
+					result = HttpUtil.get("/panel/profile/sysuser/havepermission.json",
+							new HttpParam[] { new HttpParam("permission", composite.getPermission().getCode()) });
+
+					if (result.asBoolean()) {
+						panelContainer.add(composite);
+					} else {
+						composite.dispose();
+					}
 				}
 			}
 

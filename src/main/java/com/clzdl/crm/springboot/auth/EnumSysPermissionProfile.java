@@ -12,7 +12,9 @@ public enum EnumSysPermissionProfile {
 	WORKIMG("/panel/biz/workimg", "用户作品"),
 
 	PROFILE("/panel/profile", "配置数据"), SYSUSER("/panel/profile/sysuser", "系统用户"),
-	SYSROLE("/panel/profile/sysrole", "系统角色"), SYSMENU("/panel/profile/sysmenu", "系统菜单");
+	SYSROLE("/panel/profile/sysrole", "系统角色"), SYSMENU("/panel/profile/sysmenu", "系统菜单"),
+
+	NONE("/ALL", "无需权限");
 
 	private String code;
 	private String name;
