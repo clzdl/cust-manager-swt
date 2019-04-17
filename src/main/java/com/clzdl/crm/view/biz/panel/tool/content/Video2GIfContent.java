@@ -2,9 +2,6 @@ package com.clzdl.crm.view.biz.panel.tool.content;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
-import java.awt.image.ComponentColorModel;
-import java.awt.image.DirectColorModel;
-import java.awt.image.IndexColorModel;
 import java.awt.image.WritableRaster;
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
@@ -13,9 +10,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.ImageData;
-import org.eclipse.swt.graphics.PaletteData;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
@@ -31,10 +25,12 @@ import org.slf4j.LoggerFactory;
 
 import com.clzdl.crm.App;
 import com.clzdl.crm.springboot.auth.EnumSysPermissionProfile;
+import com.clzdl.crm.utils.ImageConvertor;
 import com.clzdl.crm.view.common.AbstractComposite;
 import com.clzdl.crm.view.common.LoadingDialog;
 import com.clzdl.crm.view.common.LoadingDialog.TaskLoading;
 import com.clzdl.crm.view.common.MsgBox;
+import com.framework.common.util.date.DateUtil;
 import com.madgag.gif.fmsware.AnimatedGifEncoder;
 
 import io.humble.video.Decoder;
@@ -64,6 +60,7 @@ public class Video2GIfContent extends AbstractComposite {
 	private Text edtVideoFile;
 	private Text edtOutPath;
 	private Text edtFrequency;
+	private String gifFileName;
 	//// 解析到截取，同步使用
 	private CountDownLatch countDownLatch;
 	AnimatedGifEncoder encoderGif = new AnimatedGifEncoder();
@@ -149,11 +146,13 @@ public class Video2GIfContent extends AbstractComposite {
 				if (!edtFrequency.getText().trim().isEmpty()) {
 					frequency = Integer.valueOf(edtFrequency.getText().trim());
 				}
+				clear();
 				// 设置循环模式，0为无限循环 这里没有使用源文件的播放次数
 				encoderGif.setRepeat(0);
-				encoderGif.start(edtOutPath.getText().trim() + "/aaaa.gif");
+				gifFileName = DateUtil.getCurrentDateTime() + ".gif";
+				encoderGif.start(edtOutPath.getText().trim() + "/" + gifFileName);
 				final String videoFile = edtVideoFile.getText().trim();
-				clear();
+
 				new Thread(new Runnable() {
 					@Override
 					public void run() {
@@ -388,7 +387,7 @@ public class Video2GIfContent extends AbstractComposite {
 		getDisplay().asyncExec(new Runnable() {
 			@Override
 			public void run() {
-				new MsgBox(getShell(), "Gif文件截取成功").open();
+				new MsgBox(getShell(), "Gif文件[" + gifFileName + "]截取成功").open();
 			}
 		});
 	}
@@ -416,7 +415,7 @@ public class Video2GIfContent extends AbstractComposite {
 			getDisplay().asyncExec(new Runnable() {
 				@Override
 				public void run() {
-					videoPreview.setImage(new Image(getDisplay(), convertToSWT(currShowImage)));
+					videoPreview.setImage(new Image(getDisplay(), ImageConvertor.convertToSWT(currShowImage)));
 				}
 			});
 			encoderGif.addFrame(currShowImage);
@@ -424,72 +423,6 @@ public class Video2GIfContent extends AbstractComposite {
 		currFrmNumber++;
 		System.out.println("s:" + s + ",streamBase:" + streamTimebase.toString());
 		Thread.sleep(s);
-	}
-
-	private ImageData convertToSWT(BufferedImage bufferedImage) {
-		if (bufferedImage.getColorModel() instanceof DirectColorModel) {
-			DirectColorModel colorModel = (DirectColorModel) bufferedImage.getColorModel();
-			PaletteData palette = new PaletteData(colorModel.getRedMask(), colorModel.getGreenMask(),
-					colorModel.getBlueMask());
-			ImageData data = new ImageData(bufferedImage.getWidth(), bufferedImage.getHeight(),
-					colorModel.getPixelSize(), palette);
-			WritableRaster raster = bufferedImage.getRaster();
-			int[] pixelArray = new int[3];
-			for (int y = 0; y < data.height; y++) {
-				for (int x = 0; x < data.width; x++) {
-					raster.getPixel(x, y, pixelArray);
-					int pixel = palette.getPixel(new RGB(pixelArray[0], pixelArray[1], pixelArray[2]));
-					data.setPixel(x, y, pixel);
-				}
-			}
-			return data;
-		} else if (bufferedImage.getColorModel() instanceof IndexColorModel) {
-			IndexColorModel colorModel = (IndexColorModel) bufferedImage.getColorModel();
-			int size = colorModel.getMapSize();
-			byte[] reds = new byte[size];
-			byte[] greens = new byte[size];
-			byte[] blues = new byte[size];
-			colorModel.getReds(reds);
-			colorModel.getGreens(greens);
-			colorModel.getBlues(blues);
-			RGB[] rgbs = new RGB[size];
-			for (int i = 0; i < rgbs.length; i++) {
-				rgbs[i] = new RGB(reds[i] & 0xFF, greens[i] & 0xFF, blues[i] & 0xFF);
-			}
-			PaletteData palette = new PaletteData(rgbs);
-			ImageData data = new ImageData(bufferedImage.getWidth(), bufferedImage.getHeight(),
-					colorModel.getPixelSize(), palette);
-			data.transparentPixel = colorModel.getTransparentPixel();
-			WritableRaster raster = bufferedImage.getRaster();
-			int[] pixelArray = new int[1];
-			for (int y = 0; y < data.height; y++) {
-				for (int x = 0; x < data.width; x++) {
-					raster.getPixel(x, y, pixelArray);
-					data.setPixel(x, y, pixelArray[0]);
-				}
-			}
-			return data;
-		} else if (bufferedImage.getColorModel() instanceof ComponentColorModel) {
-			ComponentColorModel colorModel = (ComponentColorModel) bufferedImage.getColorModel();
-			// ASSUMES: 3 BYTE BGR IMAGE TYPE
-			PaletteData palette = new PaletteData(0x0000FF, 0x00FF00, 0xFF0000);
-			ImageData data = new ImageData(bufferedImage.getWidth(), bufferedImage.getHeight(),
-					colorModel.getPixelSize(), palette);
-			// This is valid because we are using a 3-byte Data model with no transparent
-			// pixels
-			data.transparentPixel = -1;
-			WritableRaster raster = bufferedImage.getRaster();
-			int[] pixelArray = new int[3];
-			for (int y = 0; y < data.height; y++) {
-				for (int x = 0; x < data.width; x++) {
-					raster.getPixel(x, y, pixelArray);
-					int pixel = palette.getPixel(new RGB(pixelArray[0], pixelArray[1], pixelArray[2]));
-					data.setPixel(x, y, pixel);
-				}
-			}
-			return data;
-		}
-		return null;
 	}
 
 	private BufferedImage deepCopy(BufferedImage bi) {
@@ -509,5 +442,6 @@ public class Video2GIfContent extends AbstractComposite {
 		recordStartFrmNumber = 0;
 		recordEndFrmNumber = 0;
 		currFrmNumber = 0;
+		gifFileName = "";
 	}
 }

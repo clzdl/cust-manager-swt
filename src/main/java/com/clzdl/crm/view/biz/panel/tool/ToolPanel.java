@@ -12,6 +12,7 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Sash;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import com.clzdl.crm.springboot.auth.EnumSysPermissionProfile;
 import com.clzdl.crm.utils.HttpUtil;
 import com.clzdl.crm.utils.HttpUtil.HttpParam;
+import com.clzdl.crm.view.biz.panel.tool.content.QrCodeContent;
 import com.clzdl.crm.view.biz.panel.tool.content.Video2GIfContent;
 import com.clzdl.crm.view.common.AbstractComposite;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -26,6 +28,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 public class ToolPanel extends AbstractComposite {
 	private final static Logger _logger = LoggerFactory.getLogger(ToolPanel.class);
 	private final static String title = "常用工具";
+	private final Integer _LEFT_MENU_WIDTH = 200;
 	private Sash sash;
 	private Table leftMenuTab;
 	private List<AbstractComposite> rightContents = new ArrayList<AbstractComposite>();
@@ -35,7 +38,8 @@ public class ToolPanel extends AbstractComposite {
 		setLayout(new FormLayout());
 		leftMenuTab = new Table(this, SWT.BORDER);
 		leftMenuTab.setLinesVisible(true);
-
+		TableColumn menuCol = new TableColumn(leftMenuTab, SWT.NONE);
+		menuCol.setWidth(_LEFT_MENU_WIDTH);
 		sash = new Sash(this, SWT.VERTICAL);
 		buildContent();
 		leftMenuTab.addSelectionListener(new SelectionAdapter() {
@@ -55,7 +59,7 @@ public class ToolPanel extends AbstractComposite {
 		leftMenuTab.setLayoutData(leftMenuFormData);
 
 		final FormData sashFormData = new FormData();
-		sashFormData.left = new FormAttachment(30);
+		sashFormData.left = new FormAttachment(0, _LEFT_MENU_WIDTH);
 		sashFormData.top = new FormAttachment(0);
 		sashFormData.bottom = new FormAttachment(100);
 		sash.setLayoutData(sashFormData);
@@ -108,6 +112,7 @@ public class ToolPanel extends AbstractComposite {
 	private void buildContent() {
 		List<AbstractComposite> list = new ArrayList<AbstractComposite>();
 		list.add(new Video2GIfContent(this, SWT.BORDER));
+		list.add(new QrCodeContent(this, SWT.BORDER));
 		try {
 			JsonNode result = null;
 			for (AbstractComposite composite : list) {

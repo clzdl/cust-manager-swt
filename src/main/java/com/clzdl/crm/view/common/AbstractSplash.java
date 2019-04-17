@@ -10,6 +10,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.ProgressBar;
 import org.eclipse.swt.widgets.Shell;
 
+import com.clzdl.crm.App;
+
 public abstract class AbstractSplash {
 	private String splashImageFile;
 	protected Display display;
@@ -74,6 +76,7 @@ public abstract class AbstractSplash {
 		layout.marginBottom = 0;
 		layout.spacing = 0;
 		splashShell.setLayout(layout);
+		splashShell.setImage(App.getAppImage());
 
 		label = new Label(splashShell, SWT.NONE);
 		label.setImage(image);

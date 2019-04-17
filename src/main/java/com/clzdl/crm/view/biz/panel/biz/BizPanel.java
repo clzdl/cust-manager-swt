@@ -12,6 +12,7 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Sash;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +29,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 public class BizPanel extends AbstractComposite {
 	private final static Logger _logger = LoggerFactory.getLogger(BizPanel.class);
 	private final static String title = "业务数据";
+	private final Integer _LEFT_MENU_WIDTH = 200;
 	private Sash sash;
 	private Table leftMenuTab;
 	private List<AbstractComposite> rightContents = new ArrayList<AbstractComposite>();
@@ -38,6 +40,8 @@ public class BizPanel extends AbstractComposite {
 
 		leftMenuTab = new Table(this, SWT.BORDER);
 		leftMenuTab.setLinesVisible(true);
+		TableColumn menuCol = new TableColumn(leftMenuTab, SWT.NONE);
+		menuCol.setWidth(_LEFT_MENU_WIDTH);
 
 		sash = new Sash(this, SWT.VERTICAL);
 		buildContent();
@@ -59,7 +63,7 @@ public class BizPanel extends AbstractComposite {
 		leftMenuTab.setLayoutData(leftMenuFormData);
 
 		final FormData sashFormData = new FormData();
-		sashFormData.left = new FormAttachment(30);
+		sashFormData.left = new FormAttachment(0, _LEFT_MENU_WIDTH);
 		sashFormData.top = new FormAttachment(0);
 		sashFormData.bottom = new FormAttachment(100);
 		sash.setLayoutData(sashFormData);
