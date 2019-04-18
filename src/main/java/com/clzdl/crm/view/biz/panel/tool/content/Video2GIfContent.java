@@ -35,6 +35,7 @@ import com.madgag.gif.fmsware.AnimatedGifEncoder;
 
 import io.humble.video.Decoder;
 import io.humble.video.Demuxer;
+import io.humble.video.Demuxer.SeekFlag;
 import io.humble.video.DemuxerStream;
 import io.humble.video.Global;
 import io.humble.video.MediaDescriptor;
@@ -46,6 +47,7 @@ import io.humble.video.awt.MediaPictureConverterFactory;
 
 public class Video2GIfContent extends AbstractComposite {
 	private final static Logger _logger = LoggerFactory.getLogger(Video2GIfContent.class);
+	private final static Integer _demuxer_in_buffer_size = 4 * 1024 * 1024;
 	private final static String title = "视频转Gif";
 	private DateTime dtEndTime;
 	private DateTime dtStartTime;
@@ -56,7 +58,7 @@ public class Video2GIfContent extends AbstractComposite {
 	private int count = 0;
 	private long recordStartFrmNumber = 0;
 	private long recordEndFrmNumber = 0;
-	private long currFrmNumber = 0;
+	private long leftRecordFrmNumber = 0;
 	private Text edtVideoFile;
 	private Text edtOutPath;
 	private Text edtFrequency;
@@ -271,7 +273,7 @@ public class Video2GIfContent extends AbstractComposite {
 		 * reading, to get video data from.
 		 */
 		Demuxer demuxer = Demuxer.make();
-
+		demuxer.setInputBufferLength(_demuxer_in_buffer_size);
 		/*
 		 * Open the demuxer with the filename passed on.
 		 */
@@ -330,7 +332,13 @@ public class Video2GIfContent extends AbstractComposite {
 		final Rational streamTimebase = videoDecoder.getTimeBase();
 		recordStartFrmNumber = convertDuration2PictureFrmNumber(streamTimebase, startDur);
 		recordEndFrmNumber = convertDuration2PictureFrmNumber(streamTimebase, endDur);
+		leftRecordFrmNumber = recordEndFrmNumber - recordStartFrmNumber + 1;
 
+		int ret = demuxer.seek(videoStreamId, 0, recordStartFrmNumber, recordEndFrmNumber,
+				SeekFlag.SEEK_FRAME.swigValue());
+		System.out.println("recordStartFrmNumber=" + recordStartFrmNumber + ",recordEndFrmNumber:" + recordEndFrmNumber
+				+ ",demuxer in buffer:" + demuxer.getInputBufferLength() + ",ret:" + ret);
+		countDownLatch.countDown();
 		/**
 		 * Now, we start walking through the container looking at each packet. This is a
 		 * decoding loop, and as you work with Humble you'll write a lot of these.
@@ -355,10 +363,14 @@ public class Video2GIfContent extends AbstractComposite {
 					bytesRead += videoDecoder.decode(picture, packet, offset);
 					if (picture.isComplete()) {
 						displayVideoAtCorrectTime(streamStartTime, picture, converter, streamTimebase);
+						if (0 >= leftRecordFrmNumber--) {
+							// 截取结束
+							break;
+						}
 					}
 					offset += bytesRead;
 				} while (offset < packet.getSize());
-				if (currFrmNumber > recordEndFrmNumber) {
+				if (0 >= leftRecordFrmNumber) {
 					// 截取结束
 					break;
 				}
@@ -397,16 +409,7 @@ public class Video2GIfContent extends AbstractComposite {
 	 */
 	private void displayVideoAtCorrectTime(long streamStartTime, final MediaPicture picture,
 			final MediaPictureConverter converter, final Rational streamTimebase) throws InterruptedException {
-
-		if (currFrmNumber < recordStartFrmNumber || currFrmNumber > recordEndFrmNumber) {
-			currFrmNumber++;
-			return;
-		}
-		if (currFrmNumber == recordStartFrmNumber) {
-			/// 关闭加载对话框
-			countDownLatch.countDown();
-		}
-
+		System.out.println(picture.getTimeStamp());
 		Long s = streamTimebase.rescale((long) (1000 * streamTimebase.getValue()), Rational.make(1, 24));
 		if (count++ % frequency == 0) {
 			// finally, convert the image from Humble format into Java images.
@@ -420,7 +423,6 @@ public class Video2GIfContent extends AbstractComposite {
 			});
 			encoderGif.addFrame(currShowImage);
 		}
-		currFrmNumber++;
 		System.out.println("s:" + s + ",streamBase:" + streamTimebase.toString());
 		Thread.sleep(s);
 	}
@@ -441,7 +443,7 @@ public class Video2GIfContent extends AbstractComposite {
 		count = 0;
 		recordStartFrmNumber = 0;
 		recordEndFrmNumber = 0;
-		currFrmNumber = 0;
+		leftRecordFrmNumber = 0;
 		gifFileName = "";
 	}
 }
