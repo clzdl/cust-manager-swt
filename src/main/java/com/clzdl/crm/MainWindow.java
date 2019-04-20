@@ -43,7 +43,7 @@ public class MainWindow extends Shell {
 	 * @wbp.parser.entryPoint
 	 */
 	public void createContent() {
-		setSize(800, 600);
+		setSize(900, 600);
 		setText("客户管理");
 		setImage(App.getAppImage());
 		Monitor primary = getDisplay().getPrimaryMonitor();
