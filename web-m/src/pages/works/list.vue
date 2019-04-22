@@ -11,26 +11,12 @@
                         <router-link to="/web/works/upload">
                             <v-icon>file_upload</v-icon>
                         </router-link>
-
                     </v-btn>
                 </v-toolbar>
                 <v-container grid-list-sm fluid>
                     <v-layout row wrap>
                         <v-flex v-for="(item, index) in itemList" :key="index" xs4 d-flex>
-                            <v-card flat tile class="d-flex">
-                                <v-img :src="item.imgUrl" aspect-ratio="1" class="grey lighten-2">
-                                    <template v-slot:placeholder>
-                                    <v-layout
-                                      fill-height
-                                      align-center
-                                      justify-center
-                                      ma-0
-                                    >
-                                      <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
-                                    </v-layout>
-                                  </template>
-                                </v-img>
-                            </v-card>
+                            <Item :msg="item"></Item>
                         </v-flex>
                     </v-layout>
                 </v-container>
@@ -40,7 +26,9 @@
 </div>
 </template>
 <script>
+import Item from "../../components/works/item.vue";
 export default {
+
     data() {
         return {
             pageIndex: 1,
@@ -65,7 +53,7 @@ export default {
                     id,
                     name,
                     imgUrl,
-                    path: `/worksImg/${id}`,
+                    path: `/web/works/${id}`,
                 }
             })
         },
@@ -100,6 +88,9 @@ export default {
                 this.getList()
             }
         }
+    },
+    components: {
+        Item
     }
 }
 </script>

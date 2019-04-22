@@ -16,7 +16,7 @@ public class WorkImgVO implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 3330679150807643813L;
-
+	private Long id;
 	private String name;
 	private String imgUrl;
 
@@ -29,12 +29,23 @@ public class WorkImgVO implements Serializable {
 		WorkImgVO vo = null;
 		for (CmWorksImages img : list) {
 			vo = new WorkImgVO();
+			vo.setId(img.getId());
 			vo.setName(img.getName());
 			vo.setImgUrl(img.getImgUrl());
 			result.add(vo);
 		}
 
 		return result;
+	}
+
+	public static WorkImgVO buildDataInfo(CmWorksImages entity) {
+		WorkImgVO vo = new WorkImgVO();
+		if (null != entity) {
+			vo.setId(entity.getId());
+			vo.setName(entity.getName());
+			vo.setImgUrl(entity.getImgUrl());
+		}
+		return vo;
 	}
 
 	public String getName() {
@@ -54,6 +65,14 @@ public class WorkImgVO implements Serializable {
 
 	public void setImgUrl(String imgUrl) {
 		this.imgUrl = imgUrl;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 }

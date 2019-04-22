@@ -3,18 +3,24 @@ package com.clzdl.crm.view.biz.panel.biz.content.works;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 
 import com.clzdl.crm.App;
+import com.clzdl.crm.Constants;
 import com.clzdl.crm.springboot.auth.EnumSysPermissionProfile;
 import com.clzdl.crm.springboot.persistence.entity.CmWorksImages;
 import com.clzdl.crm.utils.HttpUtil;
+import com.clzdl.crm.utils.HttpUtil.HttpParam;
 import com.clzdl.crm.view.common.AbstractComposite;
 import com.clzdl.crm.view.common.ImgViewDialog;
 import com.clzdl.crm.view.common.LoadingDialog;
@@ -108,9 +114,35 @@ public class WorkImgContent extends AbstractComposite {
 				if (0 >= item.length) {
 					return;
 				}
-				new ImgViewDialog(getShell(), item[0].getText(imgUrlIndex).trim());
+				new ImgViewDialog(getDisplay(), item[0].getText(imgUrlIndex).trim());
 			}
 		});
+
+		///
+		Menu popMenu = new Menu(parent);
+		MenuItem deletItem = new MenuItem(popMenu, SWT.PUSH);
+		deletItem.setText("删除");
+		deletItem.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				super.widgetSelected(e);
+				if (SWT.CANCEL == new MsgBox(App.getMainWindow(), SWT.OK | SWT.CANCEL, "确认删除?").open()) {
+					return;
+				}
+				TableItem item[] = table.getSelection();
+
+				try {
+					HttpUtil.get("/panel/biz/workimg/deletebyid.json",
+							new HttpParam("id", item[0].getText(Constants.ID_INDEX).trim()));
+					pager.refreshPage(false);
+
+				} catch (Exception ex) {
+					new MsgBox(App.getMainWindow(), ex.getMessage()).open();
+				}
+			}
+		});
+
+		table.setMenu(popMenu);
 
 		FormData tabFormData = new FormData();
 		tabFormData.left = new FormAttachment(0);

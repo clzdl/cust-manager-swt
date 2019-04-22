@@ -21,6 +21,12 @@ export default {
             state
         }, data) {
             return get(`${baseUrl}/worksimg/list.json`, data);
+        },
+        info({
+            commit,
+            state
+        }, data) {
+            return get(`${baseUrl}/worksimg/info.json`, data);
         }
 
     }

@@ -15,6 +15,8 @@ const UploadWork = () =>
     import ("../pages/works/upload.vue");
 const ListWork = () =>
     import ("../pages/works/list.vue");
+const workImgDetail = () =>
+    import ("../pages/works/imgDetail.vue");
 
 const routes = [{
     path: "/web",
@@ -43,6 +45,11 @@ const routes = [{
             path: "works/list",
             component: ListWork,
             name: "/works/list"
+        },
+        {
+            path: "works/:id",
+            component: workImgDetail,
+            name: "/works/id"
         },
     ]
 }, ]

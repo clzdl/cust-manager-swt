@@ -63,6 +63,13 @@ public class WorksImageServiceImpl extends AbastractBizService<CmWorksImages> im
 	}
 
 	@Override
+	@Transactional(readOnly = true)
+	public WorkImgVO getVoById(Long id) throws Exception {
+		CmWorksImages entity = super.getById(id);
+		return WorkImgVO.buildDataInfo(entity);
+	}
+
+	@Override
 	protected Map<Long, CmWorksImages> list2Map(List<CmWorksImages> list) {
 		// TODO Auto-generated method stub
 		return null;

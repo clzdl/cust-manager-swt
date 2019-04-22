@@ -26,4 +26,13 @@ public interface IWorksImageService extends IBizService<CmWorksImages> {
 	 * @throws Exception
 	 */
 	AjaxData<WorkImgVO> listVo(CmWorksImages entity, Integer pageIndex, Integer pageSize) throws Exception;
+
+	/**
+	 * 详情
+	 * 
+	 * @param id
+	 * @return
+	 * @throws Exception
+	 */
+	WorkImgVO getVoById(Long id) throws Exception;
 }

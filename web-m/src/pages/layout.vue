@@ -31,7 +31,9 @@ export default {
 
     watch: {
         linkUrl() {
-            this.$router.push(this.linkUrl);
+            //this.$router.push(this.linkUrl);
+            console.log(this.linkUrl);
+            this.$router.replace(this.linkUrl);
         }
     }
 

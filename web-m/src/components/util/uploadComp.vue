@@ -1,16 +1,16 @@
 <template>
-<v-container grid-list-xl>
+<div>
     <v-layout column>
-        <v-flex xs6 sm4 v-show='imageUrl'>
-            <v-img :src="imageUrl" />
+        <v-flex xs12 sm4 v-show='imageUrl'>
+            <v-img :max-width="400" :max-height="300" :src="imageUrl" />
         </v-flex>
-        <v-flex xs6 sm4>
+        <v-flex xs12 sm4>
             <uploader :options="options" @file-complete="fileComplete" @complete="complete" @file-success="fileSuccess" @file-error="fileError" class="uploader">
                 <uploader-btn :attrs="attrs">请选择</uploader-btn>
             </uploader>
         </v-flex>
     </v-layout>
-</v-container>
+</div>
 </template>
 <script >
 // import config from "../../assets/js/config";
@@ -70,7 +70,7 @@ export default {
 
 <style>
 .uploader {
-    width: 880px;
+    width: 380px;
     padding: 15px;
     margin: 40px auto 0;
     font-size: 12px;

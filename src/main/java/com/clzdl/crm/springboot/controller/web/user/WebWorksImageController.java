@@ -33,4 +33,10 @@ public class WebWorksImageController extends AbstractShiroController {
 		ajaxSuccess(response, data);
 	}
 
+	@RequestMapping("/info.json")
+	public void handleInfo(Long id, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		WorkImgVO data = worksImageService.getVoById(id);
+		ajaxSuccess(response, data);
+	}
+
 }

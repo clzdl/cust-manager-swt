@@ -1,10 +1,16 @@
 <template>
-<v-form ref="form" lazy-validation>
-    <UploadComp :uploadUrl="uploadImgUrl" :selImgUrl.sync="selImgUrl" :fileName.sync="selFileName"></UploadComp>
-    <v-btn :disabled="isClick" color="success" @click="add">
-        提交
-    </v-btn>
-</v-form>
+<v-layout column>
+
+    <v-form ref="form" lazy-validation>
+        <v-flex xs12 sm6 offset-sm3>
+            <UploadComp :uploadUrl="uploadImgUrl" :selImgUrl.sync="selImgUrl" :fileName.sync="selFileName"></UploadComp>
+        </v-flex>
+        <v-btn :disabled="isClick" color="success" @click="add">
+            提交
+        </v-btn>
+    </v-form>
+
+</v-layout>
 </template>
 <script >
 import config from "../../assets/js/config";
