@@ -8,10 +8,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.clzdl.crm.Constants;
 import com.clzdl.crm.springboot.persistence.entity.CmUserInfo;
 import com.clzdl.crm.springboot.persistence.entity.CmWorksImages;
 import com.clzdl.crm.springboot.service.biz.user.IWorksImageService;
 import com.clzdl.crm.springboot.vo.WorkImgVO;
+import com.framework.common.util.file.FileUtil;
 import com.framework.mybatis.page.AjaxData;
 import com.framework.mybatis.page.PageModel;
 import com.framework.mybatis.service.AbastractBizService;
@@ -67,6 +69,20 @@ public class WorksImageServiceImpl extends AbastractBizService<CmWorksImages> im
 	public WorkImgVO getVoById(Long id) throws Exception {
 		CmWorksImages entity = super.getById(id);
 		return WorkImgVO.buildDataInfo(entity);
+	}
+
+	@Override
+	public boolean deleteById(Long id) throws Exception {
+		CmWorksImages entity = super.getById(id);
+		if (null != entity) {
+			String fileAbsPath = System.getProperty("user.dir") + Constants.IMG_SITE + entity.getImgUrl();
+			if (FileUtil.fileExist(fileAbsPath)) {
+				FileUtil.delFile(fileAbsPath);
+			}
+
+		}
+		return super.deleteById(id);
+
 	}
 
 	@Override

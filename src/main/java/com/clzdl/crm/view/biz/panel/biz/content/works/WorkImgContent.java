@@ -114,7 +114,11 @@ public class WorkImgContent extends AbstractComposite {
 				if (0 >= item.length) {
 					return;
 				}
-				new ImgViewDialog(getDisplay(), item[0].getText(imgUrlIndex).trim());
+				try {
+					new ImgViewDialog(getDisplay(), item[0].getText(imgUrlIndex).trim());
+				} catch (Exception e1) {
+					new MsgBox(getShell(), e1.getMessage()).open();
+				}
 			}
 		});
 
