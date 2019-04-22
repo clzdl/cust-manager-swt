@@ -35,8 +35,8 @@ public class ImgViewDialog extends Shell {
 		int x = bounds.x + Math.max(0, (bounds.width - rect.width) / 2);
 		int y = bounds.y + Math.max(0, (bounds.height - rect.height) / 2);
 
-		int width = min(rect.width, imageData.width);
-		int height = min(rect.height, imageData.height);
+		int width = Math.min(rect.width, imageData.width);
+		int height = Math.min(rect.height, imageData.height);
 		setBounds(x, y, width, height);
 		image = new Image(display, imageData);
 
@@ -104,10 +104,6 @@ public class ImgViewDialog extends Shell {
 				getDisplay().sleep();
 			}
 		}
-	}
-
-	private int min(int v1, int v2) {
-		return v1 > v2 ? v2 : v1;
 	}
 
 	protected void checkSubclass() {
