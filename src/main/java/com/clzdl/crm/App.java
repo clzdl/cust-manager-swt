@@ -11,10 +11,12 @@ import org.eclipse.swt.widgets.Shell;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.clzdl.crm.springboot.SpringbootReadyListener;
-import com.clzdl.crm.springboot.SpringbootWebSrv;
-import com.clzdl.crm.view.biz.LoginDialog;
-import com.clzdl.crm.view.common.LoadingDialog;
+import com.clzdl.crm.cli.MainWindow;
+import com.clzdl.crm.cli.Splash;
+import com.clzdl.crm.cli.biz.LoginDialog;
+import com.clzdl.crm.cli.common.LoadingDialog;
+import com.clzdl.crm.srv.SpringbootReadyListener;
+import com.clzdl.crm.srv.SpringbootWebSrv;
 
 /**
  * 客户管理程序入口类
