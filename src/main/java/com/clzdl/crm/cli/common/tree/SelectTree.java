@@ -148,14 +148,11 @@ public class SelectTree extends Composite {
 			createPopup();
 		}
 		Rectangle rect = getDisplay().map(this, null, text.getBounds());
-		if (popup.isDisposed()) {
-			createPopup();
-		}
 		popup.setBounds(rect.x, rect.y + rect.height, rect.width, 100);
+		popup.setVisible(true);
 		if (isFocusControl()) {
 			tree.setFocus();
 		}
-		popup.setVisible(true);
 
 		/*
 		 * Add a filter to listen to scrolling of the parent composite, when the
@@ -213,7 +210,7 @@ public class SelectTree extends Composite {
 				handleFocus(SWT.FocusOut);
 			}
 		};
-		int[] textEvents = { SWT.MouseDown, SWT.FocusOut };
+		int[] textEvents = { SWT.MouseDown, SWT.FocusIn, SWT.MouseUp };
 		for (int i = 0; i < textEvents.length; ++i) {
 			text.addListener(textEvents[i], listener);
 		}
@@ -460,6 +457,10 @@ public class SelectTree extends Composite {
 			handleFocus(SWT.FocusIn);
 			break;
 		}
+		case SWT.FocusOut: {
+			dropDown(false);
+			break;
+		}
 		case SWT.MouseUp: {
 			if (event.button != 1)
 				return;
@@ -594,7 +595,7 @@ public class SelectTree extends Composite {
 			break;
 		case SWT.FocusIn:
 			Control focusControl = getDisplay().getFocusControl();
-			if (focusControl == tree)
+			if (focusControl == tree || focusControl == text)
 				return;
 			if (isDropped()) {
 				tree.setFocus();
